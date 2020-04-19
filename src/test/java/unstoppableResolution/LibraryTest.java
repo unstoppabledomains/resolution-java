@@ -16,7 +16,7 @@ public class LibraryTest {
     }
 
     @Test
-    public void testNamehash() {
+    public void namehash() {
         try {
             final String hash = resolution.namehash("crypto");
             assertEquals(hash,"0x0f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f");
@@ -26,7 +26,7 @@ public class LibraryTest {
     }
 
     @Test
-    public void testNamehash2() {
+    public void namehash2() {
         try {
             final String hash = resolution.namehash("brad.crypto");
             assertEquals(hash, "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9");
@@ -36,7 +36,7 @@ public class LibraryTest {
     }
 
     @Test
-    public void testWrongDomainNamehash() {
+    public void wrongDomainNamehash() {
         try {
             resolution.namehash("unsupported");
         } catch (final NamingServiceException e) {
@@ -45,7 +45,7 @@ public class LibraryTest {
     }
 
     @Test
-    public void testResolve() {
+    public void addr() {
         try {
             String address = resolution.addr("brad.crypto", "eth");
             assertEquals(address, "0x45b31e01AA6f42F0549aD482BE81635ED3149abb");
@@ -55,7 +55,7 @@ public class LibraryTest {
     }
 
     @Test
-    public void testUnregisteredDomain() {
+    public void wrongDomainAddr() {
         try {
             resolution.addr("unregistered.crypto", "eth");
         } catch(NamingServiceException e) {
@@ -69,6 +69,43 @@ public class LibraryTest {
             resolution.addr("brad.crypto", "unknown");
         } catch(NamingServiceException e) {
             assertEquals(e.getCode(), NSExceptionCode.UnknownCurrency);
+        }
+    }
+
+    @Test
+    public void notConfiguredCurrency() {
+        try {
+            resolution.addr("brad.crypto", "dodge");
+        } catch(NamingServiceException e) {
+            assertEquals(e.getCode(), NSExceptionCode.UnknownCurrency);
+        }
+    }
+
+    @Test
+    public void ipfsHash() {
+        try {
+            String ipfsHash = resolution.ipfsHash("brad.crypto");
+            assertEquals(ipfsHash, "QmVJ26hBrwwNAPVmLavEFXDUunNDXeFSeMPmHuPxKe6dJv");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void noIpfsHash() {
+        try {
+            resolution.ipfsHash("unregistered.crypto");
+        } catch(NamingServiceException e) {
+            assertEquals(e.getCode(), NSExceptionCode.RecordNotFound);
+        }
+    }
+
+    @Test
+    public void noEmailRecord() {
+        try {
+            resolution.email("brad.crypto");
+        } catch(NamingServiceException e) {
+            assertEquals(e.getCode(), NSExceptionCode.RecordNotFound);
         }
     }
 
