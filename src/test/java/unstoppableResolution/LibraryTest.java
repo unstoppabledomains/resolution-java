@@ -92,6 +92,25 @@ public class LibraryTest {
     }
 
     @Test
+    public void ownerTest() {
+        try {
+            String owner = resolution.owner("brad.crypto");
+            assertEquals(owner, "0x020e7c546b1567ffc7f6202ca5f748533523dadc");
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void ownerFailTest() {
+        try {
+            resolution.owner("unregistered.crypto");
+        }catch(NamingServiceException e) {
+            assertEquals(e.getCode(), NSExceptionCode.UnregisteredDomain);
+        }
+    }
+
+    @Test
     public void noIpfsHash() {
         try {
             resolution.ipfsHash("unregistered.crypto");

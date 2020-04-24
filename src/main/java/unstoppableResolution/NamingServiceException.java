@@ -15,20 +15,26 @@ public class NamingServiceException extends Exception {
 
   public String getMessage() { return this.detailMessage; }
 
-  private static String messageFromCode(NSExceptionCode code, String domain) {
-    if (domain == null) domain = "Domain";
+  private static String messageFromCode(NSExceptionCode code, String domainOrMessage) {
+    if (domainOrMessage == null) domainOrMessage = "Domain";
     switch(code) {
       case UnsupportedDomain: {
-        return domain + " is unsupported";
+        return domainOrMessage + " is unsupported";
       }
       case UnregisteredDomain: {
-        return domain + " is not registered";
+        return domainOrMessage + " is not registered";
       }
       case UnknownCurrency: {
-        return domain + " doesn't have such currency configured";
+        return domainOrMessage + " doesn't have such currency configured";
       }
       case RecordNotFound: {
-        return domain + " doesn't have such record";
+        return domainOrMessage + " doesn't have such record";
+      }
+      case BlockchainIsDown: {
+        return domainOrMessage + " blockchain network is down";
+      }
+      case UnknownError: {
+        return "Something went wrong with \n" + domainOrMessage;
       }
       default: 
         return "";

@@ -2,6 +2,7 @@
 package unstoppableResolution;
 
 import java.math.BigInteger;
+import java.net.UnknownHostException;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -49,8 +50,12 @@ public class CNS extends NamingService {
       if (this.isNull(owner))
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, domain);
       return owner;
+    } catch (NamingServiceException e) {
+      throw e;
+    } catch (UnknownHostException e) {
+      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, "CNS");
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, domain);
+      throw new NamingServiceException(NSExceptionCode.UnknownError, e.getStackTrace().toString());
     }
   }
 
@@ -58,6 +63,8 @@ public class CNS extends NamingService {
     try {
       BigInteger tokenID = this.tokenID(domain);
       return this.resolverAddress(tokenID);
+    } catch (UnknownHostException e) {
+      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, "CNS");
     } catch (Exception e) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, domain);
     }
@@ -67,6 +74,8 @@ public class CNS extends NamingService {
     try {
       BigInteger tokenID = this.tokenID(domain);
       return resolveKey(key, tokenID);
+    } catch (UnknownHostException e) {
+      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, "CNS");
     } catch (Exception e) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, domain);
     }
