@@ -24,3 +24,6 @@ hs_err_pid*
 
 
 .vscode
+.DS_store
+.gradle/*
+.gradle
