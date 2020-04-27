@@ -1,4 +1,4 @@
-package unstoppableResolution;
+package com.unstoppabledomains.resolution;
 
 abstract class Utilities {
   String name;

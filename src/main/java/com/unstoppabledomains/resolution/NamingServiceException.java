@@ -1,4 +1,4 @@
-package unstoppableResolution;
+package com.unstoppabledomains.resolution;
 
 public class NamingServiceException extends Exception {
 

@@ -1,4 +1,4 @@
-package unstoppableResolution.contracts.generated;
+package com.unstoppabledomains.resolution.contracts.generated;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;

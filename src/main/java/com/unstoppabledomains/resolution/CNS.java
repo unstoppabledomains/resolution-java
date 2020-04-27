@@ -1,5 +1,5 @@
 
-package unstoppableResolution;
+package com.unstoppabledomains.resolution;
 
 import java.math.BigInteger;
 import java.net.UnknownHostException;
@@ -7,8 +7,8 @@ import java.net.UnknownHostException;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.DefaultGasProvider;
 
-import unstoppableResolution.contracts.generated.Cryptoregistry;
-import unstoppableResolution.contracts.generated.Cryptoresolver;
+import com.unstoppabledomains.resolution.contracts.generated.Cryptoregistry;
+import com.unstoppabledomains.resolution.contracts.generated.Cryptoresolver;
 
 public class CNS extends NamingService {
   final static String registryAddress = "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe";

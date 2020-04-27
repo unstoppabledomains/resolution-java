@@ -1,4 +1,4 @@
-package unstoppableResolution;
+package com.unstoppabledomains.resolution;
 
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.TransactionManager;
