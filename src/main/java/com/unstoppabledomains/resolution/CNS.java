@@ -5,8 +5,12 @@ import java.math.BigInteger;
 import java.net.UnknownHostException;
 
 import org.web3j.protocol.Web3j;
+import org.web3j.tx.exceptions.ContractCallException;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NSExceptionParams;
+import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.generated.Cryptoregistry;
 import com.unstoppabledomains.resolution.contracts.generated.Cryptoresolver;
 
@@ -25,37 +29,39 @@ public class CNS extends NamingService {
   }
 
   public String addr(String domain, String ticker) throws NamingServiceException {
-    this.owner(domain); // If owner is not found NSExceptionCode.UnregisteredDomain is raised
+    String owner = this.owner(domain);
+    if (this.isNull(owner))
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
+          new NSExceptionParams(domain, ticker, "CNS"));
     String key = "crypto." + ticker.toUpperCase() + ".address";
     String address = this.resolveKey(key, domain);
     if (this.isNull(address))
-      throw new NamingServiceException(NSExceptionCode.UnknownCurrency, domain);
+      throw new NamingServiceException(NSExceptionCode.UnknownCurrency, new NSExceptionParams(domain, ticker, "CNS"));
     return address;
   }
 
   public String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
-    return this.resolveKey(key, domain);
+    String hash = this.resolveKey(key, domain);
+    if (isNull(hash)) throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams(domain));
+    return hash;
+    
   }
 
   public String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
-    return this.resolveKey(key, domain);
+    String email = this.resolveKey(key, domain);
+    if (isNull(email)) throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams(domain));
+    return email;
   }
 
   public String owner(String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = this.tokenID(domain);
       String owner = this.owner(tokenID);
-      if (this.isNull(owner))
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, domain);
       return owner;
-    } catch (NamingServiceException e) {
-      throw e;
-    } catch (UnknownHostException e) {
-      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, "CNS");
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnknownError, e.getStackTrace().toString());
+      throw this.configureNamingServiceException(e, new NSExceptionParams(domain, null, "CNS"));
     }
   }
 
@@ -63,10 +69,8 @@ public class CNS extends NamingService {
     try {
       BigInteger tokenID = this.tokenID(domain);
       return this.resolverAddress(tokenID);
-    } catch (UnknownHostException e) {
-      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, "CNS");
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, domain);
+      throw this.configureNamingServiceException(e, new NSExceptionParams(domain, null, "CNS"));
     }
   }
 
@@ -74,11 +78,19 @@ public class CNS extends NamingService {
     try {
       BigInteger tokenID = this.tokenID(domain);
       return resolveKey(key, tokenID);
-    } catch (UnknownHostException e) {
-      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, "CNS");
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.RecordNotFound, domain);
+      throw configureNamingServiceException(e, new NSExceptionParams(domain, null, "CNS"));
     }
+  }
+
+  private NamingServiceException configureNamingServiceException(Exception e, NSExceptionParams params) {
+    e.printStackTrace();
+    if (e instanceof UnknownHostException) {
+      return new NamingServiceException(NSExceptionCode.BlockchainIsDown, params, e);
+    } else if (e instanceof ContractCallException) {
+      return new NamingServiceException(NSExceptionCode.RecordNotFound, params, e);
+    }
+    return new NamingServiceException(NSExceptionCode.UnknownError, params, e);
   }
 
   private String resolveKey(String key, BigInteger tokenID) throws Exception {

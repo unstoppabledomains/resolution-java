@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.exceptions;
 
 public enum NSExceptionCode {
   UnsupportedDomain,

@@ -3,6 +3,10 @@
  */
 package com.unstoppabledomains.resolution;
 
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NSExceptionParams;
+import com.unstoppabledomains.exceptions.NamingServiceException;
+
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
@@ -59,7 +63,7 @@ public class Resolution {
         for (NamingService service : this.services) {
             if (service.isSupported(domain)) return service;
         }
-        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, domain);
+        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams(domain));
     }
 
     private NamingService[] buildServices(Web3j web3, Boolean verbose) {

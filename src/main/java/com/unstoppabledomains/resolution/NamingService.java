@@ -4,6 +4,8 @@ import org.web3j.protocol.Web3j;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.ClientTransactionManager;
 
+import com.unstoppabledomains.exceptions.NamingServiceException;
+
 import org.web3j.ens.NameHash;
 
 abstract class NamingService extends Utilities {

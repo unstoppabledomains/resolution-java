@@ -5,6 +5,10 @@ package com.unstoppabledomains.resolution;
  */
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NamingServiceException;
+
 import org.junit.jupiter.api.BeforeEach;
 
 public class LibraryTest {
