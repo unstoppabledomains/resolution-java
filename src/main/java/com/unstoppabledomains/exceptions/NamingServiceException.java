@@ -4,19 +4,17 @@ public class NamingServiceException extends Exception {
   private static final long serialVersionUID = 1L;
   private NSExceptionCode code;
   private NSExceptionParams params;
-  private Throwable cause;
+  
 
   public NamingServiceException(NSExceptionCode code, NSExceptionParams params, Throwable cause) {
     super(messageFromCode(code, params), cause);
     this.code = code;
     this.params = params;
-    this.cause = cause;
   }
   public NamingServiceException(NSExceptionCode code, NSExceptionParams params) {
     super(messageFromCode(code, params));
     this.code = code;
     this.params = params;
-    this.cause = null;
   }
   public NSExceptionCode getCode() { return this.code; }
   public String getMessage() { return messageFromCode(this.code, this.params); }
@@ -37,6 +35,9 @@ public class NamingServiceException extends Exception {
       }
       case BlockchainIsDown: {
         return params.namingService + " blockchain network is down";
+      }
+      case IncorrectContractAddress: {
+        return "used incorrect contract Address " + params.contractAddress;
       }
       case UnknownError:
       default: 

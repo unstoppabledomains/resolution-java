@@ -63,7 +63,7 @@ public class Resolution {
         for (NamingService service : this.services) {
             if (service.isSupported(domain)) return service;
         }
-        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams(domain));
+        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
     }
 
     private NamingService[] buildServices(Web3j web3, Boolean verbose) {

@@ -6,5 +6,7 @@ public enum NSExceptionCode {
   UnknownCurrency,
   RecordNotFound,
   BlockchainIsDown,
-  UnknownError;
+  UnknownError,
+  IncorrectContractAddress,
+  IncorrectMethodName;
 }
