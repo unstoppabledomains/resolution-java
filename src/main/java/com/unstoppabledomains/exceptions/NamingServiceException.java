@@ -3,21 +3,17 @@ package com.unstoppabledomains.exceptions;
 public class NamingServiceException extends Exception {
   private static final long serialVersionUID = 1L;
   private NSExceptionCode code;
-  private NSExceptionParams params;
   
 
   public NamingServiceException(NSExceptionCode code, NSExceptionParams params, Throwable cause) {
     super(messageFromCode(code, params), cause);
     this.code = code;
-    this.params = params;
   }
   public NamingServiceException(NSExceptionCode code, NSExceptionParams params) {
     super(messageFromCode(code, params));
     this.code = code;
-    this.params = params;
   }
   public NSExceptionCode getCode() { return this.code; }
-  public String getMessage() { return messageFromCode(this.code, this.params); }
 
   private static String messageFromCode(NSExceptionCode code, NSExceptionParams params) {
     switch(code) {
