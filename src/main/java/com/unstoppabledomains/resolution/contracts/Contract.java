@@ -11,6 +11,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.web3j.utils.Numeric;
+import org.ethereum.crypto.cryptohash.Keccak256;
 
 public class Contract {
   protected String address;
@@ -38,10 +40,21 @@ public class Contract {
 
   public Object fetchMethod(String method, String[] args) {
     JSONObject methodDescription = this.getMethodDescription(method, args.length);
-    System.out.println(methodDescription);
+    String functionSignature = this.getMethodSignature(methodDescription);
+    System.out.println(functionSignature);
+    System.out.println(this.encodeSignature(functionSignature));
+    // next step is to encode input arguments according to their types and send the call to etherium provider.
     return "";
   }
 
+
+  private String encodeSignature(String signature) {
+    Keccak256 digest =  new Keccak256();
+    digest.update(signature.getBytes());
+    byte[] hash = digest.digest();
+    // todo See if we can find a different library to do the conversion
+    return Numeric.toHexString(hash).substring(0, 10);
+  }
 
   private JSONObject getMethodDescription(String method, int argLen) {
     JSONObject methodDescription = null;
@@ -54,5 +67,33 @@ public class Contract {
       }
     }
     return methodDescription;
+  }
+
+  private String[] getMethodInputTypes(JSONArray inputs) {
+    String[] inputTypes = new String[inputs.size()];
+    for (int i = 0; i < inputs.size(); i++) {
+      JSONObject inputDescription = (JSONObject) inputs.get(i);
+      inputTypes[i] = (String) inputDescription.get("type");
+    }
+    return inputTypes;
+  }
+
+  private String getMethodSignature(JSONObject methodDescription) {
+    String[] inputTypes = this.getMethodInputTypes((JSONArray) methodDescription.get("inputs"));
+    String methodName = (String) methodDescription.get("name");
+    return this.getMethodSignature(methodName, inputTypes);
+  }
+
+  private String getMethodSignature(String methodName, String[] types) {
+    String methodSignature = methodName + '(';
+    for (int i = 0; i < types.length; i++) {
+      if (i == 0) {
+        methodSignature = methodSignature + types[i];
+        continue;
+      }
+      methodSignature = methodSignature + ',' + types[i];
+    }
+    methodSignature = methodSignature + ')';
+    return methodSignature;
   }
 }
