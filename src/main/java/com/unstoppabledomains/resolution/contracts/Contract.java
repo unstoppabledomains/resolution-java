@@ -1,17 +1,10 @@
 package com.unstoppabledomains.resolution.contracts;
 
 import java.io.FileReader;
-import java.io.IOException;
-
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.web3j.utils.Numeric;
 import org.ethereum.crypto.cryptohash.Keccak256;
 
 public class Contract {
@@ -48,7 +41,16 @@ public class Contract {
     digest.update(signature.getBytes());
     byte[] hash = digest.digest();
     // todo See if we can find a different library to do the conversion
-    return Numeric.toHexString(hash).substring(0, 10);
+    return this.toHexString(hash).substring(0, 10);
+  }
+
+  private String toHexString(byte[] input) {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("0x");
+    for (int i = 0; i <  input.length; i++) {
+        stringBuilder.append(String.format("%02x", input[i] & 0xFF));
+    }
+    return stringBuilder.toString();
   }
 
   private JSONObject getMethodDescription(String method, int argLen) {
