@@ -5,7 +5,7 @@ import com.unstoppabledomains.resolution.contracts.Contract;
 
 public class Resolver extends Contract {
 
-  public Resolver(String address) throws NamingServiceException {
+  public Resolver(String address) throws Exception {
     super(address, "resolver", "abi/cns");
   }
 }

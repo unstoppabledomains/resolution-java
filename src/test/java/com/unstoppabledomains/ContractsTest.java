@@ -15,7 +15,7 @@ public class ContractsTest {
   public void initContracts() {
     try {
       registryContract = new Registry("0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe");
-    } catch (NamingServiceException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

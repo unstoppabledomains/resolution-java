@@ -5,7 +5,7 @@ import com.unstoppabledomains.resolution.contracts.Contract;
 
 public class Registry extends Contract {
 
-  public Registry(String address) throws NamingServiceException {
+  public Registry(String address) throws Exception {
     super(address, "registry", "abi/cns");
   }
 

@@ -19,21 +19,16 @@ public class Contract {
   protected String type;
   protected JSONArray abi;
 
-  public Contract(String address, String type, String pathToAbi) throws NamingServiceException {
-    JSONParser parser = new JSONParser();
-    try {
-      String jsonAbiPath = type.equals("registry") 
-        ? pathToAbi + "/registry.json"
-        : pathToAbi + "/`resolver.json";
-      System.out.println(jsonAbiPath);
-      JSONArray parsed = (JSONArray) parser.parse(new FileReader(jsonAbiPath));
-      this.abi = parsed;
-    } catch (IOException | ParseException e) {
-      throw new NamingServiceException(NSExceptionCode.UnknownError, null, e);
-    }
+  public Contract(String address, String type, String pathToAbi) throws Exception {
     if (address == null || address.isEmpty())
-      throw new NamingServiceException(NSExceptionCode.IncorrectContractAddress,
-          new NSExceptionParams("a", address));
+      throw new Exception("Wrong address input: " + address);
+    JSONParser parser = new JSONParser();
+    String jsonAbiPath = type.equals("registry") 
+      ? pathToAbi + "/registry.json"
+      : pathToAbi + "/`resolver.json";
+    System.out.println(jsonAbiPath);
+    JSONArray parsed = (JSONArray) parser.parse(new FileReader(jsonAbiPath));
+    this.abi = parsed;
     this.address = address;
     this.type = type;
   }
