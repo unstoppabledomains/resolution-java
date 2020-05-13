@@ -1,47 +1,56 @@
 package com.unstoppabledomains.resolution.contracts;
 
 import java.io.FileReader;
+import java.nio.ByteBuffer;
+import java.text.ParseException;
+import java.util.Arrays;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.esaulpaugh.headlong.abi.Function;
+import com.esaulpaugh.headlong.abi.Tuple;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.ethereum.crypto.cryptohash.Keccak256;
 
-public class Contract {
+public class Contract extends HTTPUtil {
   protected String address;
   protected String type;
-  protected JSONArray abi;
+  protected String url;
+  protected JsonArray abi;
 
-  public Contract(String address, String type, String pathToAbi) throws Exception {
+  public Contract(String url, String address, String type, String pathToAbi) throws Exception {
     if (address == null || address.isEmpty())
       throw new Exception("Wrong address input: " + address);
-    JSONParser parser = new JSONParser();
-    String jsonAbiPath = type.equals("registry") 
-      ? pathToAbi + "/registry.json"
-      : pathToAbi + "/`resolver.json";
+    JsonParser parser = new JsonParser();
+    String jsonAbiPath = type.equals("registry") ? pathToAbi + "/registry.json" : pathToAbi + "/`resolver.json";
     System.out.println(jsonAbiPath);
-    JSONArray parsed = (JSONArray) parser.parse(new FileReader(jsonAbiPath));
+    JsonArray parsed = (JsonArray) parser.parse(new FileReader(jsonAbiPath));
+    this.url = url;
     this.abi = parsed;
     this.address = address;
     this.type = type;
   }
 
-  public Object fetchMethod(String method, String[] args) {
-    JSONObject methodDescription = this.getMethodDescription(method, args.length);
-    String functionSignature = this.getMethodSignature(methodDescription);
-    System.out.println(functionSignature);
-    System.out.println(this.encodeSignature(functionSignature));
+  public Object fetchMethod(String method, Object[] args) {
+    JsonObject methodDescription = this.getMethodDescription(method, args.length);
+    try {
+      Function f = Function.fromJson(methodDescription.toString());
+      ByteBuffer encoded = f.encodeCallWithArgs(args);
+      String data = this.toHexString(encoded.array());
+      byte[] response = this.post(this.url, this.address, data);
+      // String resultEncoded = response.get("result").getAsString();
+      // System.out.println(resultEncoded);
+      // System.out.println("bytes = " + resultEncoded.getBytes());
+      Tuple answer = f.decodeReturn(response);
+      System.out.println( answer.toString());
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     // next step is to encode input arguments according to their types and send the call to etherium provider.
     return "";
-  }
-
-
-  private String encodeSignature(String signature) {
-    Keccak256 digest =  new Keccak256();
-    digest.update(signature.getBytes());
-    byte[] hash = digest.digest();
-    // todo See if we can find a different library to do the conversion
-    return this.toHexString(hash).substring(0, 10);
   }
 
   private String toHexString(byte[] input) {
@@ -53,44 +62,18 @@ public class Contract {
     return stringBuilder.toString();
   }
 
-  private JSONObject getMethodDescription(String method, int argLen) {
-    JSONObject methodDescription = null;
+  private JsonObject getMethodDescription(String method, int argLen) {
+    JsonObject methodDescription = null;
     for (int i = 0; i < this.abi.size(); i++) {
-      JSONObject m = (JSONObject) this.abi.get(i);
-      JSONArray inputs = (JSONArray) m.get("inputs");
-      if (m.get("name").equals(method) && inputs.size() == argLen) {
+      JsonObject m = (JsonObject) this.abi.get(i);
+      JsonArray inputs = (JsonArray) m.get("inputs");
+      String name = m.get("name").getAsString();
+      if (name.equals(method) && inputs.size() == argLen) {
+        System.out.println("catched method = " + m.toString());
         methodDescription = m;
         break ;
       }
     }
     return methodDescription;
-  }
-
-  private String[] getMethodInputTypes(JSONArray inputs) {
-    String[] inputTypes = new String[inputs.size()];
-    for (int i = 0; i < inputs.size(); i++) {
-      JSONObject inputDescription = (JSONObject) inputs.get(i);
-      inputTypes[i] = (String) inputDescription.get("type");
-    }
-    return inputTypes;
-  }
-
-  private String getMethodSignature(JSONObject methodDescription) {
-    String[] inputTypes = this.getMethodInputTypes((JSONArray) methodDescription.get("inputs"));
-    String methodName = (String) methodDescription.get("name");
-    return this.getMethodSignature(methodName, inputTypes);
-  }
-
-  private String getMethodSignature(String methodName, String[] types) {
-    String methodSignature = methodName + '(';
-    for (int i = 0; i < types.length; i++) {
-      if (i == 0) {
-        methodSignature = methodSignature + types[i];
-        continue;
-      }
-      methodSignature = methodSignature + ',' + types[i];
-    }
-    methodSignature = methodSignature + ')';
-    return methodSignature;
   }
 }

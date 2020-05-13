@@ -30,6 +30,7 @@ dependencies {
     implementation "com.google.guava:guava:28.0-jre"
     implementation "org.ethereum:ethereumj-core:1.9.+"
     implementation "org.web3j:core:4.5.0"
+    implementation 'com.esaulpaugh:headlong:1.4.8'
     compile "com.googlecode.json-simple:json-simple:1.1.1"
 
     // Use JUnit test framework
