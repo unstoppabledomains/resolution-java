@@ -4,23 +4,24 @@ package com.unstoppabledomains.resolution;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 
-import org.web3j.protocol.Web3j;
+
 import org.web3j.tx.exceptions.ContractCallException;
-import org.web3j.tx.gas.DefaultGasProvider;
 
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
-import com.unstoppabledomains.resolution.contracts.generated.Cryptoregistry;
-import com.unstoppabledomains.resolution.contracts.generated.Cryptoresolver;
+import com.unstoppabledomains.resolution.contracts.cns.Registry;
+import com.unstoppabledomains.resolution.contracts.cns.Resolver;
 
 public class CNS extends NamingService {
   final static String registryAddress = "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe";
-  Cryptoregistry registryContract;
+  final private Registry registryContract;
+  final private String provider;
 
-  public CNS(Web3j web3, Boolean verbose) {
-    super("CNS", web3, verbose);
-    this.registryContract = this.buildRegistry();
+  public CNS(String blockchainProviderUrl, Boolean verbose) {
+    super("CNS", verbose);
+    this.provider = blockchainProviderUrl;
+    this.registryContract = new Registry(this.provider, registryAddress);
   }
 
   public Boolean isSupported(String domain) {
@@ -92,6 +93,9 @@ public class CNS extends NamingService {
   }
 
   private NamingServiceException configureNamingServiceException(Exception e, NSExceptionParams params) {
+    if (e instanceof NamingServiceException) {
+      return new NamingServiceException(((NamingServiceException) e).getCode(), params);
+    }
     if (e instanceof UnknownHostException) {
       return new NamingServiceException(NSExceptionCode.BlockchainIsDown, params, e);
     } else if (e instanceof ContractCallException) {
@@ -101,28 +105,21 @@ public class CNS extends NamingService {
   }
 
   private String resolveKey(String key, BigInteger tokenID) throws Exception {
-    Cryptoresolver resolverContract = this.loadResolver(this.resolverAddress(tokenID));
-    return resolverContract.get(key, tokenID).send();
+    String resolverAddress = this.resolverAddress(tokenID);
+    Resolver resolverContract = new Resolver(this.provider, resolverAddress);
+    return resolverContract.getRecord(key, tokenID);
   }
 
   private String resolverAddress(BigInteger tokenID) throws Exception {
-    return this.registryContract.resolverOf(tokenID).send();
+    return this.registryContract.getResolver(tokenID);
   }
 
   private String owner(BigInteger tokenID) throws Exception {
-    return this.registryContract.ownerOf(tokenID).send();
+    return this.registryContract.getOwner(tokenID);
   }
 
   private BigInteger tokenID(String domain) {
     String hash = this.namehash(domain);
     return new BigInteger(hash.substring(2), 16);
-  }
-
-  private Cryptoregistry buildRegistry() {
-    return Cryptoregistry.load(CNS.registryAddress, CNS.web3, CNS.transactionManager, new DefaultGasProvider());
-  }
-
-  private Cryptoresolver loadResolver(String address) {
-    return Cryptoresolver.load(address, CNS.web3, CNS.transactionManager, new DefaultGasProvider());
   }
 }

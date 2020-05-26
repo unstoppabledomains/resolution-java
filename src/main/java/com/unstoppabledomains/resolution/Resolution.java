@@ -7,31 +7,13 @@ import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
-
 public class Resolution {
    private NamingService[] services;
-   private Web3j web3;
+   private String providerUrl;
 
-    public Resolution(Web3j web3) {
-        this.web3 = web3;
-        this.services = this.buildServices(this.web3, false);
-    }
-
-    public Resolution(String provider) {
-        this.web3 = Web3j.build(new HttpService(provider));
-        this.services = this.buildServices(this.web3, false);
-    }
-
-    public Resolution(Web3j web3, Boolean verbose) {
-        this.web3 = web3;
-        this.services = this.buildServices(this.web3, verbose);
-    }
-
-    public Resolution(String provider, Boolean verbose) {
-        this.web3 = Web3j.build(new HttpService(provider));
-        this.services = this.buildServices(this.web3, verbose);
+    public Resolution(String blockchainProviderUrl) {
+        this.providerUrl = blockchainProviderUrl;
+        this.services = this.buildServices(providerUrl, false);
     }
 
     public String addr(String domain, String ticker) throws NamingServiceException {
@@ -66,9 +48,9 @@ public class Resolution {
         throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
     }
 
-    private NamingService[] buildServices(Web3j web3, Boolean verbose) {
+    private NamingService[] buildServices(String providerUrl, Boolean verbose) {
         NamingService[] services = new NamingService[1];
-        services[0] = new CNS(web3, verbose);
+        services[0] = new CNS(providerUrl, verbose);
         return services;
     }
 }

@@ -12,8 +12,6 @@ public class NSExceptionParams {
   public NSExceptionParams(String format, String ...args) {
     String[] options = format.split("|");
     int index = 0;
-    System.out.println(Arrays.toString(options));
-    System.out.println(Arrays.toString(args));
     for (String option: options) {
       if (option.equals("|")) continue;
       parseOption(option, args[index++]);

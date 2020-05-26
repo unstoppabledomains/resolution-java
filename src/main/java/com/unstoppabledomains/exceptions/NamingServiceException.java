@@ -4,6 +4,10 @@ public class NamingServiceException extends Exception {
   private static final long serialVersionUID = 1L;
   private NSExceptionCode code;
   
+  public NamingServiceException(NSExceptionCode code) {
+    super(messageFromCode(code, new NSExceptionParams("", "")));
+    this.code = code;
+  }
 
   public NamingServiceException(NSExceptionCode code, NSExceptionParams params, Throwable cause) {
     super(messageFromCode(code, params), cause);
@@ -34,6 +38,9 @@ public class NamingServiceException extends Exception {
       }
       case IncorrectContractAddress: {
         return "used incorrect contract Address " + params.contractAddress;
+      }
+      case UnspecifiedResolver: {
+        return "resolver was not set for " + params.domain;
       }
       case UnknownError:
       default: 

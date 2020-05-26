@@ -12,12 +12,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class HTTPUtil {
-    protected byte[] post(String url, String address, String data) throws IOException {
+    protected JsonObject post(String url, String address, String data) throws IOException {
         HttpURLConnection con = this.createAndConfigureCon(url);
         // Send 
         try (OutputStream os = con.getOutputStream()) {
             String body = this.prepareBody(data, address);
-            System.out.println("body from prepareBody = " + body);
             byte[] input = body.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
@@ -28,12 +27,11 @@ public class HTTPUtil {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            return response.toString().getBytes();
+            return (JsonObject) new JsonParser().parse(response.toString());
         }
     }
 
     protected HttpURLConnection createAndConfigureCon(String url) throws IOException {
-        System.out.println(url);
         URL posturl = new URL(url);
         HttpURLConnection con = (HttpURLConnection) posturl.openConnection();
         con.setRequestMethod("POST");

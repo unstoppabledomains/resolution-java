@@ -31,8 +31,7 @@ dependencies {
     implementation "org.ethereum:ethereumj-core:1.9.+"
     implementation "org.web3j:core:4.5.0"
     implementation 'com.esaulpaugh:headlong:1.4.8'
-    compile "com.googlecode.json-simple:json-simple:1.1.1"
-
+    implementation 'com.google.code.gson:gson:2.8.5'
     // Use JUnit test framework
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")

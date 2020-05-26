@@ -1,21 +1,12 @@
 package com.unstoppabledomains.resolution;
 
-import org.web3j.protocol.Web3j;
-import org.web3j.tx.TransactionManager;
-import org.web3j.tx.ClientTransactionManager;
-
 import com.unstoppabledomains.exceptions.NamingServiceException;
-
 import org.web3j.ens.NameHash;
 
 abstract class NamingService extends Utilities {
-    public static Web3j web3;
-    public static TransactionManager transactionManager;
 
-    public NamingService(String name, Web3j web3, Boolean verbose) {
+    public NamingService(String name, Boolean verbose) {
         super(name, verbose);
-        NamingService.web3 = web3;
-        NamingService.transactionManager = new ClientTransactionManager(web3, null);
     }
     abstract Boolean isSupported(String domain);
     abstract String addr(String domain, String ticker) throws NamingServiceException;

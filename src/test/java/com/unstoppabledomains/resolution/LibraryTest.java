@@ -5,6 +5,7 @@ package com.unstoppabledomains.resolution;
  */
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NamingServiceException;
@@ -16,14 +17,14 @@ public class LibraryTest {
 
     @BeforeEach
     public void initEach() {
-        resolution = new Resolution("https://mainnet.infura.io/v3/781c1e5cae32417b93eac26042950d25", true);
+        resolution = new Resolution("https://mainnet.infura.io/v3/781c1e5cae32417b93eac26042950d25");
     }
 
     @Test
     public void namehash() {
         try {
             final String hash = resolution.namehash("crypto");
-            assertEquals(hash,"0x0f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f");
+            assertEquals("0x0f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f", hash);
         } catch (final NamingServiceException e) {
             e.printStackTrace();
         }
@@ -33,7 +34,7 @@ public class LibraryTest {
     public void namehash2() {
         try {
             final String hash = resolution.namehash("brad.crypto");
-            assertEquals(hash, "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9");
+            assertEquals("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9", hash);
         } catch (final NamingServiceException e) {
             e.printStackTrace();
         }
@@ -44,17 +45,18 @@ public class LibraryTest {
         try {
             resolution.namehash("unsupported");
         } catch (final NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.UnsupportedDomain);
+            assertEquals(NSExceptionCode.UnsupportedDomain, e.getCode());
         }
     }
 
     @Test
     public void addr() {
         try {
-            String address = resolution.addr("brad.crypto", "eth");
-            assertEquals(address, "0x45b31e01AA6f42F0549aD482BE81635ED3149abb");
+            String address = resolution.addr("homecakes.crypto", "eth");
+            assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", address);
         } catch(Exception e) {
             e.printStackTrace();
+            assertTrue(false);
         }
     }
 
@@ -63,7 +65,7 @@ public class LibraryTest {
         try {
             resolution.addr("unregistered.crypto", "eth");
         } catch(NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.UnregisteredDomain);
+            assertEquals(NSExceptionCode.UnregisteredDomain, e.getCode());
         }
     }
 
@@ -72,7 +74,7 @@ public class LibraryTest {
         try {
             resolution.addr("brad.crypto", "unknown");
         } catch(NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.UnknownCurrency);
+            assertEquals(NSExceptionCode.UnknownCurrency, e.getCode());
         }
     }
 
@@ -81,7 +83,7 @@ public class LibraryTest {
         try {
             resolution.addr("brad.crypto", "dodge");
         } catch(NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.UnknownCurrency);
+            assertEquals(NSExceptionCode.UnknownCurrency, e.getCode());
         }
     }
 
@@ -89,9 +91,10 @@ public class LibraryTest {
     public void ipfsHash() {
         try {
             String ipfsHash = resolution.ipfsHash("brad.crypto");
-            assertEquals(ipfsHash, "QmVJ26hBrwwNAPVmLavEFXDUunNDXeFSeMPmHuPxKe6dJv");
+            assertEquals("QmRsDVRwtdhhgznt3VZerdqcJwdQCQv9axZcy3F5hXh5P5", ipfsHash);
         } catch(Exception e) {
             e.printStackTrace();
+            assertTrue(false);
         }
     }
 
@@ -99,9 +102,10 @@ public class LibraryTest {
     public void ownerTest() {
         try {
             String owner = resolution.owner("brad.crypto");
-            assertEquals(owner, "0x020e7c546b1567ffc7f6202ca5f748533523dadc");
+            assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
         } catch(Exception e) {
             e.printStackTrace();
+            assertTrue(false);
         }
     }
 
@@ -110,7 +114,7 @@ public class LibraryTest {
         try {
             resolution.owner("unregistered.crypto");
         }catch(NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.UnregisteredDomain);
+            assertEquals(NSExceptionCode.UnregisteredDomain, e.getCode());
         }
     }
 
@@ -119,7 +123,7 @@ public class LibraryTest {
         try {
             resolution.ipfsHash("unregistered.crypto");
         } catch(NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.RecordNotFound);
+            assertEquals(NSExceptionCode.UnspecifiedResolver, e.getCode());
         }
     }
 
@@ -128,7 +132,7 @@ public class LibraryTest {
         try {
             resolution.email("brad.crypto");
         } catch(NamingServiceException e) {
-            assertEquals(e.getCode(), NSExceptionCode.RecordNotFound);
+            assertEquals(NSExceptionCode.RecordNotFound, e.getCode());
         }
     }
 
