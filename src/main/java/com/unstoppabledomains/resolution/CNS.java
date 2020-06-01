@@ -5,8 +5,7 @@ import java.math.BigInteger;
 import java.net.UnknownHostException;
 
 
-import org.web3j.tx.exceptions.ContractCallException;
-
+import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;

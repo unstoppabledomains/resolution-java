@@ -1,7 +1,6 @@
 package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.exceptions.NamingServiceException;
-import org.web3j.ens.NameHash;
 
 abstract class NamingService {
     abstract Boolean isSupported(String domain);
