@@ -1,5 +1,9 @@
 package com.unstoppabledomains.resolution;
 
+/** This file was taken from Web3j and adapted accordingly
+ *  https://github.com/web3j/web3j/blob/master/core/src/main/java/org/web3j/ens/NameHash.java
+ */
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.net.IDN;

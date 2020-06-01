@@ -1,5 +1,8 @@
 package com.unstoppabledomains.resolution.artifacts;
 
+/** This code was taken from Web3j and adapted accordingly 
+ * https://github.com/web3j/web3j/blob/5877c308e11c0de8e24e50c882effa84354a8e57/utils/src/main/java/org/web3j/crypto/Hash.java#L29
+*/
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
