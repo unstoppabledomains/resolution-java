@@ -3,6 +3,7 @@ package com.unstoppabledomains.resolution.contracts;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.text.ParseException;
 
@@ -48,6 +49,20 @@ public class Contract {
     if (answer.equals("")) return new Tuple();
     Tuple answ = f.decodeReturn(FastHex.decode(answer));
     return answ;
+  }
+
+  protected String fetchOne(String method, Object[] args, Boolean isAddress) throws ParseException, IOException {
+    Tuple answ = this.fetchMethod(method, args);
+    if (isAddress) {
+      try {
+        BigInteger number = new BigInteger(answ.get(0).toString());
+        return "0x" + number.toString(16);
+      } catch (ArrayIndexOutOfBoundsException e) {
+        return null;
+      }
+    } else {
+      return answ.get(0).toString();
+    }
   }
 
   protected String toHexString(byte[] input) {

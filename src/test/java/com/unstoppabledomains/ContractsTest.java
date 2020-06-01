@@ -32,7 +32,7 @@ public class ContractsTest {
     try {
       BigInteger tokenID = new BigInteger("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9".replace("0x", ""), 16);
       resolver = registryContract.getResolver(tokenID);
-      assertEquals("b66dce2da6afaaa98f2013446dbcb0f4b0ab2842", resolver, "resolver Address without 0x");
+      assertEquals("0xb66dce2da6afaaa98f2013446dbcb0f4b0ab2842", resolver, "resolver Address");
     } catch (Exception e) {
       // shoudn't throw anything
       e.printStackTrace();
