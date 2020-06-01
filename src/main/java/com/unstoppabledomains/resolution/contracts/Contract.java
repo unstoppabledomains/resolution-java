@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-public class Contract extends HTTPUtil {
+public class Contract {
   protected String address;
   protected String type;
   protected String url;
@@ -43,7 +43,7 @@ public class Contract extends HTTPUtil {
     Function f = Function.fromJson(methodDescription.toString());
     ByteBuffer encoded = f.encodeCallWithArgs(args);
     String data = this.toHexString(encoded.array());
-    JsonObject response = this.post(this.url, this.address, data);
+    JsonObject response = HTTPUtil.post(this.url, this.address, data);
     String answer = response.get("result").getAsString().replace("0x", "");
     if (answer.equals("")) return new Tuple();
     Tuple answ = f.decodeReturn(FastHex.decode(answer));

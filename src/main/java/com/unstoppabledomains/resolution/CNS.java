@@ -18,8 +18,7 @@ public class CNS extends NamingService {
   final private Registry registryContract;
   final private String provider;
 
-  public CNS(String blockchainProviderUrl, Boolean verbose) {
-    super("CNS", verbose);
+  public CNS(String blockchainProviderUrl) {
     this.provider = blockchainProviderUrl;
     this.registryContract = new Registry(this.provider, registryAddress);
   }
@@ -31,12 +30,12 @@ public class CNS extends NamingService {
 
   public String addr(String domain, String ticker) throws NamingServiceException {
     String owner = this.owner(domain);
-    if (this.isNull(owner))
+    if (Utilities.isNull(owner))
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     String key = "crypto." + ticker.toUpperCase() + ".address";
     String address = this.resolveKey(key, domain);
-    if (this.isNull(address))
+    if (Utilities.isNull(address))
       throw new NamingServiceException(NSExceptionCode.UnknownCurrency,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     return address;
@@ -45,7 +44,7 @@ public class CNS extends NamingService {
   public String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
     String hash = this.resolveKey(key, domain);
-    if (isNull(hash))
+    if (Utilities.isNull(hash))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
           new NSExceptionParams("d", domain));
     return hash;
@@ -55,7 +54,7 @@ public class CNS extends NamingService {
   public String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
     String email = this.resolveKey(key, domain);
-    if (isNull(email))
+    if (Utilities.isNull(email))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
           new NSExceptionParams("d", domain));
     return email;

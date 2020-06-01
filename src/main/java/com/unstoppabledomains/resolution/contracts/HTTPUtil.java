@@ -12,11 +12,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class HTTPUtil {
-    protected JsonObject post(String url, String address, String data) throws IOException {
-        HttpURLConnection con = this.createAndConfigureCon(url);
+    static JsonObject post(String url, String address, String data) throws IOException {
+        HttpURLConnection con = HTTPUtil.createAndConfigureCon(url);
         // Send 
         try (OutputStream os = con.getOutputStream()) {
-            String body = this.prepareBody(data, address);
+            String body = HTTPUtil.prepareBody(data, address);
             byte[] input = body.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
@@ -31,7 +31,7 @@ public class HTTPUtil {
         }
     }
 
-    protected HttpURLConnection createAndConfigureCon(String url) throws IOException {
+    static HttpURLConnection createAndConfigureCon(String url) throws IOException {
         URL posturl = new URL(url);
         HttpURLConnection con = (HttpURLConnection) posturl.openConnection();
         con.setRequestMethod("POST");
@@ -41,8 +41,8 @@ public class HTTPUtil {
         return con;
     }
 
-    protected String prepareBody(String data, String address) {
-        JsonArray params = this.prepareParamsForBody(data, address);
+    static String prepareBody(String data, String address) {
+        JsonArray params = HTTPUtil.prepareParamsForBody(data, address);
         JsonObject body = new JsonObject();
         body.addProperty("jsonrpc", "2.0");
         body.addProperty("id", 1);
@@ -51,7 +51,7 @@ public class HTTPUtil {
         return body.toString();        
     }
 
-    private JsonArray prepareParamsForBody(String data, String address) {
+    static JsonArray prepareParamsForBody(String data, String address) {
         JsonObject jo = new JsonObject();
         jo.addProperty("data", data);
         jo.addProperty("to", address);

@@ -13,7 +13,7 @@ public class Resolution {
 
     public Resolution(String blockchainProviderUrl) {
         this.providerUrl = blockchainProviderUrl;
-        this.services = this.buildServices(providerUrl, false);
+        this.services = this.buildServices(providerUrl);
     }
 
     public String addr(String domain, String ticker) throws NamingServiceException {
@@ -48,9 +48,9 @@ public class Resolution {
         throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
     }
 
-    private NamingService[] buildServices(String providerUrl, Boolean verbose) {
+    private NamingService[] buildServices(String providerUrl) {
         NamingService[] services = new NamingService[1];
-        services[0] = new CNS(providerUrl, verbose);
+        services[0] = new CNS(providerUrl);
         return services;
     }
 }
