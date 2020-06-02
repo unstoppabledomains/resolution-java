@@ -46,30 +46,32 @@ public class Contract {
     String data = this.toHexString(encoded.array());
     JsonObject response = HTTPUtil.post(this.url, this.address, data);
     String answer = response.get("result").getAsString().replace("0x", "");
-    if (answer.equals("")) return new Tuple();
+    if (answer.equals(""))
+      return new Tuple();
     Tuple answ = f.decodeReturn(FastHex.decode(answer));
     return answ;
   }
 
-  protected String fetchOne(String method, Object[] args, Boolean isAddress) throws ParseException, IOException {
+  protected <T> T fetchOne(String method, Object[] args) throws ParseException, IOException {
     Tuple answ = this.fetchMethod(method, args);
-    if (isAddress) {
-      try {
-        BigInteger number = new BigInteger(answ.get(0).toString());
-        return "0x" + number.toString(16);
-      } catch (ArrayIndexOutOfBoundsException e) {
-        return null;
-      }
-    } else {
-      return answ.get(0).toString();
+    try {
+      return (T) answ.get(0);
+    } catch (ArrayIndexOutOfBoundsException e) {
     }
+    return null;
+  }
+
+  protected String fetchAddress(String method, Object[] args) throws ParseException, IOException {
+    BigInteger address = this.fetchOne(method, args);
+    if (address == null) return null;
+    return "0x" + address.toString(16);
   }
 
   protected String toHexString(byte[] input) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append("0x");
-    for (int i = 0; i <  input.length; i++) {
-        stringBuilder.append(String.format("%02x", input[i] & 0xFF));
+    for (int i = 0; i < input.length; i++) {
+      stringBuilder.append(String.format("%02x", input[i] & 0xFF));
     }
     return stringBuilder.toString();
   }
@@ -80,11 +82,12 @@ public class Contract {
       JsonObject m = (JsonObject) this.abi.get(i);
       JsonArray inputs = (JsonArray) m.get("inputs");
       JsonElement jname = m.get("name");
-      if (jname == null) continue;
+      if (jname == null)
+        continue;
       String name = jname.getAsString();
       if (name.equals(method) && inputs.size() == argLen) {
         methodDescription = m;
-        break ;
+        break;
       }
     }
     return methodDescription;

@@ -15,7 +15,7 @@ public class Registry extends Contract {
   public String getResolver(BigInteger tokenID) throws Exception {
     Object[] args = new Object[1];
     args[0] = tokenID;
-    String ans = this.fetchOne("resolverOf", args, true);
+    String ans = this.fetchAddress("resolverOf", args);
     if (ans == null) 
       throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver);
     return ans;
@@ -25,7 +25,7 @@ public class Registry extends Contract {
     try {
       Object[] args = new Object[1];
       args[0] = tokenID;
-      return this.fetchOne("ownerOf", args, true);
+      return this.fetchAddress("ownerOf", args);
     } catch (IllegalArgumentException e) {
       // params will be added on level above;
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("", ""), e);

@@ -14,6 +14,6 @@ public class Resolver extends Contract {
     Object[] args = new Object[2];
     args[0] = recordKey;
     args[1] = tokenID;
-    return this.fetchOne("get", args, false);
+    return this.fetchOne("get", args);
   }
 }
