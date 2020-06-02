@@ -1,7 +1,5 @@
 package com.unstoppabledomains.exceptions;
 
-import java.util.Arrays;
-
 public class NSExceptionParams {
   public String domain;
   public String namingService;

@@ -4,9 +4,6 @@ package com.unstoppabledomains.resolution.artifacts;
  *  https://github.com/web3j/web3j/blob/5877c308e11c0de8e24e50c882effa84354a8e57/utils/src/main/java/org/web3j/utils/Numeric.java#L27
  */
 public final class Numeric {
-
-    private static final String HEX_PREFIX = "0x";
-
     private Numeric() {}
 
     public static String cleanHexPrefix(String input) {

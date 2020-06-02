@@ -53,9 +53,8 @@ public class NameHash {
      * Normalise blockchain name as per the <a
      * href="http://docs.ens.domains/en/latest/implementers.html#normalising-and-validating-names">specification</a>.
      *
-     * @param domain our user input ENS name
-     * @return normalised ens name
-     * @throws EnsResolutionException if the name cannot be normalised
+     * @param domain our user input blockchain domain
+     * @return normalised blockchain domain
      */
     public static String normalise(String domain) {
         try {

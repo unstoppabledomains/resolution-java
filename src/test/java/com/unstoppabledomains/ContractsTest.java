@@ -1,6 +1,8 @@
 package com.unstoppabledomains;
 
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.math.BigInteger;
 import com.unstoppabledomains.resolution.contracts.cns.Registry;
@@ -22,8 +24,9 @@ public class ContractsTest {
   }
 
   @Test
-  public void fetchMethod() {
+  public void fetchMethod() throws Exception {
     BigInteger tokenID = new BigInteger("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9".replace("0x", ""), 16);
-    TestUtils.checkAnswer(() -> registryContract.getResolver(tokenID), "0xb66dce2da6afaaa98f2013446dbcb0f4b0ab2842");
+    String resolverAddr = registryContract.getResolver(tokenID);
+    assertEquals("0xb66dce2da6afaaa98f2013446dbcb0f4b0ab2842", resolverAddr);
   }
 }

@@ -22,14 +22,4 @@ public class TestUtils {
             assertTrue(false);
         }
     }
-    
-    public static void checkAnswer(Callable<String> f, String answer) {
-        try {
-            String returned =  f.call();
-            assertEquals(answer, returned);
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-    }
 }
