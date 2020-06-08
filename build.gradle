@@ -11,11 +11,14 @@ plugins {
     id 'java-library'
     id 'signing'
     id 'maven'
+
 }
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 group = "com.unstoppabledomains.resolution"
-archivesBaseName = "unstoppable-resolution"
-version = "1.0.0u"
+archivesBaseName = "resolution"
+version = "1.0.6"
 
 repositories {
     // Use jcenter for resolving dependencies.

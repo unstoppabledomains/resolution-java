@@ -1,7 +1,6 @@
 package com.unstoppabledomains.resolution.contracts;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -12,31 +11,17 @@ import com.esaulpaugh.headlong.abi.Tuple;
 import com.esaulpaugh.headlong.util.FastHex;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 public class Contract {
   protected String address;
-  protected String type;
   protected String url;
   protected JsonArray abi;
 
-  public Contract(String url, String address, String type, String pathToAbi) {
-    JsonParser parser = new JsonParser();
-    String jsonAbiPath = type.equals("registry") ? pathToAbi + "/registry.json" : pathToAbi + "/resolver.json";
-    JsonArray parsed;
-    try {
-      parsed = (JsonArray) parser.parse(new FileReader(jsonAbiPath));
-      this.abi = parsed;
-    } catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+  public Contract(String url, String address, JsonArray abi) {
+    this.abi = abi;
     this.url = url;
     this.address = address;
-    this.type = type;
   }
 
   public Tuple fetchMethod(String method, Object[] args) throws ParseException, IOException {

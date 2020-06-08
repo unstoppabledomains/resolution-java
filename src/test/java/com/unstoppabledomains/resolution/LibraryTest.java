@@ -45,6 +45,12 @@ public class LibraryTest {
     }
 
     @Test
+    public void sometest() throws Exception {
+        String addr = resolution.addr("brad.crypto", "eth");
+        assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+    }
+
+    @Test
     public void wrongDomainAddr() {
         TestUtils.checkError(() -> resolution.addr("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
     }
