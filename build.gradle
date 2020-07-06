@@ -18,7 +18,7 @@ targetCompatibility = 1.8
 
 group = "com.unstoppabledomains.resolution"
 archivesBaseName = "resolution"
-version = "1.0.6"
+version = "1.0.7"
 
 repositories {
     // Use jcenter for resolving dependencies.
@@ -33,7 +33,7 @@ dependencies {
     api 'org.apache.commons:commons-math3:3.6.1'
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.esaulpaugh:headlong:1.4.8'
+    implementation 'com.esaulpaugh:headlong:3.4.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.65.01'
 

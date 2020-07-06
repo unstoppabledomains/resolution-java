@@ -13,6 +13,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import com.unstoppabledomains.resolution.Utilities;
+
 public class Contract {
   protected String address;
   protected String url;
@@ -31,7 +33,7 @@ public class Contract {
     String data = this.toHexString(encoded.array());
     JsonObject response = HTTPUtil.post(this.url, this.address, data);
     String answer = response.get("result").getAsString().replace("0x", "");
-    if (answer.equals(""))
+    if (Utilities.isNull(answer))
       return new Tuple();
     Tuple answ = f.decodeReturn(FastHex.decode(answer));
     return answ;
@@ -42,8 +44,8 @@ public class Contract {
     try {
       return (T) answ.get(0);
     } catch (ArrayIndexOutOfBoundsException e) {
+      return null;
     }
-    return null;
   }
 
   protected String fetchAddress(String method, Object[] args) throws ParseException, IOException {

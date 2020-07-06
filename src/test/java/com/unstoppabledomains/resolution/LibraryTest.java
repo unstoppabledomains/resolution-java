@@ -68,7 +68,7 @@ public class LibraryTest {
     @Test
     public void ipfsHash() throws NamingServiceException {
         String ipfs = resolution.ipfsHash("brad.crypto");
-        assertEquals( "QmRsDVRwtdhhgznt3VZerdqcJwdQCQv9axZcy3F5hXh5P5", ipfs);
+        assertEquals( "Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
     }
 
     @Test

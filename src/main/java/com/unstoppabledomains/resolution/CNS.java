@@ -113,7 +113,11 @@ public class CNS extends NamingService {
   }
 
   private String owner(BigInteger tokenID) throws Exception {
-    return this.registryContract.getOwner(tokenID);
+    String owner = this.registryContract.getOwner(tokenID);
+    if (Utilities.isNull(owner)) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
+    }
+    return owner;
   }
 
   private BigInteger tokenID(String domain) {
