@@ -1,5 +1,7 @@
 package com.unstoppabledomains.exceptions;
 
+import java.util.regex.Pattern;
+
 public class NSExceptionParams {
   public String domain;
   public String namingService;
@@ -8,10 +10,10 @@ public class NSExceptionParams {
   public String methodName;
 
   public NSExceptionParams(String format, String ...args) {
-    String[] options = format.split("|");
+    Pattern pattern = Pattern.compile("\\|");
+    String[] options = pattern.split(format);
     int index = 0;
     for (String option: options) {
-      if (option.equals("|")) continue;
       parseOption(option, args[index++]);
     }
   }
