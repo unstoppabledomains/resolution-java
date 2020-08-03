@@ -15,6 +15,8 @@ Feel free to try other blockchain providers
 resolution = new Resolution("https://mainnet.infura.io/v3/<ProjectId>");
 ```
 
+[Live usage examples](/samples.md)
+
 ### Getting the currency address
 To resolve a domain and get the currency address is easy as this
 ```
