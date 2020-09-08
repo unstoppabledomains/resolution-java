@@ -18,7 +18,7 @@ targetCompatibility = 1.8
 
 group = "com.unstoppabledomains.resolution"
 archivesBaseName = "resolution"
-version = "1.0.8"
+version = "1.0.9"
 
 repositories {
     // Use jcenter for resolving dependencies.

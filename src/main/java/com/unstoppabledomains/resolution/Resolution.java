@@ -10,7 +10,7 @@ public class Resolution {
 
    /**
     * @author Jeyhun Tahirov 
-    * @see http://github.com/johnnyjumper/
+    * see http://github.com/johnnyjumper/
     * Resolution object
     * @param blockchainProviderUrl - url for the public etherium provider
     */
@@ -23,6 +23,7 @@ public class Resolution {
      * Resolves domain for a specific ticker address
      * @param domain - domain name such as "brad.crypto"
      * @param ticker - coin ticker such as ETH
+     * @throws NamingServiceException - if tld is not recognized or there record for such currency is not presented
      * @return address in hex-string format
      */
     public String addr(String domain, String ticker) throws NamingServiceException {
@@ -33,7 +34,8 @@ public class Resolution {
     /**
      * Produces a namehash for a specific domain
      * @param domain - domain name such as "brad.crypto"
-     * @see https://docs.ens.domains/contract-api-reference/name-processing
+     * see https://docs.ens.domains/contract-api-reference/name-processing
+     * @throws NamingServiceException - if tld of the domain is not recognized
      * @return namehash of a domain for a specific NamingService
      */
     public String namehash(String domain) throws NamingServiceException {
@@ -44,7 +46,8 @@ public class Resolution {
     /**
      * Resolves domain for an ipfs hash
      * @param domain - domain name such as "brad.crypto"
-     * @see https://docs.ipfs.io/concepts/what-is-ipfs/
+     * see https://docs.ipfs.io/concepts/what-is-ipfs/
+     * @throws NamingServiceException - if no record is present
      * @return ipfs hash used to redirect people to ipfs content
      */
     public String ipfsHash(String domain) throws NamingServiceException {
@@ -55,6 +58,7 @@ public class Resolution {
     /**
      * Resolves an email address from a domain
      * @param domain - domain name such as "brad.crypto"
+     * @throws NamingServiceException - if no email is present
      * @return email address 
      */
     public String email(String domain) throws NamingServiceException {
@@ -65,6 +69,7 @@ public class Resolution {
     /**
      * Resolves owner address from a domain
      * @param domain - domain name such as "brad.crypto"
+     * @throws NamingServiceException - if owner is not present
      * @return etherium address of a domain's owner
      */
     public String owner(String domain) throws NamingServiceException {
