@@ -1,3 +1,5 @@
+[![Chat on Telegram](https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/unstoppabledev)
+
 # Easy way to resolve .crypto blockchain name
 This java library allows to resolve the various cryptocurrencies addresses attached to a domain, ipfs-hash and other owners meta-data
 
