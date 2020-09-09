@@ -31,7 +31,9 @@ public class Contract {
     Function f = Function.fromJson(methodDescription.toString());
     ByteBuffer encoded = f.encodeCallWithArgs(args);
     String data = this.toHexString(encoded.array());
-    JsonObject response = HTTPUtil.post(this.url, this.address, data);
+    JsonArray params = prepareParamsForBody(data, this.address);
+    JsonObject body = HTTPUtil.prepareBody("eth_call", params);
+    JsonObject response = HTTPUtil.post(this.url, body);
     String answer = response.get("result").getAsString().replace("0x", "");
     if (Utilities.isNull(answer))
       return new Tuple();
@@ -49,9 +51,9 @@ public class Contract {
   }
 
   protected String fetchAddress(String method, Object[] args) throws ParseException, IOException {
-    BigInteger address = this.fetchOne(method, args);
-    if (address == null) return null;
-    return "0x" + address.toString(16);
+    BigInteger addr = this.fetchOne(method, args);
+    if (addr == null) return null;
+    return "0x" + addr.toString(16);
   }
 
   protected String toHexString(byte[] input) {
@@ -78,5 +80,15 @@ public class Contract {
       }
     }
     return methodDescription;
+  }
+
+  private JsonArray prepareParamsForBody(String data, String address) {
+    JsonObject jo = new JsonObject();
+    jo.addProperty("data", data);
+    jo.addProperty("to", address);
+    JsonArray params = new JsonArray();
+    params.add(jo);
+    params.add("latest");
+    return params;
   }
 }

@@ -6,25 +6,26 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class HTTPUtil {
-    static JsonObject post(String url, String address, String data) throws IOException {
+    private HTTPUtil() {}
+
+    public static JsonObject post(String url, JsonObject body) throws IOException {
         HttpURLConnection con = HTTPUtil.createAndConfigureCon(url);
-        // Send 
         try (OutputStream os = con.getOutputStream()) {
-            String body = HTTPUtil.prepareBody(data, address);
-            byte[] input = body.getBytes("utf-8");
+            byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
-        // Read the response
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) {
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder response = new StringBuilder();
             String responseLine = null;
-            while ((responseLine = br.readLine()) != null) {
+            while((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
             return (JsonObject) new JsonParser().parse(response.toString());
@@ -37,28 +38,17 @@ public class HTTPUtil {
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
         con.setRequestProperty("Accept", "application/json");
+        con.addRequestProperty("User-Agent", "UnstoppableDomains/resolution-java");
         con.setDoOutput(true);
         return con;
     }
 
-    static String prepareBody(String data, String address) {
-        JsonArray params = HTTPUtil.prepareParamsForBody(data, address);
+    public static JsonObject prepareBody(String method, JsonArray params) {
         JsonObject body = new JsonObject();
         body.addProperty("jsonrpc", "2.0");
         body.addProperty("id", 1);
-        body.addProperty("method", "eth_call");
+        body.addProperty("method", method);
         body.add("params", params);
-        return body.toString();        
+        return body;
     }
-
-    static JsonArray prepareParamsForBody(String data, String address) {
-        JsonObject jo = new JsonObject();
-        jo.addProperty("data", data);
-        jo.addProperty("to", address);
-        JsonArray params = new JsonArray();
-        params.add(jo);
-        params.add("latest");
-        return params;
-    }
-
 }
