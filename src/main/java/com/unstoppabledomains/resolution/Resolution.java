@@ -85,8 +85,9 @@ public class Resolution {
     }
 
     private NamingService[] buildServices(String providerUrl) {
-        NamingService[] services = new NamingService[1];
+        NamingService[] services = new NamingService[2];
         services[0] = new CNS(providerUrl);
+        services[1] = new ZNS("https://api.zilliqa.com");
         return services;
     }
 }

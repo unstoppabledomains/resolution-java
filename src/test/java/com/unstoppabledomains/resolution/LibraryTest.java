@@ -23,14 +23,16 @@ public class LibraryTest {
 
     @Test
     public void namehash() throws NamingServiceException {
+        
         String hash = resolution.namehash("crypto");
         assertEquals("0x0f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f", hash);
-    }
-
-    @Test
-    public void namehash2() throws NamingServiceException {
-        String hash = resolution.namehash("brad.crypto");
+        hash = resolution.namehash("brad.crypto");
         assertEquals("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9", hash);
+
+        hash = resolution.namehash("zil");
+        assertEquals("0x9915d0456b878862e822e2361da37232f626a2e47505c8795134a95d36138ed3", hash);
+        hash = resolution.namehash("johnnyjumper.zil");
+        assertEquals("0x08ab2ffa92966738c881a37d0d97f168d2e076d24639921762d0985ebaa62e31", hash);
     }
 
     @Test
@@ -75,8 +77,11 @@ public class LibraryTest {
     public void ownerTest() throws NamingServiceException{
         String owner = resolution.owner("brad.crypto");
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
-    }
 
+        owner = resolution.owner("johnnyjumper.zil");
+        assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", owner);
+    }
+    
     @Test
     public void ownerFailTest() {
         TestUtils.checkError(() -> resolution.owner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
