@@ -64,7 +64,7 @@ public class ZNS extends NamingService {
 
     public String owner(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
-        if (Utilities.isNull(addresses[0])) {
+        if (addresses == null || Utilities.isNull(addresses[0])) {
             throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
         }
         return addresses[0];
@@ -83,7 +83,7 @@ public class ZNS extends NamingService {
         try {
             String resolverAddress = getResolverAddress(domain);
             String[] keys = {};
-            JsonObject response =  this.fetchSubState(resolverAddress, RECORDS_KEY, keys);
+            JsonObject response = this.fetchSubState(resolverAddress, RECORDS_KEY, keys);
             return response.getAsJsonObject(RECORDS_KEY);
         } catch(IOException error) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound);
@@ -92,9 +92,7 @@ public class ZNS extends NamingService {
 
     private String getResolverAddress(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
-        if (addresses == null) 
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain)); 
-        if (Utilities.isNull(addresses[0])) {
+        if (addresses == null || Utilities.isNull(addresses[0])) {
             throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain)); 
         }
         if (Utilities.isNull(addresses[1])) {
