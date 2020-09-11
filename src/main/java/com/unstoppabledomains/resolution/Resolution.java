@@ -79,15 +79,15 @@ public class Resolution {
     
     private NamingService findService(String domain) throws NamingServiceException {
         for (NamingService service : this.services) {
-            if (service.isSupported(domain)) return service;
+            if (Boolean.TRUE.equals(service.isSupported(domain))) return service;
         }
         throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
     }
 
     private NamingService[] buildServices(String providerUrl) {
-        NamingService[] services = new NamingService[2];
-        services[0] = new CNS(providerUrl);
-        services[1] = new ZNS("https://api.zilliqa.com");
-        return services;
+        NamingService[] servicez = new NamingService[2];
+        servicez[0] = new CNS(providerUrl);
+        servicez[1] = new ZNS("https://api.zilliqa.com");
+        return servicez;
     }
 }

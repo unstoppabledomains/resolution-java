@@ -44,33 +44,42 @@ public class LibraryTest {
     public void addr() throws NamingServiceException{
         String addr = resolution.addr("homecakes.crypto", "eth");
         assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", addr);
+
+        addr = resolution.addr("brad.crypto", "eth");
+        assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr, "brad.crypto --> eth");
+
+        addr = resolution.addr("johnnyjumper.zil", "eth");
+        assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", addr, "johnnyjumper.zil --> eth");
     }
 
-    @Test
-    public void sometest() throws Exception {
-        String addr = resolution.addr("brad.crypto", "eth");
-        assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
-    }
 
     @Test
     public void wrongDomainAddr() {
         TestUtils.checkError(() -> resolution.addr("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.checkError(() -> resolution.addr("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void UnknownCurrency() {
         TestUtils.checkError(() -> resolution.addr("brad.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
-    }
-
-    @Test
-    public void notConfiguredCurrency() {
+        TestUtils.checkError(() -> resolution.addr("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.checkError(() -> resolution.addr("brad.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
+        TestUtils.checkError(() -> resolution.addr("johnnyjumper.zil", "dodge"), NSExceptionCode.UnknownCurrency);
     }
 
     @Test
     public void ipfsHash() throws NamingServiceException {
         String ipfs = resolution.ipfsHash("brad.crypto");
         assertEquals( "Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
+        
+        ipfs = resolution.ipfsHash("johnnyjumper.zil");
+        assertEquals("QmQ38zzQHVfqMoLWq2VeiMLHHYki9XktzXxLYTWXt8cydu", ipfs);
+    }
+
+    @Test
+    public void emailTest() throws NamingServiceException {
+        String email = resolution.email("johnnyjumper.zil");
+        assertEquals("jeyhunt@gmail.com", email);
     }
 
     @Test

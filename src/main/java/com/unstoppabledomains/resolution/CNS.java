@@ -45,7 +45,7 @@ public class CNS extends NamingService {
     String hash = this.resolveKey(key, domain);
     if (Utilities.isNull(hash))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-          new NSExceptionParams("d", domain));
+          new NSExceptionParams("d|r", domain, key));
     return hash;
 
   }
@@ -55,7 +55,7 @@ public class CNS extends NamingService {
     String email = this.resolveKey(key, domain);
     if (Utilities.isNull(email))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-          new NSExceptionParams("d", domain));
+          new NSExceptionParams("d|r", domain, key));
     return email;
   }
 

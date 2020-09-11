@@ -8,6 +8,7 @@ public class NSExceptionParams {
   public String coinTicker;
   public String contractAddress;
   public String methodName;
+  public String record;
 
   public NSExceptionParams(String format, String ...args) {
     Pattern pattern = Pattern.compile("\\|");
@@ -40,8 +41,12 @@ public class NSExceptionParams {
         this.methodName = value;
         return;
       }
+      case "r": {
+        this.record = value;
+        break ;
+      }
       default: {
-        return ;
+        break ;
       }
     }
   }
