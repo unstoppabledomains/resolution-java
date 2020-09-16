@@ -4,7 +4,6 @@ package com.unstoppabledomains.resolution.contracts;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.text.ParseException;
 
 import com.esaulpaugh.headlong.abi.Function;
 import com.esaulpaugh.headlong.abi.Tuple;
@@ -26,8 +25,9 @@ public class Contract {
     this.address = address;
   }
 
-  public Tuple fetchMethod(String method, Object[] args) throws ParseException, IOException {
+  public Tuple fetchMethod(String method, Object[] args) throws IOException {
     JsonObject methodDescription = this.getMethodDescription(method, args.length);
+    if (methodDescription == null) throw new IOException("Couldn't found method from ABI");
     Function f = Function.fromJson(methodDescription.toString());
     ByteBuffer encoded = f.encodeCallWithArgs(args);
     String data = this.toHexString(encoded.array());
@@ -37,11 +37,10 @@ public class Contract {
     String answer = response.get("result").getAsString().replace("0x", "");
     if (Utilities.isNull(answer))
       return new Tuple();
-    Tuple answ = f.decodeReturn(FastHex.decode(answer));
-    return answ;
+    return f.decodeReturn(FastHex.decode(answer));
   }
 
-  protected <T> T fetchOne(String method, Object[] args) throws ParseException, IOException {
+  protected <T> T fetchOne(String method, Object[] args) throws IOException {
     Tuple answ = this.fetchMethod(method, args);
     try {
       return (T) answ.get(0);
@@ -50,10 +49,10 @@ public class Contract {
     }
   }
 
-  protected String fetchAddress(String method, Object[] args) throws ParseException, IOException {
-    BigInteger addr = this.fetchOne(method, args);
-    if (addr == null) return null;
-    return "0x" + addr.toString(16);
+  protected String fetchAddress(String method, Object[] args) throws IOException {
+    BigInteger address = this.fetchOne(method, args);
+    if (address == null) return null;
+    return "0x" + address.toString(16);
   }
 
   protected String toHexString(byte[] input) {
@@ -66,7 +65,7 @@ public class Contract {
   }
 
   private JsonObject getMethodDescription(String method, int argLen) {
-    JsonObject methodDescription = null;
+    JsonObject methodDescription;
     for (int i = 0; i < this.abi.size(); i++) {
       JsonObject m = (JsonObject) this.abi.get(i);
       JsonArray inputs = (JsonArray) m.get("inputs");
@@ -76,10 +75,10 @@ public class Contract {
       String name = jname.getAsString();
       if (name.equals(method) && inputs.size() == argLen) {
         methodDescription = m;
-        break;
+        return methodDescription;
       }
     }
-    return methodDescription;
+    return null;
   }
 
   private JsonArray prepareParamsForBody(String data, String address) {
