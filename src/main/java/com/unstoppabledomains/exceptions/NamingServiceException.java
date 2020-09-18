@@ -31,7 +31,7 @@ public class NamingServiceException extends Exception {
         return params.domain + " doesn't have such " + params.coinTicker + " configured";
       }
       case RecordNotFound: {
-        return params.domain + " doesn't have such record";
+        return params.domain + " doesn't have " + params.record + "record";
       }
       case BlockchainIsDown: {
         return params.namingService + " blockchain network is down";
