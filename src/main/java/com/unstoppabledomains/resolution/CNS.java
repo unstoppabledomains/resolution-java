@@ -1,25 +1,23 @@
 
 package com.unstoppabledomains.resolution;
 
-import java.math.BigInteger;
-import java.net.UnknownHostException;
-
-
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
-import com.unstoppabledomains.resolution.contracts.cns.Registry;
-import com.unstoppabledomains.resolution.contracts.cns.Resolver;
+import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
+
+import java.math.BigInteger;
+import java.net.UnknownHostException;
 
 public class CNS extends NamingService {
-  final static String registryAddress = "0xD1E5b0FF1287aA9f9A268759062E4Ab08b9Dacbe";
-  final private Registry registryContract;
-  final private String provider;
+
+  private static final String PROXY_READER_ADDRESS = "0x7ea9Ee21077F84339eDa9C80048ec6db678642B1";
+
+  private final ProxyReader proxyReaderContract;
 
   public CNS(String blockchainProviderUrl) {
-    this.provider = blockchainProviderUrl;
-    this.registryContract = new Registry(this.provider, registryAddress);
+    this.proxyReaderContract = new ProxyReader(blockchainProviderUrl, PROXY_READER_ADDRESS);
   }
 
   public Boolean isSupported(String domain) {
@@ -43,11 +41,16 @@ public class CNS extends NamingService {
   public String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
     String hash = this.resolveKey(key, domain);
-    if (Utilities.isNull(hash))
-      throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-          new NSExceptionParams("d|r", domain, key));
-    return hash;
 
+    if (hash == null) {
+      throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver,
+              new NSExceptionParams("d|r", domain, key));
+    }
+    if ("".equals(hash)) {
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound,
+              new NSExceptionParams("d|r", domain, key));
+    }
+    return hash;
   }
 
   public String email(String domain) throws NamingServiceException {
@@ -70,16 +73,6 @@ public class CNS extends NamingService {
     }
   }
 
-  public String resolverAddress(String domain) throws NamingServiceException {
-    try {
-      BigInteger tokenID = this.tokenID(domain);
-      return this.resolverAddress(tokenID);
-    } catch (Exception e) {
-      throw this.configureNamingServiceException(e,
-          new NSExceptionParams("d|n", domain, "CNS"));
-    }
-  }
-
   public String resolveKey(String key, String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = this.tokenID(domain);
@@ -92,7 +85,7 @@ public class CNS extends NamingService {
 
   private NamingServiceException configureNamingServiceException(Exception e, NSExceptionParams params) {
     if (e instanceof NamingServiceException) {
-      return new NamingServiceException(((NamingServiceException) e).getCode(), params);
+      return new NamingServiceException(((NamingServiceException) e).getCode(), params, e);
     }
     if (e instanceof UnknownHostException) {
       return new NamingServiceException(NSExceptionCode.BlockchainIsDown, params, e);
@@ -103,17 +96,11 @@ public class CNS extends NamingService {
   }
 
   private String resolveKey(String key, BigInteger tokenID) throws Exception {
-    String resolverAddress = this.resolverAddress(tokenID);
-    Resolver resolverContract = new Resolver(this.provider, resolverAddress);
-    return resolverContract.getRecord(key, tokenID);
-  }
-
-  private String resolverAddress(BigInteger tokenID) throws Exception {
-    return this.registryContract.getResolver(tokenID);
+    return proxyReaderContract.getRecord(key, tokenID);
   }
 
   private String owner(BigInteger tokenID) throws Exception {
-    String owner = this.registryContract.getOwner(tokenID);
+    String owner = proxyReaderContract.getOwner(tokenID);
     if (Utilities.isNull(owner)) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
     }
