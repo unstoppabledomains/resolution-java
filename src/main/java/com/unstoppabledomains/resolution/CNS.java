@@ -85,7 +85,7 @@ public class CNS extends NamingService {
 
   private NamingServiceException configureNamingServiceException(Exception e, NSExceptionParams params) {
     if (e instanceof NamingServiceException) {
-      return new NamingServiceException(((NamingServiceException) e).getCode(), params);
+      return new NamingServiceException(((NamingServiceException) e).getCode(), params, e);
     }
     if (e instanceof UnknownHostException) {
       return new NamingServiceException(NSExceptionCode.BlockchainIsDown, params, e);
