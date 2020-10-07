@@ -1,16 +1,18 @@
 package com.unstoppabledomains.resolution.contracts;
 
-
 import com.esaulpaugh.headlong.abi.Function;
 import com.esaulpaugh.headlong.abi.Tuple;
 import com.esaulpaugh.headlong.util.FastHex;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public abstract class Contract {
 
@@ -18,14 +20,12 @@ public abstract class Contract {
   private String url;
   private JsonArray abi;
 
-  public Contract(String url, String address) {
+  public Contract(String url, String address, String pathToAbi) {
     this.address = address;
     this.url = url;
-    this.abi = getAbi();
+    this.abi = getAbi(pathToAbi);
   }
-
-  protected abstract JsonArray getAbi();
-
+  
   protected <T> T fetchOne(String method, Object[] args) throws IOException {
     Tuple answ = fetchMethod(method, args);
     try {
@@ -33,6 +33,16 @@ public abstract class Contract {
     } catch (ArrayIndexOutOfBoundsException e) {
       return null;
     }
+  }
+
+  private JsonArray getAbi(String pathToAbi) {
+      String jsonString;
+      try {
+          jsonString = new String(Files.readAllBytes(Paths.get(pathToAbi)));
+      } catch (IOException e) {
+          throw new RuntimeException("Couldn't find an ABI for " + getClass().getSimpleName() + " contract", e);
+      }
+      return new JsonParser().parse(jsonString).getAsJsonArray();
   }
 
   private Tuple fetchMethod(String method, Object[] args) throws IOException {
