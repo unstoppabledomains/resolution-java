@@ -2,9 +2,6 @@ package com.unstoppabledomains.resolution.contracts.cns;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.Contract;
 
 import java.io.IOException;
@@ -31,14 +28,11 @@ public class ProxyReader extends Contract {
         return new JsonParser().parse(jsonString).getAsJsonArray();
     }
 
-    public String getOwner(BigInteger tokenID) throws Exception {
+    public String getOwner(BigInteger tokenID) {
         try {
             Object[] args = new Object[1];
             args[0] = tokenID;
             return fetchAddress("ownerOf", args);
-        } catch (IllegalArgumentException e) {
-            // params will be added on level above;
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("", ""), e);
         } catch (Exception e) {
             return null;
         }
