@@ -36,7 +36,7 @@ public class HTTPUtil {
         URL posturl = new URL(url);
         HttpURLConnection con = (HttpURLConnection) posturl.openConnection();
         con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; utf-8");
+        con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Accept", "application/json");
         con.addRequestProperty("User-Agent", "UnstoppableDomains/resolution-java");
         con.setDoOutput(true);

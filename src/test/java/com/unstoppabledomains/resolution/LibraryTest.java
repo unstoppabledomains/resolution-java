@@ -18,7 +18,7 @@ public class LibraryTest {
 
     @BeforeEach
     public void initEach() {
-        resolution = new Resolution("https://mainnet.infura.io/v3/781c1e5cae32417b93eac26042950d25");
+        resolution = new Resolution("https://main-rpc.linkpool.io");
     }
 
     @Test
