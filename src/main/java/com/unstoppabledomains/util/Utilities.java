@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.util;
 
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 

@@ -4,11 +4,7 @@
 This java library allows to resolve the various cryptocurrencies addresses attached to a domain, ipfs-hash and other owners meta-data
 
 # Releases
-Latest library release is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains.resolution/resolution/1.0.8/jar) 
-
-```
-  implementation("com.unstoppabledomains.resolution:resolution:1.0.8")
-```
+Latest library release is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains.resolution/resolution) 
 
 # Usage Examples
 We are using [linkpool](https://www.linkpool.io/) as our choice of blockchain provider.

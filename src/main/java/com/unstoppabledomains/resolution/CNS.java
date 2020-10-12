@@ -6,6 +6,7 @@ import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
+import com.unstoppabledomains.util.Utilities;
 
 import java.math.BigInteger;
 import java.net.UnknownHostException;

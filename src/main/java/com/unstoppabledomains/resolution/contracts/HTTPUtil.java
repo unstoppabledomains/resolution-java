@@ -11,9 +11,20 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.unstoppabledomains.client.Client;
 
 public class HTTPUtil {
-    private HTTPUtil() {}
+    private HTTPUtil() {
+    }
+
+    public static JsonObject prepareBody(String method, JsonArray params) {
+        JsonObject body = new JsonObject();
+        body.addProperty("jsonrpc", "2.0");
+        body.addProperty("id", 1);
+        body.addProperty("method", method);
+        body.add("params", params);
+        return body;
+    }
 
     public static JsonObject post(String url, JsonObject body) throws IOException {
         HttpURLConnection con = HTTPUtil.createAndConfigureCon(url);
@@ -24,31 +35,28 @@ public class HTTPUtil {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder response = new StringBuilder();
-            String responseLine = null;
-            while((responseLine = br.readLine()) != null) {
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
             return (JsonObject) new JsonParser().parse(response.toString());
         }
     }
 
-    static HttpURLConnection createAndConfigureCon(String url) throws IOException {
+    private static HttpURLConnection createAndConfigureCon(String url) throws IOException {
         URL posturl = new URL(url);
         HttpURLConnection con = (HttpURLConnection) posturl.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
         con.setRequestProperty("Accept", "application/json");
-        con.addRequestProperty("User-Agent", "UnstoppableDomains/resolution-java");
+        con.addRequestProperty("User-Agent", getUserAgent());
         con.setDoOutput(true);
         return con;
     }
 
-    public static JsonObject prepareBody(String method, JsonArray params) {
-        JsonObject body = new JsonObject();
-        body.addProperty("jsonrpc", "2.0");
-        body.addProperty("id", 1);
-        body.addProperty("method", method);
-        body.add("params", params);
-        return body;
+    private static String getUserAgent() {
+        String agent = "UnstoppableDomains/resolution-java";
+        String version = Client.getVersion();
+        return version.isEmpty() ? agent : agent + "/" + version;
     }
 }
