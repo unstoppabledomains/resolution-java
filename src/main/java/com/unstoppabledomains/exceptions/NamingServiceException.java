@@ -42,6 +42,12 @@ public class NamingServiceException extends Exception {
       case UnspecifiedResolver: {
         return "resolver was not set for " + params.domain;
       }
+      case UnsupportedCurrency: {
+        return "Currency " + params.coinTicker + " is not supported";
+      }
+      case NotImplemented: {
+        return "Method is not implemented for this naming service " + params.methodName;
+      }
       case UnknownError:
       default: 
         return "Unknown Error occured";

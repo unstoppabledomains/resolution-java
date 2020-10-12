@@ -1,13 +1,13 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
-import com.unstoppabledomains.resolution.NameHash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.Contract;
 
@@ -21,12 +21,22 @@ public class Resolver extends Contract {
     configureRecordsMap();
   }
 
-  public String getRecord(String domain, String key) throws NamingServiceException {
-    byte[] tokenId = this.tokenID(domain);
-    return getRecord(tokenId, key);
+  public String addr(byte[] tokenId, String ticker) throws NamingServiceException {
+    Object[] args = new Object[2];
+    args[0] = tokenId;
+    // TODO update when multi-coin support is finished
+    //? eth coinType = 60
+    args[1] = new BigInteger("60");
+    try {
+      byte[] addressBytes = this.fetchOne("addr", args);
+      return Numeric.toHexString(addressBytes);
+    } catch(IOException exception) {
+      exception.printStackTrace();
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("r", ticker));
+    }
   }
 
-  public String getRecord(byte[] tokenId, String key) throws NamingServiceException {
+public String getTextRecord(byte[] tokenId, String key) throws NamingServiceException {
     String ensRecordKey = UDRecordsToENS.get(key);
     Object[] args = new Object[2];
     args[0] = tokenId;
@@ -36,11 +46,6 @@ public class Resolver extends Contract {
     } catch(IOException exception) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("r", key));
     }
-  }
-
-  private byte[] tokenID(String domain) {
-    String hash = NameHash.nameHash(domain);
-    return Numeric.hexStringToByteArray(hash);
   }
 
   private void configureRecordsMap() {

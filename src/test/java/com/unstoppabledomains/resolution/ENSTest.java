@@ -19,7 +19,22 @@ public class ENSTest {
 
   @Test
   public void simpleTest() throws NamingServiceException {
-    String ipfs = resolution.ipfsHash("crunk.eth");
-    assertEquals( "0x7e1d12f34e038a2bda3d5f6ee0809d72f668c357d9e64fd7f622513f06ea652146ab5fdee35dc4ce77f1c089fd74972691fccd48130306d9eafcc6e1437d1ab21b", ipfs);
+    String owner = resolution.owner("monkybrain.eth");
+    assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", owner);
+
+    TestUtils.checkError(() -> resolution.email("monkybrain.eth"), NSExceptionCode.RecordNotFound);
+  }
+
+  @Test
+  public void addressTest() throws NamingServiceException {
+    String addr = resolution.addr("brad.eth", "eth");
+    assertEquals("0x1af001667bb945d1bdbb05145eea7c21d86737f7", addr);
+    
+    TestUtils.checkError(() -> resolution.addr("brad.eth", "btc"), NSExceptionCode.UnsupportedCurrency);
+    
+    addr = resolution.addr("monkybrain.eth", "EtH");
+    assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", addr);
+   
+    TestUtils.checkError(() -> resolution.addr("unregistered23.eth", "eth"), NSExceptionCode.UnregisteredDomain);
   }
 }

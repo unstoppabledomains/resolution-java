@@ -2,6 +2,8 @@ package com.unstoppabledomains.resolution;
 
 import java.util.Arrays;
 
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.Contract;
@@ -32,42 +34,52 @@ public class ENS extends NamingService {
 
   @Override
   String addr(String domain, String ticker) throws NamingServiceException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  String ipfsHash(String domain) throws NamingServiceException {
-    String resolverAddress = getResolverAddress(domain);
-    Resolver resolverContract = (Resolver)buildContract(resolverAddress, EnsContractType.Resolver); 
-    return resolverContract.getRecord(domain, "gundb.username.value");
+    if (!ticker.equalsIgnoreCase("ETH")) {
+      throw new NamingServiceException(NSExceptionCode.UnsupportedCurrency, new NSExceptionParams("c", ticker.toUpperCase()));
+    }
+    Resolver resolver = getResolverContract(domain);
+    byte[] tokenId = this.tokenId(domain);
+    return resolver.addr(tokenId, ticker.toUpperCase());
   }
 
   @Override
   String email(String domain) throws NamingServiceException {
     Resolver resolver = getResolverContract(domain);
-    return resolver.getRecord(domain, "whois.email.value");
+    byte[] tokenId = this.tokenId(domain);
+    String emailRecord = resolver.getTextRecord(tokenId, "whois.email.value");
+    if (Utilities.isNull(emailRecord)) {
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, "email"));
+    }
+    return emailRecord;
   }
 
   @Override
   String owner(String domain) throws NamingServiceException {
-   byte[] tokenId = this.tokenID(domain);
-   return this.registryContract.getOwner(tokenId);
+   byte[] tokenId = this.tokenId(domain);
+   String owner = this.registryContract.getOwner(tokenId);
+    if (Utilities.isNull(owner)) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
+    }
+    return owner;
   }
 
   private Resolver getResolverContract(String domain) throws NamingServiceException {
     String resolverAddress = getResolverAddress(domain);
+    if (Boolean.TRUE.equals(Utilities.isNull(resolverAddress))) {
+      // if owner is not found UnregisteredDomain is raised
+      this.owner(domain);
+      throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("d", domain));
+    }
     return (Resolver) buildContract(resolverAddress, EnsContractType.Resolver);
   }
-
-
-  private byte[] tokenID(String domain) {
+  
+  private byte[] tokenId(String domain) {
     String hash = this.namehash(domain);
     return Numeric.hexStringToByteArray(hash);
   }
 
-  private String getResolverAddress(String domain) throws NamingServiceException {
-    byte[] tokenId = this.tokenID(domain);
+  private String getResolverAddress(String domain) {
+    byte[] tokenId = this.tokenId(domain);
     return this.registryContract.getResolverAddress(tokenId);
   }
 
@@ -76,5 +88,10 @@ public class ENS extends NamingService {
       return new Resolver(this.providerURL, address);
     }
     return new Registry(this.providerURL, address);
+  }
+
+  @Override
+  String ipfsHash(String domain) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m", "ENS"));
   }
 }
