@@ -31,7 +31,7 @@ public class ENSTest {
   }
 
   @Test
-  public void addressTest() throws NamingServiceException, Exception {
+  public void addressTest() throws NamingServiceException {
     String addr = resolution.addr("brad.eth", "eth");
     assertEquals("0x1af001667bb945d1bdbb05145eea7c21d86737f7", addr);
     
