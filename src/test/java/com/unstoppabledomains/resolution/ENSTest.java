@@ -18,7 +18,7 @@ public class ENSTest {
   }
 
   @Test
-  public void simpleTest() throws NamingServiceException {
+  public void simpleTest() throws NamingServiceException, Exception {
     String owner = resolution.owner("monkybrain.eth");
     assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", owner);
 
@@ -26,7 +26,7 @@ public class ENSTest {
   }
 
   @Test
-  public void addressTest() throws NamingServiceException {
+  public void addressTest() throws NamingServiceException, Exception {
     String addr = resolution.addr("brad.eth", "eth");
     assertEquals("0x1af001667bb945d1bdbb05145eea7c21d86737f7", addr);
     
