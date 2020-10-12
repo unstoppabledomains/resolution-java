@@ -13,6 +13,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
+    // Note: requires nexusUsername and nexusPassword properties to be defined
     id 'io.codearte.nexus-staging' version '0.22.0'
 }
 
@@ -107,13 +108,19 @@ publishing {
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+                username = System.getenv("nexusUsername")
+                password = System.getenv("nexusPassword")
             }
         }
     }
 }
 
 signing {
+    useInMemoryPgpKeys(System.getenv("PGP_SIGNING_KEY"), System.getenv("PGP_SIGNING_PASSWORD"))
     sign publishing.publications.mavenJava
+}
+
+nexusStaging {
+    username = System.getenv("nexusUsername")
+    password = System.getenv("nexusPassword")
 }
