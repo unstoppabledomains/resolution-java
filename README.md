@@ -11,9 +11,11 @@ Latest library release is available on [Maven Central](https://search.maven.org/
 ```
 
 # Usage Examples
-We are using infura as our choice of blockchain provider and it requires a [project id](https://infura.io/docs/gettingStarted/authentication) to be bundled with the url.
-Feel free to try other blockchain providers
+We are using [linkpool](https://www.linkpool.io/) as our choice of blockchain provider.
+Feel free to try other blockchain providers (as [infra](https://infura.io/) or any others).
 ```
+resolution = new Resolution("https://main-rpc.linkpool.io");
+
 resolution = new Resolution("https://mainnet.infura.io/v3/<ProjectId>");
 ```
 

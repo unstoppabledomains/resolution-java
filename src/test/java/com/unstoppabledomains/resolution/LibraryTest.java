@@ -18,7 +18,7 @@ public class LibraryTest {
 
     @BeforeEach
     public void initEach() {
-        resolution = new Resolution("https://mainnet.infura.io/v3/781c1e5cae32417b93eac26042950d25");
+        resolution = new Resolution("https://main-rpc.linkpool.io");
     }
 
     @Test
@@ -36,12 +36,12 @@ public class LibraryTest {
     }
 
     @Test
-    public void wrongDomainNamehash() throws NamingServiceException {
+    public void wrongDomainNamehash() throws Exception {
         TestUtils.checkError(() -> resolution.namehash("unupported"), NSExceptionCode.UnsupportedDomain);
     }
 
     @Test
-    public void addr() throws NamingServiceException{
+    public void addr() throws Exception {
         String addr = resolution.addr("homecakes.crypto", "eth");
         assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", addr);
 
@@ -54,13 +54,13 @@ public class LibraryTest {
 
 
     @Test
-    public void wrongDomainAddr() throws NamingServiceException {
+    public void wrongDomainAddr() throws Exception {
         TestUtils.checkError(() -> resolution.addr("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
         TestUtils.checkError(() -> resolution.addr("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
-    public void UnknownCurrency() throws NamingServiceException {
+    public void UnknownCurrency() throws Exception {
         TestUtils.checkError(() -> resolution.addr("brad.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.checkError(() -> resolution.addr("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.checkError(() -> resolution.addr("brad.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
@@ -92,17 +92,17 @@ public class LibraryTest {
     }
     
     @Test
-    public void ownerFailTest() throws NamingServiceException {
+    public void ownerFailTest() throws Exception {
         TestUtils.checkError(() -> resolution.owner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
-    public void noIpfsHash() throws NamingServiceException {
+    public void noIpfsHash() throws Exception {
         TestUtils.checkError(() -> resolution.ipfsHash("unregstered.crypto"), NSExceptionCode.UnspecifiedResolver);
     }
 
     @Test
-    public void noEmailRecord() throws NamingServiceException {
+    public void noEmailRecord() throws Exception {
         TestUtils.checkError(() -> resolution.email("brad.crypto"), NSExceptionCode.RecordNotFound);
     }
 

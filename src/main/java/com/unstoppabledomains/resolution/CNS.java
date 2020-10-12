@@ -66,6 +66,9 @@ public class CNS extends NamingService {
     try {
       BigInteger tokenID = this.tokenID(domain);
       String owner = this.owner(tokenID);
+      if (Utilities.isNull(owner)) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|n", domain, "CNS"));
+      }
       return owner;
     } catch (Exception e) {
       throw this.configureNamingServiceException(e,
@@ -85,7 +88,7 @@ public class CNS extends NamingService {
 
   private NamingServiceException configureNamingServiceException(Exception e, NSExceptionParams params) {
     if (e instanceof NamingServiceException) {
-      return new NamingServiceException(((NamingServiceException) e).getCode(), params, e);
+      return (NamingServiceException) e;
     }
     if (e instanceof UnknownHostException) {
       return new NamingServiceException(NSExceptionCode.BlockchainIsDown, params, e);

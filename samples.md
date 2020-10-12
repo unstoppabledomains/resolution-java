@@ -1,7 +1,7 @@
 ### Reference example
 Android development is very strict on the blocking the main UI thread.
 And it order to make a call using our library you might want to wrap the call into AsyncTask or simillar classes which allows executing async operations on a separate threads
-This example is in Kotlin
+This example is in Kotlin:
 ```
 import android.os.AsyncTask
 import com.unstoppabledomains.exceptions.NamingServiceException
@@ -10,8 +10,7 @@ import com.unstoppabledomains.resolution.Resolution
 data class ResolutionResult(val error: NamingServiceException?, val address: String?) {}
 
 class AsyncResolution : AsyncTask<String, String, ResolutionResult>() {
-    private val tool: Resolution =
-        Resolution("https://mainnet.infura.io/v3/<ProjectId>")
+    private val tool: Resolution = Resolution("https://main-rpc.linkpool.io")
 
     override fun doInBackground(vararg params: String?): ResolutionResult {
         val domain =  params[0]
@@ -26,9 +25,7 @@ class AsyncResolution : AsyncTask<String, String, ResolutionResult>() {
     }
 }
 ```
-ProjectID is a given from [infura](https://infura.io/docs)
 After you can use it in the following manner: 
-
 ```
 val task = AsyncResolution().execute("brad.crypto", "ETH")
 val result: ResolutionResult = task.get()
@@ -68,8 +65,7 @@ import com.unstoppabledomains.resolution.Resolution
 data class ResolutionResult(val error: NamingServiceException?, val address: String?) {}
 
 class AsyncResolution : AsyncTask<String, String, ResolutionResult>() {
-    private val tool: Resolution =
-        Resolution("https://mainnet.infura.io/v3/0728d3860f484d6683ec3e3033f73b08")
+    private val tool: Resolution = Resolution("https://main-rpc.linkpool.io")
 
     override fun doInBackground(vararg params: String?): ResolutionResult {
         val domain =  params[0]
