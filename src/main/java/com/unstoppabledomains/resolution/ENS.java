@@ -25,7 +25,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  Boolean isSupported(String domain) {
+  protected Boolean isSupported(String domain) {
     String[] ensTLDs = { "eth", "kred", "luxe", "xyz" };
     String[] split = domain.split("\\.");
     String tld = split[split.length - 1];
@@ -33,7 +33,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  String addr(String domain, String ticker) throws NamingServiceException {
+  protected String addr(String domain, String ticker) throws NamingServiceException {
     if (!ticker.equalsIgnoreCase("ETH")) {
       throw new NamingServiceException(NSExceptionCode.UnsupportedCurrency, new NSExceptionParams("c", ticker.toUpperCase()));
     }
@@ -43,7 +43,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  String email(String domain) throws NamingServiceException {
+  protected String email(String domain) throws NamingServiceException {
     Resolver resolver = getResolverContract(domain);
     byte[] tokenId = this.tokenId(domain);
     String emailRecord = resolver.getTextRecord(tokenId, "whois.email.value");
@@ -54,7 +54,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  String owner(String domain) throws NamingServiceException {
+  protected String owner(String domain) throws NamingServiceException {
    byte[] tokenId = this.tokenId(domain);
    String owner = this.registryContract.getOwner(tokenId);
     if (Utilities.isNull(owner)) {
@@ -93,7 +93,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  String ipfsHash(String domain) throws NamingServiceException {
+  protected String ipfsHash(String domain) throws NamingServiceException {
     throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m", "ENS"));
   }
 }
