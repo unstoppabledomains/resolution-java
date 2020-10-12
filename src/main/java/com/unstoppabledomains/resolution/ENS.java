@@ -66,8 +66,10 @@ public class ENS extends NamingService {
   private Resolver getResolverContract(String domain) throws NamingServiceException {
     String resolverAddress = getResolverAddress(domain);
     if (Boolean.TRUE.equals(Utilities.isNull(resolverAddress))) {
-      // if owner is not found UnregisteredDomain is raised
-      this.owner(domain);
+      String owner = this.registryContract.getOwner(this.tokenId(domain));
+      if (Utilities.isNull(owner)) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
+      }
       throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("d", domain));
     }
     return (Resolver) buildContract(resolverAddress, EnsContractType.Resolver);

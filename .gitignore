@@ -66,3 +66,7 @@ nb-configuration.xml
 
 # OS X
 .DS_Store
+
+# logs 
+logs
+ethereum.log
