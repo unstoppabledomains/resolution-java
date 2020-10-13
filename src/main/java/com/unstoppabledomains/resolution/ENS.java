@@ -10,6 +10,7 @@ import com.unstoppabledomains.resolution.contracts.Contract;
 import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
 import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
+import com.unstoppabledomains.util.Utilities;
 
 public class ENS extends NamingService {
 
