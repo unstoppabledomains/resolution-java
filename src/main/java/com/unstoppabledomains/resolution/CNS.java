@@ -110,7 +110,7 @@ public class CNS extends NamingService {
     return owner;
   }
 
-  private BigInteger tokenID(String domain) {
+  private BigInteger tokenID(String domain) throws NamingServiceException {
     String hash = this.namehash(domain);
     return new BigInteger(hash.substring(2), 16);
   }

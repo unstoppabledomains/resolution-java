@@ -38,14 +38,14 @@ public class ENS extends NamingService {
       throw new NamingServiceException(NSExceptionCode.UnsupportedCurrency, new NSExceptionParams("c", ticker.toUpperCase()));
     }
     Resolver resolver = getResolverContract(domain);
-    byte[] tokenId = this.tokenId(domain);
+    byte[] tokenId = tokenId(domain);
     return resolver.addr(tokenId, ticker.toUpperCase());
   }
 
   @Override
   protected String email(String domain) throws NamingServiceException {
     Resolver resolver = getResolverContract(domain);
-    byte[] tokenId = this.tokenId(domain);
+    byte[] tokenId = tokenId(domain);
     String emailRecord = resolver.getTextRecord(tokenId, "whois.email.value");
     if (Utilities.isNull(emailRecord)) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, "email"));
@@ -55,7 +55,7 @@ public class ENS extends NamingService {
 
   @Override
   protected String owner(String domain) throws NamingServiceException {
-   byte[] tokenId = this.tokenId(domain);
+   byte[] tokenId = tokenId(domain);
    String owner = this.registryContract.getOwner(tokenId);
     if (Utilities.isNull(owner)) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
@@ -66,7 +66,7 @@ public class ENS extends NamingService {
   private Resolver getResolverContract(String domain) throws NamingServiceException {
     String resolverAddress = getResolverAddress(domain);
     if (Boolean.TRUE.equals(Utilities.isNull(resolverAddress))) {
-      String owner = this.registryContract.getOwner(this.tokenId(domain));
+      String owner = registryContract.getOwner(tokenId(domain));
       if (Utilities.isNull(owner)) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
       }
@@ -75,21 +75,21 @@ public class ENS extends NamingService {
     return (Resolver) buildContract(resolverAddress, EnsContractType.Resolver);
   }
   
-  private byte[] tokenId(String domain) {
-    String hash = this.namehash(domain);
+  private byte[] tokenId(String domain) throws NamingServiceException {
+    String hash = namehash(domain);
     return Numeric.hexStringToByteArray(hash);
   }
 
-  private String getResolverAddress(String domain) {
-    byte[] tokenId = this.tokenId(domain);
-    return this.registryContract.getResolverAddress(tokenId);
+  private String getResolverAddress(String domain) throws NamingServiceException {
+    byte[] tokenId = tokenId(domain);
+    return registryContract.getResolverAddress(tokenId);
   }
 
   private Contract buildContract(String address, EnsContractType type) {
     if (type.equals(EnsContractType.Resolver)) {
-      return new Resolver(this.providerURL, address);
+      return new Resolver(providerURL, address);
     }
-    return new Registry(this.providerURL, address);
+    return new Registry(providerURL, address);
   }
 
   @Override

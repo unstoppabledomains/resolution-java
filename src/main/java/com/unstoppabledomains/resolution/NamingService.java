@@ -9,7 +9,7 @@ abstract class NamingService {
     protected abstract String email(String domain) throws NamingServiceException;
     protected abstract String owner(String domain) throws NamingServiceException;
 
-    protected String namehash(String domain) {
-        return NameHash.nameHash(domain);
+    protected String namehash(String domain) throws NamingServiceException {
+        return Namehash.nameHash(domain);
     }
 }
