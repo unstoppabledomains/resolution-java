@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Setup CI/CD process
+
 ## 1.3.0
 
 * Optimized build process 
