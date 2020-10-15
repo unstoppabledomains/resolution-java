@@ -20,7 +20,7 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-group = "com.unstoppabledomains.resolution"
+group = "com.unstoppabledomains"
 archivesBaseName = "resolution"
 
 task getVersion {

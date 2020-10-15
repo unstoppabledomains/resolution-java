@@ -4,14 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.unstoppabledomains.resolution.contracts.Contract;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 public class ProxyReader extends Contract {
 
-    private static final String ABI_FILE = "src/main/resources/abi/proxy_reader_abi.json";
+    private static final String ABI_FILE = "proxy_reader_abi.json";
 
     public ProxyReader(String url, String address) {
         super(url, address);
@@ -19,12 +19,10 @@ public class ProxyReader extends Contract {
 
     @Override
     protected JsonArray getAbi() {
-        String jsonString;
-        try {
-            jsonString = new String(Files.readAllBytes(Paths.get(ABI_FILE)));
-        } catch (IOException e) {
-            throw new RuntimeException("Couldn't find an ABI for " + getClass().getSimpleName() + " contract", e);
-        }
+        final InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream(ABI_FILE));
+
+        String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
+
         return new JsonParser().parse(jsonString).getAsJsonArray();
     }
 
