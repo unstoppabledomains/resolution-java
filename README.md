@@ -1,6 +1,6 @@
-![Version](https://img.shields.io/maven-central/v/com.unstoppabledomains/resolution)
-![CI](https://github.com/unstoppabledomains/resolution-java/workflows/Build%20%26%20test/badge.svg?branch=master)
-![License](https://img.shields.io/github/license/unstoppabledomains/resolution-java)
+[![Version](https://img.shields.io/maven-central/v/com.unstoppabledomains/resolution)](https://search.maven.org/artifact/com.unstoppabledomains/resolution)
+[![CI](https://github.com/unstoppabledomains/resolution-java/workflows/Build%20%26%20test/badge.svg?branch=master)](https://github.com/unstoppabledomains/resolution-java/actions)
+[![Version](https://img.shields.io/github/license/unstoppabledomains/resolution-java)](LICENSE)
 [![Unstoppable Domains Documentation](https://img.shields.io/badge/docs-unstoppabledomains.com-blue)](https://docs.unstoppabledomains.com/)
 [![Chat on Telegram](https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/unstoppabledev)
 
@@ -19,7 +19,7 @@ resolution = new Resolution("https://main-rpc.linkpool.io");
 resolution = new Resolution("https://mainnet.infura.io/v3/<ProjectId>");
 ```
 
-[Live usage examples](/samples.md)
+[Live usage examples](samples.md)
 
 ### Getting the currency address
 To resolve a domain and get the currency address is easy as this
