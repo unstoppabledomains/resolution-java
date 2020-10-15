@@ -4,7 +4,7 @@
 name: Publish to the Maven Central Repository
 
 env:
-  nexusUsername: ${{ secrets.NEXUS_USER }}
+  nexusUsername: ${{ secrets.NEXUS_USERNAME }}
   nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
   PGP_SIGNING_KEY: ${{ secrets.PGP_SIGNING_KEY }}
   PGP_SIGNING_PASSWORD: ${{ secrets.PGP_SIGNING_PASSWORD }}
