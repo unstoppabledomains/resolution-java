@@ -1,4 +1,4 @@
-## 1.4.1
+## 1.5.0
 
 * Fix resource read
 * Change group id to 'com.unstoppabledomains'
