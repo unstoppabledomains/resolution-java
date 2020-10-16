@@ -1,3 +1,6 @@
+## 1.6.0
+* Added Ens support
+
 ## 1.5.1
 
 * Code cleanup
