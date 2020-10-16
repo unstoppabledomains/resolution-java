@@ -20,12 +20,14 @@ public abstract class Contract {
   private String url;
   private JsonArray abi;
 
-  public Contract(String url, String address, String pathToAbi) {
+  public Contract(String url, String address) {
     this.address = address;
     this.url = url;
-    this.abi = getAbi(pathToAbi);
+    this.abi = getAbi();
   }
   
+  protected abstract JsonArray getAbi();
+
   protected <T> T fetchOne(String method, Object[] args) throws IOException {
     Tuple answ = fetchMethod(method, args);
     try {
@@ -33,16 +35,6 @@ public abstract class Contract {
     } catch (ArrayIndexOutOfBoundsException e) {
       return null;
     }
-  }
-
-  private JsonArray getAbi(String pathToAbi) {
-      String jsonString;
-      try {
-          jsonString = new String(Files.readAllBytes(Paths.get(pathToAbi)));
-      } catch (IOException e) {
-          throw new RuntimeException("Couldn't find an ABI for " + getClass().getSimpleName() + " contract", e);
-      }
-      return new JsonParser().parse(jsonString).getAsJsonArray();
   }
 
   private Tuple fetchMethod(String method, Object[] args) throws IOException {

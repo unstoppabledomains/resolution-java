@@ -1,7 +1,12 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
@@ -9,10 +14,11 @@ import com.unstoppabledomains.resolution.contracts.Contract;
 
 public class Registry extends Contract {
 
-  private static final String ABI_FILE = "src/main/resources/abi/ens_registry_abi.json";  
+  private static final String ABI_FILE = "ens_registry_abi.json";  
+
 
   public Registry(String url, String address) {
-    super(url, address, ABI_FILE);
+    super(url, address);
   }
 
   public String getResolverAddress(byte[] tokenId) throws NamingServiceException  {
@@ -33,5 +39,14 @@ public class Registry extends Contract {
     } catch(IOException exception) {
       throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", "ENS"), exception);
     }
+  }
+
+  @Override
+  protected JsonArray getAbi() {
+      final InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream(ABI_FILE));
+
+      String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
+
+      return new JsonParser().parse(jsonString).getAsJsonArray();
   }
 }
