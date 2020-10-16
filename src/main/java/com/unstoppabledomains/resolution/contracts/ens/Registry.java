@@ -2,6 +2,9 @@ package com.unstoppabledomains.resolution.contracts.ens;
 
 import java.io.IOException;
 
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NSExceptionParams;
+import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.Contract;
 
 public class Registry extends Contract {
@@ -12,24 +15,23 @@ public class Registry extends Contract {
     super(url, address, ABI_FILE);
   }
 
-  public String getResolverAddress(byte[] tokenId) {
+  public String getResolverAddress(byte[] tokenId) throws NamingServiceException  {
     Object[] args = new Object[1];
     args[0] = tokenId;
     try {
       return this.fetchAddress("resolver", args);
     } catch(IOException exception) {
-      return null;
+      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", "ENS"), exception);
     }
   }
 
-  public String getOwner(byte[] tokenId) {
+  public String getOwner(byte[] tokenId) throws NamingServiceException {
     Object[] args = new Object[1];
     args[0] = tokenId;
     try {
       return this.fetchAddress("owner", args);
     } catch(IOException exception) {
-      return null;
+      throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", "ENS"), exception);
     }
   }
-
 }
