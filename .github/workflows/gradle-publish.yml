@@ -26,4 +26,4 @@ jobs:
       - name: Publish to the Maven Central Repository
         run: gradle publish
       - name: Close and release staging repository
-        run: gradle closeAndReleaseRepository
+        run: gradle closeRepository

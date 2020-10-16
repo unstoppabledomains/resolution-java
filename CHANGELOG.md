@@ -1,3 +1,7 @@
+## 1.5.1
+
+* Code cleanup
+
 ## 1.5.0
 
 * Fix resource read

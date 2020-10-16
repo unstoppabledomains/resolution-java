@@ -73,7 +73,7 @@ public class ZNS extends NamingService {
 
     private String getRecord(String domain, String key) throws NamingServiceException {
         try {
-        JsonObject records = this.getAllRecords(domain);
+        JsonObject records = getAllRecords(domain);
         return records.get(key).getAsString();
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
@@ -84,7 +84,7 @@ public class ZNS extends NamingService {
         try {
             String resolverAddress = getResolverAddress(domain);
             String[] keys = {};
-            JsonObject response = this.fetchSubState(resolverAddress, RECORDS_KEY, keys);
+            JsonObject response = fetchSubState(resolverAddress, RECORDS_KEY, keys);
             return response.getAsJsonObject(RECORDS_KEY);
         } catch(IOException error) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound);
@@ -133,7 +133,7 @@ public class ZNS extends NamingService {
 
         String method = "GetSmartContractSubState";
         JsonObject body = HTTPUtil.prepareBody(method, params);
-        JsonObject response = HTTPUtil.post(this.provider, body);
+        JsonObject response = HTTPUtil.post(provider, body);
         JsonElement result = response.get("result");
         return result.getAsJsonObject();
     }
