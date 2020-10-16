@@ -26,13 +26,13 @@ public class CNS extends NamingService {
     return (split.length != 0 && split[split.length - 1].equals("crypto"));
   }
 
-  protected  String addr(String domain, String ticker) throws NamingServiceException {
-    String owner = this.owner(domain);
+  public String addr(String domain, String ticker) throws NamingServiceException {
+    String owner = owner(domain);
     if (Utilities.isNull(owner))
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     String key = "crypto." + ticker.toUpperCase() + ".address";
-    String address = this.resolveKey(key, domain);
+    String address = resolveKey(key, domain);
     if (Utilities.isNull(address))
       throw new NamingServiceException(NSExceptionCode.UnknownCurrency,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
@@ -41,7 +41,7 @@ public class CNS extends NamingService {
 
   protected  String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
-    String hash = this.resolveKey(key, domain);
+    String hash = resolveKey(key, domain);
 
     if (hash == null) {
       throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver,
@@ -56,7 +56,7 @@ public class CNS extends NamingService {
 
   protected  String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
-    String email = this.resolveKey(key, domain);
+    String email = resolveKey(key, domain);
     if (Utilities.isNull(email))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
           new NSExceptionParams("d|r", domain, key));
@@ -65,21 +65,21 @@ public class CNS extends NamingService {
 
   protected  String owner(String domain) throws NamingServiceException {
     try {
-      BigInteger tokenID = this.tokenID(domain);
-      String owner = this.owner(tokenID);
+      BigInteger tokenID = tokenID(domain);
+      String owner = owner(tokenID);
       if (Utilities.isNull(owner)) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|n", domain, "CNS"));
       }
       return owner;
     } catch (Exception e) {
-      throw this.configureNamingServiceException(e,
+      throw configureNamingServiceException(e,
           new NSExceptionParams("d|n", domain, "CNS"));
     }
   }
 
   protected  String resolveKey(String key, String domain) throws NamingServiceException {
     try {
-      BigInteger tokenID = this.tokenID(domain);
+      BigInteger tokenID = tokenID(domain);
       return resolveKey(key, tokenID);
     } catch (Exception e) {
       throw configureNamingServiceException(e,
@@ -112,7 +112,7 @@ public class CNS extends NamingService {
   }
 
   private BigInteger tokenID(String domain) throws NamingServiceException {
-    String hash = this.namehash(domain);
+    String hash = namehash(domain);
     return new BigInteger(hash.substring(2), 16);
   }
 }

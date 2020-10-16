@@ -1,0 +1,29 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Publish to the Maven Central Repository
+
+env:
+  nexusUsername: ${{ secrets.NEXUS_USERNAME }}
+  nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
+  stagingProfileId: ${{ secrets.STAGING_PROFILE_ID }}
+  PGP_SIGNING_KEY: ${{ secrets.PGP_SIGNING_KEY }}
+  PGP_SIGNING_PASSWORD: ${{ secrets.PGP_SIGNING_PASSWORD }}
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Publish to the Maven Central Repository
+        run: gradle publish
+      - name: Close and release staging repository
+        run: gradle closeRepository

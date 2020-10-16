@@ -1,21 +1,25 @@
+[![Version](https://img.shields.io/maven-central/v/com.unstoppabledomains/resolution)](https://search.maven.org/artifact/com.unstoppabledomains/resolution)
+[![CI](https://github.com/unstoppabledomains/resolution-java/workflows/Build%20%26%20test/badge.svg?branch=master)](https://github.com/unstoppabledomains/resolution-java/actions)
+[![Version](https://img.shields.io/github/license/unstoppabledomains/resolution-java)](LICENSE)
+[![Unstoppable Domains Documentation](https://img.shields.io/badge/docs-unstoppabledomains.com-blue)](https://docs.unstoppabledomains.com/)
 [![Chat on Telegram](https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/unstoppabledev)
 
 # Easy way to resolve .crypto blockchain name
 This java library allows to resolve the various cryptocurrencies addresses attached to a domain, ipfs-hash and other owners meta-data
 
 # Releases
-Latest library release is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains.resolution/resolution) 
+Latest library release is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution) 
 
 # Usage Examples
 We are using [linkpool](https://www.linkpool.io/) as our choice of blockchain provider.
-Feel free to try other blockchain providers (as [infra](https://infura.io/) or any others).
+Feel free to try other blockchain providers (as [infura](https://infura.io/) or any others).
 ```
 resolution = new Resolution("https://main-rpc.linkpool.io");
 
 resolution = new Resolution("https://mainnet.infura.io/v3/<ProjectId>");
 ```
 
-[Live usage examples](/samples.md)
+[Live usage examples](samples.md)
 
 ### Getting the currency address
 To resolve a domain and get the currency address is easy as this
@@ -55,6 +59,11 @@ public enum NSExceptionCode {
   UnspecifiedResolver;
 }
 ```
+
+# Versioning & release process
+With the updates to the codebase [CHANGELOG.md](CHANGELOG.md) should be updated with the listed changes, and 
+a corresponding client version should be bumped in [client.json](src/main/resources/com/unstoppabledomains/client/client.json).
+New packages are publishing by creating a new Github release.
 
 # To-Do
 It is planned to add a support for Zilliqa blockchain (domain extension .zil) and ENS support as well. Feel free to contribute!

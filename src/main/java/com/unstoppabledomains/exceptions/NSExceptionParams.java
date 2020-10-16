@@ -22,27 +22,27 @@ public class NSExceptionParams {
   private void parseOption(String option, String value) {
     switch(option) {
       case "d": {
-        this.domain = value;
+        domain = value;
         return ;
       }
       case "n": {
-        this.namingService = value;
+        namingService = value;
         return ;
       }
       case "c": {
-        this.coinTicker = value;
+        coinTicker = value;
         return;
       }
       case "a": {
-        this.contractAddress = value;
+        contractAddress = value;
         return;
       }
       case "m": {
-        this.methodName = value;
+        methodName = value;
         return;
       }
       case "r": {
-        this.record = value;
+        record = value;
         break ;
       }
       default: {
