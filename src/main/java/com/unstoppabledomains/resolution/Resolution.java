@@ -16,7 +16,7 @@ public class Resolution {
     */
     public Resolution(String blockchainProviderUrl) {
         this.providerUrl = blockchainProviderUrl;
-        this.services = this.buildServices(providerUrl);
+        this.services = buildServices(providerUrl);
     }
 
     /**
@@ -27,7 +27,7 @@ public class Resolution {
      * @return address in hex-string format
      */
     public String addr(String domain, String ticker) throws NamingServiceException {
-        NamingService service = this.findService(domain);
+        NamingService service = findService(domain);
         return service.addr(domain, ticker);
     }
 
@@ -39,7 +39,7 @@ public class Resolution {
      * @return namehash of a domain for a specific NamingService
      */
     public String namehash(String domain) throws NamingServiceException {
-        NamingService service = this.findService(domain);
+        NamingService service = findService(domain);
         return service.namehash(domain);
     }
     
@@ -51,7 +51,7 @@ public class Resolution {
      * @return ipfs hash used to redirect people to ipfs content
      */
     public String ipfsHash(String domain) throws NamingServiceException {
-        NamingService service = this.findService(domain);
+        NamingService service = findService(domain);
         return service.ipfsHash(domain);
     }
 
@@ -62,7 +62,7 @@ public class Resolution {
      * @return email address 
      */
     public String email(String domain) throws NamingServiceException {
-        NamingService service = this.findService(domain);
+        NamingService service = findService(domain);
         return service.email(domain);
     }
 
@@ -73,12 +73,12 @@ public class Resolution {
      * @return etherium address of a domain's owner
      */
     public String owner(String domain) throws NamingServiceException {
-        NamingService service = this.findService(domain);
+        NamingService service = findService(domain);
         return service.owner(domain);
     }
     
     private NamingService findService(String domain) throws NamingServiceException {
-        for (NamingService service : this.services) {
+        for (NamingService service : services) {
             if (Boolean.TRUE.equals(service.isSupported(domain))) return service;
         }
         throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));

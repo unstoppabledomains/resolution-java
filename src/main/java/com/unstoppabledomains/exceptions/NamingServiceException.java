@@ -17,7 +17,7 @@ public class NamingServiceException extends Exception {
     super(messageFromCode(code, params));
     this.code = code;
   }
-  public NSExceptionCode getCode() { return this.code; }
+  public NSExceptionCode getCode() { return code; }
 
   private static String messageFromCode(NSExceptionCode code, NSExceptionParams params) {
     switch(code) {
