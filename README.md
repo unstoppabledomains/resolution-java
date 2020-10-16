@@ -63,7 +63,9 @@ public enum NSExceptionCode {
 # Versioning & release process
 With the updates to the codebase [CHANGELOG.md](CHANGELOG.md) should be updated with the listed changes, and 
 a corresponding client version should be bumped in [client.json](src/main/resources/com/unstoppabledomains/client/client.json).
-New packages are publishing by creating a new Github release.
+New packages are publishing by creating a new Github release: after a successful Github Workflow staging
+ repository should be released by logging into [Nexus Repository Manager](https://oss.sonatype.org/) and performing
+  'release' action.
 
 # To-Do
 It is planned to add a support for Zilliqa blockchain (domain extension .zil) and ENS support as well. Feel free to contribute!
