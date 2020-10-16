@@ -121,7 +121,6 @@ signing {
 }
 
 nexusStaging {
-    stagingProfileId = System.getenv("stagingProfileId")
     username = System.getenv("nexusUsername")
     password = System.getenv("nexusPassword")
 }
