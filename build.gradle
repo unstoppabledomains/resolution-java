@@ -84,6 +84,8 @@ publishing {
                         url.set("http://www.opensource.org/licenses/mit-license.php")
                     }
                 }
+                developers {
+                }
                 scm {
                     connection.set("scm:git:git://github.com/unstoppabledomains/resolution-java.git")
                     developerConnection.set("scm:git:ssh://github.com/unstoppabledomains/resolution-java.git")
