@@ -85,6 +85,13 @@ publishing {
                     }
                 }
                 developers {
+                    developer {
+                        id.set("GentelmanJohn")
+                        name.set("Jeyhun")
+                        email.set("johnny@unstoppabledomains.com")
+                        organization.set("com.github.unstoppabledomains")
+                        organizationUrl.set("https://unstoppabledomains.com")
+                    }
                 }
                 scm {
                     connection.set("scm:git:git://github.com/unstoppabledomains/resolution-java.git")
