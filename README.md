@@ -61,11 +61,25 @@ public enum NSExceptionCode {
 ```
 
 # Versioning & release process
-With the updates to the codebase [CHANGELOG.md](CHANGELOG.md) should be updated with the listed changes, and 
-a corresponding client version should be bumped in [client.json](src/main/resources/com/unstoppabledomains/client/client.json).
-New packages are publishing by creating a new Github release: after a successful Github Workflow staging
- repository should be released by logging into [Nexus Repository Manager](https://oss.sonatype.org/) and performing
-  'release' action.
+
+##### With the updates to the codebase:  
+
+- [CHANGELOG.md](CHANGELOG.md) should be updated with the listed changes, and 
+a corresponding client version should be bumped in [client.json](src/main/resources/com/unstoppabledomains/client/client.json)
+
+##### New packages:  
+
+- Create a new Github release (using semver)
+- Wait for a successful Github Workflow publishing
+- Release staging repository by logging into [Nexus Repository Manager](https://oss.sonatype.org/) and
+ performing 'release' action
+
+**Alternatively** to a CI release you can perform a manual publish by following next steps:
+- Configure env variables: `nexusUsername`, `nexusPassword`, `signingKey`, `signingPassword`  
+ 
+- Run `gradle publish`
+- Login to [Nexus Repository Manager](https://oss.sonatype.org/) and perform 'close' and then
+  'release' actions on a staged repository **OR** run `gradle closeAndReleaseRepository`  
 
 # To-Do
 It is planned to add a support for Zilliqa blockchain (domain extension .zil) and ENS support as well. Feel free to contribute!
