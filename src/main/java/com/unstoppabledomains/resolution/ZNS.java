@@ -65,7 +65,7 @@ public class ZNS extends NamingService {
 
     public String owner(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
-        if (addresses == null || Utilities.isNull(addresses[0])) {
+        if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
             throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
         }
         return addresses[0];
@@ -93,10 +93,10 @@ public class ZNS extends NamingService {
 
     private String getResolverAddress(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
-        if (addresses == null || Utilities.isNull(addresses[0])) {
+        if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
             throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain)); 
         }
-        if (Utilities.isNull(addresses[1])) {
+        if (Utilities.isEmptyResponse(addresses[1])) {
             throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("%d", domain));
         }
         return addresses[1];

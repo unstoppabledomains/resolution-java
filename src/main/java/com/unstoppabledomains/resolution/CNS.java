@@ -28,12 +28,12 @@ public class CNS extends NamingService {
 
   public String addr(String domain, String ticker) throws NamingServiceException {
     String owner = owner(domain);
-    if (Utilities.isNull(owner))
+    if (Utilities.isEmptyResponse(owner))
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     String key = "crypto." + ticker.toUpperCase() + ".address";
     String address = resolveKey(key, domain);
-    if (Utilities.isNull(address))
+    if (Utilities.isEmptyResponse(address))
       throw new NamingServiceException(NSExceptionCode.UnknownCurrency,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     return address;
@@ -57,7 +57,7 @@ public class CNS extends NamingService {
   protected  String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
     String email = resolveKey(key, domain);
-    if (Utilities.isNull(email))
+    if (Utilities.isEmptyResponse(email))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
           new NSExceptionParams("d|r", domain, key));
     return email;
@@ -67,7 +67,7 @@ public class CNS extends NamingService {
     try {
       BigInteger tokenID = tokenID(domain);
       String owner = owner(tokenID);
-      if (Utilities.isNull(owner)) {
+      if (Utilities.isEmptyResponse(owner)) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|n", domain, "CNS"));
       }
       return owner;
@@ -105,7 +105,7 @@ public class CNS extends NamingService {
 
   private String owner(BigInteger tokenID) throws NamingServiceException {
     String owner = proxyReaderContract.getOwner(tokenID);
-    if (Utilities.isNull(owner)) {
+    if (Utilities.isEmptyResponse(owner)) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
     }
     return owner;
