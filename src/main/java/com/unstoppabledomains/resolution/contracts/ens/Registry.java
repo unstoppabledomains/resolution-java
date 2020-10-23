@@ -1,12 +1,6 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
@@ -14,7 +8,7 @@ import com.unstoppabledomains.resolution.contracts.Contract;
 
 public class Registry extends Contract {
 
-  private static final String ABI_FILE = "ens_registry_abi.json";  
+  private static final String ABI_FILE = "ens/ens_registry_abi.json";  
 
 
   public Registry(String url, String address) {
@@ -42,11 +36,7 @@ public class Registry extends Contract {
   }
 
   @Override
-  protected JsonArray getAbi() {
-      final InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream(ABI_FILE));
-
-      String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-
-      return new JsonParser().parse(jsonString).getAsJsonArray();
+  protected String getAbiPath() {
+    return ABI_FILE;
   }
 }

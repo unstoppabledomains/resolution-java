@@ -1,17 +1,12 @@
 package com.unstoppabledomains.resolution.contracts.cns;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.unstoppabledomains.resolution.contracts.Contract;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.stream.Collectors;
 
 public class ProxyReader extends Contract {
 
-    private static final String ABI_FILE = "proxy_reader_abi.json";
+    private static final String ABI_FILE = "cns/proxy_reader_abi.json";
 
     public ProxyReader(String url, String address) {
         super(url, address);
@@ -36,11 +31,7 @@ public class ProxyReader extends Contract {
     }
 
     @Override
-    protected JsonArray getAbi() {
-        final InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream(ABI_FILE));
-
-        String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-
-        return new JsonParser().parse(jsonString).getAsJsonArray();
+    protected String getAbiPath() {
+      return ABI_FILE;
     }
 }

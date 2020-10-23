@@ -8,11 +8,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 public abstract class Contract {
 
@@ -20,14 +21,23 @@ public abstract class Contract {
   private String url;
   private JsonArray abi;
 
-  public Contract(String url, String address) {
+  protected Contract(String url, String address) {
     this.address = address;
     this.url = url;
     this.abi = getAbi();
   }
   
-  protected abstract JsonArray getAbi();
+  protected abstract String getAbiPath();
+  
+  protected JsonArray getAbi() {
+      String path = getAbiPath();
+      final InputStreamReader reader = new InputStreamReader(Contract.class.getResourceAsStream(path));
 
+      String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
+
+      return new JsonParser().parse(jsonString).getAsJsonArray();
+  }
+  
   protected <T> T fetchOne(String method, Object[] args) throws IOException {
     Tuple answ = fetchMethod(method, args);
     try {
