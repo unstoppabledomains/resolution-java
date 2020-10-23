@@ -7,9 +7,10 @@ import java.math.BigInteger;
 public class ProxyReader extends Contract {
 
     private static final String ABI_FILE = "cns/proxy_reader_abi.json";
+    private static final String namingServiceName = "CNS";
 
     public ProxyReader(String url, String address) {
-        super(url, address);
+        super(namingServiceName, url, address);
     }
 
     public String getOwner(BigInteger tokenID) {

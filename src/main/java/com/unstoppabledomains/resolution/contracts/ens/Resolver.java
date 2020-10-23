@@ -1,7 +1,5 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
-
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +12,12 @@ import com.unstoppabledomains.resolution.contracts.Contract;
 
 public class Resolver extends Contract {
 
-  private static final String ABI_FILE = "ens/ens_resolver_abi.json";  
+  private static final String ABI_FILE = "ens/ens_resolver_abi.json";
+  private static final String namingServiceName = "ENS";
   private static final Map<String, String> UDRecordsToENS = new HashMap<>();
 
   public Resolver(String url, String address) {
-    super(url, address);
+    super(namingServiceName, url, address);
     configureRecordsMap();
   }
 
@@ -28,13 +27,11 @@ public class Resolver extends Contract {
     // TODO update when multi-coin support is finished
     //? eth coinType = 60
     args[1] = new BigInteger("60");
-    try {
-      byte[] addressBytes = this.fetchOne("addr", args);
-      return Numeric.toHexString(addressBytes);
-    } catch(IOException exception) {
-      exception.printStackTrace();
+    byte[] addressBytes = this.fetchOne("addr", args);
+    if (addressBytes == null) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("r", ticker));
     }
+    return Numeric.toHexString(addressBytes);
   }
 
 public String getTextRecord(byte[] tokenId, String key) throws NamingServiceException {
@@ -42,11 +39,12 @@ public String getTextRecord(byte[] tokenId, String key) throws NamingServiceExce
     Object[] args = new Object[2];
     args[0] = tokenId;
     args[1] = ensRecordKey;
-    try {
-      return this.fetchOne("text", args);
-    } catch(IOException exception) {
+    
+    String record = this.fetchOne("text", args);
+    if (record == null) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("r", key));
     }
+    return record;
   }
 
   private void configureRecordsMap() {

@@ -7,6 +7,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NSExceptionParams;
+import com.unstoppabledomains.exceptions.NamingServiceException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,11 +20,13 @@ import java.util.stream.Collectors;
 
 public abstract class Contract {
 
+  private String namingServiceName;
   private String address;
   private String url;
   private JsonArray abi;
 
-  protected Contract(String url, String address) {
+  protected Contract(String namingServiceName, String url, String address) {
+    this.namingServiceName = namingServiceName;
     this.address = address;
     this.url = url;
     this.abi = getAbi();
@@ -38,7 +43,7 @@ public abstract class Contract {
       return new JsonParser().parse(jsonString).getAsJsonArray();
   }
   
-  protected <T> T fetchOne(String method, Object[] args) throws IOException {
+  protected <T> T fetchOne(String method, Object[] args) throws NamingServiceException {
     Tuple answ = fetchMethod(method, args);
     try {
       return (T) answ.get(0);
@@ -47,26 +52,31 @@ public abstract class Contract {
     }
   }
 
-  private Tuple fetchMethod(String method, Object[] args) throws IOException {
+  private Tuple fetchMethod(String method, Object[] args) throws NamingServiceException {
     JsonObject methodDescription = getMethodDescription(method, args.length);
-    if (methodDescription == null) {
-      throw new IOException("Couldn't found method from ABI");
-    }
     Function function = Function.fromJson(methodDescription.toString());
     ByteBuffer encoded = function.encodeCallWithArgs(args);
     String data = toHexString(encoded.array());
     JsonArray params = prepareParamsForBody(data, address);
     JsonObject body = HTTPUtil.prepareBody("eth_call", params);
-    JsonObject response = HTTPUtil.post(url, body);
-    String answer = response.get("result").getAsString();
-    if (isUnknownError(answer)) {
-      return new Tuple();
+    try {
+      JsonObject response = HTTPUtil.post(url, body);
+      String answer = response.get("result").getAsString();
+      if (isUnknownError(answer)) {
+        return new Tuple();
+      }
+      final String replacedAnswer = answer.replace("0x", "");
+      return function.decodeReturn(FastHex.decode(replacedAnswer));
+    } catch(IOException exception) {
+      throw new NamingServiceException(
+        NSExceptionCode.BlockchainIsDown,
+        new NSExceptionParams("n", namingServiceName),
+        exception
+      );
     }
-    final String replacedAnswer = answer.replace("0x", "");
-    return function.decodeReturn(FastHex.decode(replacedAnswer));
   }
 
-  protected String fetchAddress(String method, Object[] args) throws IOException {
+  protected String fetchAddress(String method, Object[] args) throws NamingServiceException {
     BigInteger address = fetchOne(method, args);
     if (address == null) {
       return null;
@@ -98,7 +108,7 @@ public abstract class Contract {
         return methodDescription;
       }
     }
-    return null;
+    throw new RuntimeException("Couldn't found method " + method + " from ABI");
   }
 
   private JsonArray prepareParamsForBody(String data, String address) {

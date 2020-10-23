@@ -2,7 +2,7 @@ package com.unstoppabledomains.exceptions;
 
 public class NamingServiceException extends Exception {
   private static final long serialVersionUID = 1L;
-  private NSExceptionCode code;
+  private final NSExceptionCode code;
   
   public NamingServiceException(NSExceptionCode code) {
     super(messageFromCode(code, new NSExceptionParams("", "")));
