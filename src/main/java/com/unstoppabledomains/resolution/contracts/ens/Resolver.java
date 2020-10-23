@@ -27,7 +27,7 @@ public class Resolver extends Contract {
     // TODO update when multi-coin support is finished
     //? eth coinType = 60
     args[1] = new BigInteger("60");
-    byte[] addressBytes = this.fetchOne("addr", args);
+    byte[] addressBytes = fetchOne("addr", args);
     if (addressBytes == null) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("r", ticker));
     }
@@ -40,7 +40,7 @@ public String getTextRecord(byte[] tokenId, String key) throws NamingServiceExce
     args[0] = tokenId;
     args[1] = ensRecordKey;
     
-    String record = this.fetchOne("text", args);
+    String record = fetchOne("text", args);
     if (record == null) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("r", key));
     }

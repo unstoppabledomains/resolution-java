@@ -15,13 +15,13 @@ public class Registry extends Contract {
   public String getResolverAddress(byte[] tokenId) throws NamingServiceException  {
     Object[] args = new Object[1];
     args[0] = tokenId;
-    return this.fetchAddress("resolver", args);
+    return fetchAddress("resolver", args);
   }
 
   public String getOwner(byte[] tokenId) throws NamingServiceException {
     Object[] args = new Object[1];
     args[0] = tokenId;
-    return this.fetchAddress("owner", args);
+    return fetchAddress("owner", args);
   }
 
   @Override

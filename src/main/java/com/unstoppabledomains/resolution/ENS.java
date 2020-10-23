@@ -57,7 +57,7 @@ public class ENS extends NamingService {
   @Override
   protected String owner(String domain) throws NamingServiceException {
    byte[] tokenId = tokenId(domain);
-   String owner = this.registryContract.getOwner(tokenId);
+   String owner = registryContract.getOwner(tokenId);
     if (Utilities.isEmptyResponse(owner)) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
     }
