@@ -1,3 +1,11 @@
+## Unreleased
+* Deprecated following methods from Resolution.java class: 
+ - owner in favor of getOwner
+ - addr in favor of getAddress
+ - email in favor of getEmail
+ - ipfsHash in favor of getIpfsHash
+ - namehash in favor of getNamehash
+
 ## 1.6.0
 * Added Ens support
 
