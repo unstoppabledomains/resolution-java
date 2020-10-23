@@ -14,7 +14,7 @@ public class Resolver extends Contract {
 
   private static final String ABI_FILE = "ens/ens_resolver_abi.json";
   private static final String namingServiceName = "ENS";
-  private static final Map<String, String> UDRecordsToENS = new HashMap<>();
+  private final Map<String, String> uDRecordsToENS = new HashMap<>();
 
   public Resolver(String url, String address) {
     super(namingServiceName, url, address);
@@ -35,7 +35,7 @@ public class Resolver extends Contract {
   }
 
 public String getTextRecord(byte[] tokenId, String key) throws NamingServiceException {
-    String ensRecordKey = UDRecordsToENS.get(key);
+    String ensRecordKey = uDRecordsToENS.get(key);
     Object[] args = new Object[2];
     args[0] = tokenId;
     args[1] = ensRecordKey;
@@ -48,10 +48,10 @@ public String getTextRecord(byte[] tokenId, String key) throws NamingServiceExce
   }
 
   private void configureRecordsMap() {
-    UDRecordsToENS.put("ipfs.redirect_domain.value", "url");
-    UDRecordsToENS.put("whois.email.value", "email");
-    UDRecordsToENS.put("gundb.username.value", "gundb_username");
-    UDRecordsToENS.put("gundb.public_key.value", "gundb_public_key");
+    uDRecordsToENS.put("ipfs.redirect_domain.value", "url");
+    uDRecordsToENS.put("whois.email.value", "email");
+    uDRecordsToENS.put("gundb.username.value", "gundb_username");
+    uDRecordsToENS.put("gundb.public_key.value", "gundb_public_key");
   }
 
   @Override
