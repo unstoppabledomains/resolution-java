@@ -95,6 +95,6 @@ public class ENS extends NamingService {
 
   @Override
   protected String ipfsHash(String domain) throws NamingServiceException {
-    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m", "ENS"));
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "ipfsHash" ,"ENS"));
   }
 }
