@@ -12,7 +12,7 @@ import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
 import com.unstoppabledomains.util.Utilities;
 
-public class ENS extends NamingService {
+public class ENS implements NamingService {
 
   private static final String REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
   private final String providerURL;
@@ -26,7 +26,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  protected Boolean isSupported(String domain) {
+  public Boolean isSupported(String domain) {
     String[] ensTLDs = { "eth", "kred", "luxe", "xyz" };
     String[] split = domain.split("\\.");
     String tld = split[split.length - 1];
@@ -34,7 +34,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  protected String addr(String domain, String ticker) throws NamingServiceException {
+  public String addr(String domain, String ticker) throws NamingServiceException {
     if (!ticker.equalsIgnoreCase("ETH")) {
       throw new NamingServiceException(NSExceptionCode.UnsupportedCurrency, new NSExceptionParams("c", ticker.toUpperCase()));
     }
@@ -44,7 +44,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  protected String email(String domain) throws NamingServiceException {
+  public String email(String domain) throws NamingServiceException {
     Resolver resolver = getResolverContract(domain);
     byte[] tokenId = tokenId(domain);
     String emailRecord = resolver.getTextRecord(tokenId, "whois.email.value");
@@ -55,7 +55,7 @@ public class ENS extends NamingService {
   }
 
   @Override
-  protected String owner(String domain) throws NamingServiceException {
+  public String owner(String domain) throws NamingServiceException {
    byte[] tokenId = tokenId(domain);
    String owner = registryContract.getOwner(tokenId);
     if (Utilities.isEmptyResponse(owner)) {
@@ -94,7 +94,12 @@ public class ENS extends NamingService {
   }
 
   @Override
-  protected String ipfsHash(String domain) throws NamingServiceException {
+  public String ipfsHash(String domain) throws NamingServiceException {
     throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "ipfsHash" ,"ENS"));
+  }
+
+  @Override
+  public String namehash(String domain) throws NamingServiceException {
+    return Namehash.nameHash(domain);
   }
 }
