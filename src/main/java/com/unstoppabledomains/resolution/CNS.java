@@ -21,7 +21,7 @@ public class CNS implements NamingService {
     this.proxyReaderContract = new ProxyReader(blockchainProviderUrl, PROXY_READER_ADDRESS);
   }
 
-  protected  Boolean isSupported(String domain) {
+  public Boolean isSupported(String domain) {
     String[] split = domain.split("\\.");
     return (split.length != 0 && split[split.length - 1].equals("crypto"));
   }
@@ -39,7 +39,7 @@ public class CNS implements NamingService {
     return address;
   }
 
-  protected  String ipfsHash(String domain) throws NamingServiceException {
+  public  String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
     String hash = resolveKey(key, domain);
 
@@ -54,7 +54,7 @@ public class CNS implements NamingService {
     return hash;
   }
 
-  protected  String email(String domain) throws NamingServiceException {
+  public  String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
     String email = resolveKey(key, domain);
     if (Utilities.isEmptyResponse(email))
@@ -63,7 +63,7 @@ public class CNS implements NamingService {
     return email;
   }
 
-  protected  String owner(String domain) throws NamingServiceException {
+  public  String owner(String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = tokenID(domain);
       String owner = owner(tokenID);

@@ -34,7 +34,7 @@ public class Resolution {
     /**
      * Produces a namehash for a specific domain
      * @param domain - domain name such as "brad.crypto"
-     * @see https://docs.ens.domains/contract-api-reference/name-processing
+     * see https://docs.ens.domains/contract-api-reference/name-processing
      * @throws NamingServiceException - if tld of the domain is not recognized
      * @return namehash of a domain for a specific NamingService
      */
@@ -47,7 +47,7 @@ public class Resolution {
     /**
      * Resolves domain for an ipfs hash
      * @param domain - domain name such as "brad.crypto"
-     * @see https://docs.ipfs.io/concepts/what-is-ipfs/
+     * see https://docs.ipfs.io/concepts/what-is-ipfs/
      * @throws NamingServiceException - if no record is present
      * @return ipfs hash used to redirect people to ipfs content
      */
@@ -97,7 +97,7 @@ public class Resolution {
      * Produces a namehash for a specific domain
      * @deprecated this method is depricated since 1.6.0. Please use Resolution#getNamehash instead
      * @param domain - domain name such as "brad.crypto"
-     * @see https://docs.ens.domains/contract-api-reference/name-processing
+     * see https://docs.ens.domains/contract-api-reference/name-processing
      * @throws NamingServiceException - if tld of the domain is not recognized
      * @return namehash of a domain for a specific NamingService
      */
@@ -111,7 +111,7 @@ public class Resolution {
      * Resolves domain for an ipfs hash
      * @deprecated this method is depricated since 1.6.0. Please use Resolution#getIpfsHash instead
      * @param domain - domain name such as "brad.crypto"
-     * @see https://docs.ipfs.io/concepts/what-is-ipfs/
+     * see https://docs.ipfs.io/concepts/what-is-ipfs/
      * @throws NamingServiceException - if no record is present
      * @return ipfs hash used to redirect people to ipfs content
      */
