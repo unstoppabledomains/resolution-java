@@ -1,4 +1,4 @@
-## Unreleased
+## 1.6.1
 * Deprecated following methods from Resolution.java class: 
  - owner in favor of getOwner
  - addr in favor of getAddress
