@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 public abstract class Client {
-    private Client() {}
     
     private static final String CLIENT_FILE = "client.json";
 
