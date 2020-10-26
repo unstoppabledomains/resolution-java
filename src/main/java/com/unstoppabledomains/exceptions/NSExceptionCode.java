@@ -9,5 +9,7 @@ public enum NSExceptionCode {
   UnknownError,
   IncorrectContractAddress,
   IncorrectMethodName,
-  UnspecifiedResolver;
+  UnspecifiedResolver,
+  UnsupportedCurrency,
+  NotImplemented;
 }

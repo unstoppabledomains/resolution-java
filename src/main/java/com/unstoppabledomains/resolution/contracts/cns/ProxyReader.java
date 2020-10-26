@@ -17,15 +17,6 @@ public class ProxyReader extends Contract {
         super(url, address);
     }
 
-    @Override
-    protected JsonArray getAbi() {
-        final InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream(ABI_FILE));
-
-        String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-
-        return new JsonParser().parse(jsonString).getAsJsonArray();
-    }
-
     public String getOwner(BigInteger tokenID) {
         try {
             Object[] args = new Object[1];
@@ -42,5 +33,14 @@ public class ProxyReader extends Contract {
         args[1] = tokenID;
 
         return fetchOne("get", args);
+    }
+
+    @Override
+    protected JsonArray getAbi() {
+        final InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream(ABI_FILE));
+
+        String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
+
+        return new JsonParser().parse(jsonString).getAsJsonArray();
     }
 }

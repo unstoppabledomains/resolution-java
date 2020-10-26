@@ -15,15 +15,16 @@ import com.unstoppabledomains.resolution.artifacts.Hash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 
 
-public class NameHash {
+public class Namehash {
+    private Namehash() {}
 
     private static final byte[] EMPTY = new byte[32];
 
-    public static byte[] nameHashAsBytes(String domain) {
+    public static byte[] nameHashAsBytes(String domain) throws NamingServiceException {
         return Numeric.hexStringToByteArray(nameHash(domain));
     }
 
-    public static String nameHash(String domain) {
+    public static String nameHash(String domain) throws NamingServiceException {
         String normaliseddomain = normalise(domain);
         return Numeric.toHexString(nameHash(normaliseddomain.split("\\.")));
     }
@@ -56,12 +57,11 @@ public class NameHash {
      * @param domain our user input blockchain domain
      * @return normalised blockchain domain
      */
-    public static String normalise(String domain) {
+    public static String normalise(String domain) throws NamingServiceException {
         try {
             return IDN.toASCII(domain, IDN.USE_STD3_ASCII_RULES).toLowerCase();
         } catch (IllegalArgumentException e) {
-            new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
         }
-        return null;
     }
 }

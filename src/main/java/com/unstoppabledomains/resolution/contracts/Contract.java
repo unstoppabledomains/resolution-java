@@ -1,16 +1,18 @@
 package com.unstoppabledomains.resolution.contracts;
 
-
 import com.esaulpaugh.headlong.abi.Function;
 import com.esaulpaugh.headlong.abi.Tuple;
 import com.esaulpaugh.headlong.util.FastHex;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public abstract class Contract {
 
@@ -23,7 +25,7 @@ public abstract class Contract {
     this.url = url;
     this.abi = getAbi();
   }
-
+  
   protected abstract JsonArray getAbi();
 
   protected <T> T fetchOne(String method, Object[] args) throws IOException {
@@ -46,6 +48,7 @@ public abstract class Contract {
     JsonArray params = prepareParamsForBody(data, address);
     JsonObject body = HTTPUtil.prepareBody("eth_call", params);
     JsonObject response = HTTPUtil.post(url, body);
+    System.out.println(response);
     String answer = response.get("result").getAsString();
     if (isUnknownError(answer)) {
       return new Tuple();

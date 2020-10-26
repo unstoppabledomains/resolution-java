@@ -21,7 +21,7 @@ public class CNS extends NamingService {
     this.proxyReaderContract = new ProxyReader(blockchainProviderUrl, PROXY_READER_ADDRESS);
   }
 
-  public Boolean isSupported(String domain) {
+  protected  Boolean isSupported(String domain) {
     String[] split = domain.split("\\.");
     return (split.length != 0 && split[split.length - 1].equals("crypto"));
   }
@@ -39,7 +39,7 @@ public class CNS extends NamingService {
     return address;
   }
 
-  public String ipfsHash(String domain) throws NamingServiceException {
+  protected  String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
     String hash = resolveKey(key, domain);
 
@@ -54,7 +54,7 @@ public class CNS extends NamingService {
     return hash;
   }
 
-  public String email(String domain) throws NamingServiceException {
+  protected  String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
     String email = resolveKey(key, domain);
     if (Utilities.isNull(email))
@@ -63,7 +63,7 @@ public class CNS extends NamingService {
     return email;
   }
 
-  public String owner(String domain) throws NamingServiceException {
+  protected  String owner(String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = tokenID(domain);
       String owner = owner(tokenID);
@@ -77,7 +77,7 @@ public class CNS extends NamingService {
     }
   }
 
-  public String resolveKey(String key, String domain) throws NamingServiceException {
+  protected  String resolveKey(String key, String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = tokenID(domain);
       return resolveKey(key, tokenID);
@@ -103,7 +103,7 @@ public class CNS extends NamingService {
     return proxyReaderContract.getRecord(key, tokenID);
   }
 
-  private String owner(BigInteger tokenID) throws Exception {
+  private String owner(BigInteger tokenID) throws NamingServiceException {
     String owner = proxyReaderContract.getOwner(tokenID);
     if (Utilities.isNull(owner)) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
@@ -111,7 +111,7 @@ public class CNS extends NamingService {
     return owner;
   }
 
-  private BigInteger tokenID(String domain) {
+  private BigInteger tokenID(String domain) throws NamingServiceException {
     String hash = namehash(domain);
     return new BigInteger(hash.substring(2), 16);
   }

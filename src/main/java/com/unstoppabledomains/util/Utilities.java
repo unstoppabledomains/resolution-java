@@ -8,8 +8,11 @@ public class Utilities {
   private Utilities() {}
 
   public static boolean isNull(String value) {
-    return ( value == null || value.equals("0x0000000000000000000000000000000000000000")
-        || value.equals("") || value.length() == 0);
+    return ( value == null ||
+    value.equals("0x0000000000000000000000000000000000000000") ||
+    value.equals("0x0") ||
+    value.equals("") ||
+    value.length() == 0);
   }
 
   public static String sha256(String key) {
