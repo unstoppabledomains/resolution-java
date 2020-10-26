@@ -7,7 +7,7 @@ import org.bouncycastle.crypto.digests.SHA256Digest;
 public class Utilities {
   private Utilities() {}
 
-  public static boolean isNull(String value) {
+  public static boolean isEmptyResponse(String value) {
     return ( value == null ||
     value.equals("0x0000000000000000000000000000000000000000") ||
     value.equals("0x0") ||

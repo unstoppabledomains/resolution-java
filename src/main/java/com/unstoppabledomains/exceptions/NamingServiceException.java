@@ -2,7 +2,7 @@ package com.unstoppabledomains.exceptions;
 
 public class NamingServiceException extends Exception {
   private static final long serialVersionUID = 1L;
-  private NSExceptionCode code;
+  private final NSExceptionCode code;
   
   public NamingServiceException(NSExceptionCode code) {
     super(messageFromCode(code, new NSExceptionParams("", "")));
@@ -46,7 +46,7 @@ public class NamingServiceException extends Exception {
         return "Currency " + params.coinTicker + " is not supported";
       }
       case NotImplemented: {
-        return "Method is not implemented for this naming service " + params.methodName;
+        return "Method " + params.methodName + "is not implemented for this naming service: " + params.namingService;
       }
       case UnknownError:
       default: 

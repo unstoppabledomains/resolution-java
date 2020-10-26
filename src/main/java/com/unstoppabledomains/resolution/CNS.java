@@ -11,7 +11,7 @@ import com.unstoppabledomains.util.Utilities;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 
-public class CNS extends NamingService {
+public class CNS implements NamingService {
 
   private static final String PROXY_READER_ADDRESS = "0x7ea9Ee21077F84339eDa9C80048ec6db678642B1";
 
@@ -21,25 +21,25 @@ public class CNS extends NamingService {
     this.proxyReaderContract = new ProxyReader(blockchainProviderUrl, PROXY_READER_ADDRESS);
   }
 
-  protected  Boolean isSupported(String domain) {
+  public Boolean isSupported(String domain) {
     String[] split = domain.split("\\.");
     return (split.length != 0 && split[split.length - 1].equals("crypto"));
   }
 
   public String addr(String domain, String ticker) throws NamingServiceException {
     String owner = owner(domain);
-    if (Utilities.isNull(owner))
+    if (Utilities.isEmptyResponse(owner))
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     String key = "crypto." + ticker.toUpperCase() + ".address";
     String address = resolveKey(key, domain);
-    if (Utilities.isNull(address))
+    if (Utilities.isEmptyResponse(address))
       throw new NamingServiceException(NSExceptionCode.UnknownCurrency,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
     return address;
   }
 
-  protected  String ipfsHash(String domain) throws NamingServiceException {
+  public  String ipfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
     String hash = resolveKey(key, domain);
 
@@ -54,20 +54,20 @@ public class CNS extends NamingService {
     return hash;
   }
 
-  protected  String email(String domain) throws NamingServiceException {
+  public  String email(String domain) throws NamingServiceException {
     String key = "whois.email.value";
     String email = resolveKey(key, domain);
-    if (Utilities.isNull(email))
+    if (Utilities.isEmptyResponse(email))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
           new NSExceptionParams("d|r", domain, key));
     return email;
   }
 
-  protected  String owner(String domain) throws NamingServiceException {
+  public  String owner(String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = tokenID(domain);
       String owner = owner(tokenID);
-      if (Utilities.isNull(owner)) {
+      if (Utilities.isEmptyResponse(owner)) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|n", domain, "CNS"));
       }
       return owner;
@@ -105,7 +105,7 @@ public class CNS extends NamingService {
 
   private String owner(BigInteger tokenID) throws NamingServiceException {
     String owner = proxyReaderContract.getOwner(tokenID);
-    if (Utilities.isNull(owner)) {
+    if (Utilities.isEmptyResponse(owner)) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
     }
     return owner;
@@ -114,5 +114,10 @@ public class CNS extends NamingService {
   private BigInteger tokenID(String domain) throws NamingServiceException {
     String hash = namehash(domain);
     return new BigInteger(hash.substring(2), 16);
+  }
+
+  @Override
+  public String namehash(String domain) throws NamingServiceException {
+    return Namehash.nameHash(domain);
   }
 }
