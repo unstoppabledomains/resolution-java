@@ -48,6 +48,7 @@ public abstract class Contract {
     JsonArray params = prepareParamsForBody(data, address);
     JsonObject body = HTTPUtil.prepareBody("eth_call", params);
     JsonObject response = HTTPUtil.post(url, body);
+    System.out.println(response);
     String answer = response.get("result").getAsString();
     if (isUnknownError(answer)) {
       return new Tuple();
