@@ -12,8 +12,8 @@ This java library allows to resolve the various cryptocurrencies addresses attac
 Latest library release is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution). 
 
 # Usage 
-We are using [linkpool](https://www.linkpool.io/) as our choice of blockchain provider.
-Feel free to try other blockchain providers (as [infura](https://infura.io/) or any others):
+We are using [infura](https://infura.io/) as our choice of blockchain provider.
+Feel free to try other blockchain providers (as [linkpool](https://www.linkpool.io/) or any others):
 ```
 resolution = new Resolution("https://main-rpc.linkpool.io");
 
