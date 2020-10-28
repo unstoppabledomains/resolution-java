@@ -24,5 +24,5 @@ jobs:
           java-version: 1.8
       - name: Publish to the Maven Central Repository
         run: gradle publish
-      - name: Close staging repository
-        run: gradle closeRepository
+      - name: Finish publishing by closing & releasing staging repository
+        run: echo "The package was uploaded to the staging repository. Proceed with the next steps according to README."

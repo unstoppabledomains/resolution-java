@@ -1,20 +1,20 @@
 package com.unstoppabledomains.resolution;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.unstoppabledomains.TestUtils;
+import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.NamingServiceException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.unstoppabledomains.TestUtils;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NamingServiceException;
-
 public class ENSTest {
-  Resolution resolution;
+  private static Resolution resolution;
   
-  @BeforeEach
-  public void initEach() {
-    resolution = new Resolution("https://main-rpc.linkpool.io");
+  @BeforeAll
+  public static void init() {
+    final String testingProviderUrl = System.getenv("TESTING_PROVIDER_URL");
+    resolution = new Resolution(testingProviderUrl);
   }
 
   @Test

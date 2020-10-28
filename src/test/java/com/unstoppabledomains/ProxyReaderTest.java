@@ -1,7 +1,7 @@
 package com.unstoppabledomains;
 
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -9,17 +9,16 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProxyReaderTest {
-
-    private static final String URL = "https://main-rpc.linkpool.io";
     private static final String ADDRESS = "0x7ea9Ee21077F84339eDa9C80048ec6db678642B1";
     private static final String TOKEN_ID_HASH = "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9";
     private static final BigInteger TOKEN_ID = new BigInteger(TOKEN_ID_HASH.replace("0x", ""), 16);
 
-    private ProxyReader proxyReaderContract;
+    private static ProxyReader proxyReaderContract;
 
-    @BeforeEach
-    public void initContract() {
-        proxyReaderContract = new ProxyReader(URL, ADDRESS);
+    @BeforeAll
+    public static void init() {
+        final String testingProviderUrl = System.getenv("TESTING_PROVIDER_URL");
+        proxyReaderContract = new ProxyReader(testingProviderUrl, ADDRESS);
     }
 
     @Test
