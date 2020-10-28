@@ -1,3 +1,6 @@
+##Unreleased
+* Plugged-in network config file with contracts
+
 ## 1.6.1
 * Deprecated following methods from Resolution.java class: 
  - owner in favor of getOwner
