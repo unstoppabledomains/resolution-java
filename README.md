@@ -11,7 +11,7 @@ This java library allows to resolve the various cryptocurrencies addresses attac
 # Releases
 Latest library release is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution). 
 
-# Usage Examples
+# Usage 
 We are using [linkpool](https://www.linkpool.io/) as our choice of blockchain provider.
 Feel free to try other blockchain providers (as [infura](https://infura.io/) or any others):
 ```
@@ -46,7 +46,7 @@ and attaching the ipfs-hash to the domain. In order to get the files back someon
   assertEquals( "Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
 ```
 
-# Errors
+## Errors
 When something goes wrong (domain is not registered or doesn't have a certain record) this library is throwing a 
 NamingServiceException with one of these codes:
 ```
@@ -63,12 +63,22 @@ public enum NSExceptionCode {
 }
 ```
 
-# Internal network config
+# Development
+
+## Build & test
+
+Note: if you don't wish to install Gradle you can use it with wrapper: `./gradlew` instead of `gradle`.
+
+- Configure `TESTING_PROVIDER_URL` env variable with your blockchain provider for testing;
+- Run builds with `gradle build` (implies run of tests);
+- `gradle build -x test` - build without running tests. 
+
+## Internal network config
 
 Internal [network config](src/main/resources/com/unstoppabledomains/config/network/network-config.json) 
 can be updated by running `gradle pullNetworkConfig` task and commiting updated file.
 
-# Versioning & release process
+## Versioning & release process
 
 ##### With the updates to the codebase:  
 
@@ -80,7 +90,7 @@ a corresponding client version should be bumped in [client.json](src/main/resour
 - Create a new Github release (using semver);
 - Wait for a successful Github Workflow publishing;
 - Release staging repository by logging into [Nexus Repository Manager](https://oss.sonatype.org/) and
- performing 'release' action.
+ performing 'close' and then 'release' actions.
 
 **Alternatively** to a CI release you can perform a manual publish by following next steps:
 - Configure env variables: `nexusUsername`, `nexusPassword`, `signingKey`, `signingPassword`;  
