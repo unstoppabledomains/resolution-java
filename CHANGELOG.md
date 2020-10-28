@@ -1,5 +1,6 @@
 ##Unreleased
 * Plugged-in network config file with contracts
+* Code cleanup
 
 ## 1.6.1
 * Deprecated following methods from Resolution.java class: 

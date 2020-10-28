@@ -26,8 +26,8 @@ public class CNS implements NamingService {
     return (split.length != 0 && split[split.length - 1].equals("crypto"));
   }
 
-  public String addr(String domain, String ticker) throws NamingServiceException {
-    String owner = owner(domain);
+  public String getAddress(String domain, String ticker) throws NamingServiceException {
+    String owner = getOwner(domain);
     if (Utilities.isEmptyResponse(owner))
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
@@ -39,7 +39,7 @@ public class CNS implements NamingService {
     return address;
   }
 
-  public  String ipfsHash(String domain) throws NamingServiceException {
+  public  String getIpfsHash(String domain) throws NamingServiceException {
     String key = "ipfs.html.value";
     String hash = resolveKey(key, domain);
 
@@ -54,8 +54,8 @@ public class CNS implements NamingService {
     return hash;
   }
 
-  public  String email(String domain) throws NamingServiceException {
-    String key = "whois.email.value";
+  public  String getEmail(String domain) throws NamingServiceException {
+    String key = "whois.getEmail.value";
     String email = resolveKey(key, domain);
     if (Utilities.isEmptyResponse(email))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
@@ -63,7 +63,7 @@ public class CNS implements NamingService {
     return email;
   }
 
-  public  String owner(String domain) throws NamingServiceException {
+  public  String getOwner(String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = tokenID(domain);
       String owner = owner(tokenID);
@@ -112,12 +112,12 @@ public class CNS implements NamingService {
   }
 
   private BigInteger tokenID(String domain) throws NamingServiceException {
-    String hash = namehash(domain);
+    String hash = getNamehash(domain);
     return new BigInteger(hash.substring(2), 16);
   }
 
   @Override
-  public String namehash(String domain) throws NamingServiceException {
+  public String getNamehash(String domain) throws NamingServiceException {
     return Namehash.nameHash(domain);
   }
 }

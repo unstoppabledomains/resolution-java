@@ -1,10 +1,10 @@
 package com.unstoppabledomains.resolution.contracts.cns;
 
-import com.unstoppabledomains.resolution.contracts.Contract;
+import com.unstoppabledomains.resolution.contracts.BaseContract;
 
 import java.math.BigInteger;
 
-public class ProxyReader extends Contract {
+public class ProxyReader extends BaseContract {
 
     private static final String ABI_FILE = "cns/proxy_reader_abi.json";
     private static final String namingServiceName = "CNS";

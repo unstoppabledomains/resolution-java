@@ -1,4 +1,4 @@
-package com.unstoppabledomains.client;
+package com.unstoppabledomains.config.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 public abstract class Client {
-    
+
     private static final String CLIENT_FILE = "client.json";
 
     private static final String VERSION = initClientVersion();
@@ -19,9 +19,8 @@ public abstract class Client {
 
     private static String initClientVersion() {
         final InputStreamReader reader = new InputStreamReader(Client.class.getResourceAsStream(CLIENT_FILE));
-
-        String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-        JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
+        final String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
+        final JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
 
         return jsonObj.get("version").getAsString();
     }

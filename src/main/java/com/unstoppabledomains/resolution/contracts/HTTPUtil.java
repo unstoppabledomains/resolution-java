@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.unstoppabledomains.client.Client;
+import com.unstoppabledomains.config.client.Client;
 
 public class HTTPUtil {
     private HTTPUtil() {

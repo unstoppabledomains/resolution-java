@@ -27,7 +27,7 @@ public class ZNS implements NamingService {
     }
 
     @Override
-    public String namehash(String domain) {
+    public String getNamehash(String domain) {
         // Attaching parent value to the end of the domain to make sure it is a first
         // element in a resulting array
         domain = domain + ".0000000000000000000000000000000000000000000000000000000000000000";
@@ -44,7 +44,7 @@ public class ZNS implements NamingService {
         return (split.length != 0 && split[split.length - 1].equals("zil"));
     }
 
-    public String addr(String domain, String ticker) throws NamingServiceException {
+    public String getAddress(String domain, String ticker) throws NamingServiceException {
         String key = "crypto." + ticker.toUpperCase() + ".address";
         try {
             return getRecord(domain, key);
@@ -55,15 +55,15 @@ public class ZNS implements NamingService {
         }
     }
 
-    public String ipfsHash(String domain) throws NamingServiceException {
+    public String getIpfsHash(String domain) throws NamingServiceException {
         return getRecord(domain, "ipfs.html.value");
     }
 
-    public String email(String domain) throws NamingServiceException {
+    public String getEmail(String domain) throws NamingServiceException {
         return getRecord(domain, "whois.email.value");
     }
 
-    public String owner(String domain) throws NamingServiceException {
+    public String getOwner(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
             throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
@@ -103,7 +103,7 @@ public class ZNS implements NamingService {
     }
 
     private String[] getRecordAddresses(String domain) throws NamingServiceException {
-        String namehash = namehash(domain);
+        String namehash = getNamehash(domain);
         String[] keys = { namehash };
         try {
           JsonObject substate = fetchSubState(REGISTRY_ADDRESS, RECORDS_KEY, keys);

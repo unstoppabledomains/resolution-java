@@ -2,11 +2,16 @@ package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.exceptions.NamingServiceException;
 
-abstract interface NamingService {
+public interface NamingService {
     Boolean isSupported(String domain);
-    String addr(String domain, String ticker) throws NamingServiceException;
-    String ipfsHash(String domain) throws NamingServiceException;
-    String email(String domain) throws NamingServiceException;
-    String owner(String domain) throws NamingServiceException;
-    String namehash(String domain) throws NamingServiceException;
+
+    String getAddress(String domain, String ticker) throws NamingServiceException;
+
+    String getIpfsHash(String domain) throws NamingServiceException;
+
+    String getEmail(String domain) throws NamingServiceException;
+
+    String getOwner(String domain) throws NamingServiceException;
+
+    String getNamehash(String domain) throws NamingServiceException;
 }

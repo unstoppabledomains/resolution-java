@@ -25,7 +25,7 @@ group = "com.unstoppabledomains"
 archivesBaseName = "resolution"
 
 task getVersion {
-    def client = file('src/main/resources/com/unstoppabledomains/client/client.json')
+    def client = file('src/main/resources/com/unstoppabledomains/config/client/client.json')
     version = new JsonSlurper().parseText(client.text).'version'
 }
 

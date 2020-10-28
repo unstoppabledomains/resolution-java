@@ -8,9 +8,9 @@ import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
-import com.unstoppabledomains.resolution.contracts.Contract;
+import com.unstoppabledomains.resolution.contracts.BaseContract;
 
-public class Resolver extends Contract {
+public class Resolver extends BaseContract {
 
   private static final String ABI_FILE = "ens/ens_resolver_abi.json";
   private static final String namingServiceName = "ENS";
