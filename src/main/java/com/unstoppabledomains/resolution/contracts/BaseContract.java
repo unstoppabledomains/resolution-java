@@ -18,14 +18,14 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.stream.Collectors;
 
-public abstract class Contract {
+public abstract class BaseContract {
 
   private String namingServiceName;
   private String address;
   private String url;
   private JsonArray abi;
 
-  protected Contract(String namingServiceName, String url, String address) {
+  protected BaseContract(String namingServiceName, String url, String address) {
     this.namingServiceName = namingServiceName;
     this.address = address;
     this.url = url;
@@ -36,7 +36,7 @@ public abstract class Contract {
   
   protected JsonArray getAbi() {
       String path = getAbiPath();
-      final InputStreamReader reader = new InputStreamReader(Contract.class.getResourceAsStream(path));
+      final InputStreamReader reader = new InputStreamReader(BaseContract.class.getResourceAsStream(path));
 
       String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
 

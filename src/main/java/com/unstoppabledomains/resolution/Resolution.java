@@ -28,19 +28,19 @@ public class Resolution {
      */
     public String getAddress(String domain, String ticker) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.addr(domain, ticker);
+        return service.getAddress(domain, ticker);
     }
 
     /**
-     * Produces a namehash for a specific domain
+     * Produces a getNamehash for a specific domain
      * @param domain - domain name such as "brad.crypto"
      * see https://docs.ens.domains/contract-api-reference/name-processing
      * @throws NamingServiceException - if tld of the domain is not recognized
-     * @return namehash of a domain for a specific NamingService
+     * @return getNamehash of a domain for a specific NamingService
      */
     public String getNamehash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.namehash(domain);
+        return service.getNamehash(domain);
     }
 
     
@@ -53,35 +53,36 @@ public class Resolution {
      */
     public String getIpfsHash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.ipfsHash(domain);
+        return service.getIpfsHash(domain);
     }
 
     /**
-     * Resolves an email address from a domain
+     * Resolves an getEmail address from a domain
      * @param domain - domain name such as "brad.crypto"
-     * @throws NamingServiceException - if no email is present
-     * @return email address 
+     * @throws NamingServiceException - if no getEmail is present
+     * @return getEmail address
      */
     public String getEmail(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.email(domain);
+        return service.getEmail(domain);
     }
 
     /**
-     * Resolves owner address from a domain
+     * Resolves getOwner address from a domain
      * @param domain - domain name such as "brad.crypto"
-     * @throws NamingServiceException - if owner is not present
-     * @return etherium address of a domain's owner
+     * @throws NamingServiceException - if getOwner is not present
+     * @return etherium address of a domain's getOwner
      */
     public String getOwner(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.owner(domain);
+        return service.getOwner(domain);
     }
     
 
     /**
      * Resolves domain for a specific ticker address
-     * @deprecated this method is depricated since 1.6.0. Please use Resoltuion#getAddress instead
+     * @deprecated this method is deprecated since 1.6.0. 
+     * <p> Use {@link Resolution#getAddress(String, String)} instead.
      * @param domain - domain name such as "brad.crypto"
      * @param ticker - coin ticker such as ETH
      * @throws NamingServiceException - if tld is not recognized or there record for such currency is not presented
@@ -90,26 +91,28 @@ public class Resolution {
     @Deprecated
     public String addr(String domain, String ticker) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.addr(domain, ticker);
+        return service.getAddress(domain, ticker);
     }
 
     /**
-     * Produces a namehash for a specific domain
-     * @deprecated this method is depricated since 1.6.0. Please use Resolution#getNamehash instead
+     * Produces a getNamehash for a specific domain
+     * @deprecated this method is deprecated since 1.6.0.
+     * <p> Use {@link Resolution#getNamehash(String)} instead.
      * @param domain - domain name such as "brad.crypto"
      * see https://docs.ens.domains/contract-api-reference/name-processing
      * @throws NamingServiceException - if tld of the domain is not recognized
-     * @return namehash of a domain for a specific NamingService
+     * @return getNamehash of a domain for a specific NamingService
      */
     @Deprecated
     public String namehash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.namehash(domain);
+        return service.getNamehash(domain);
     }
     
     /**
      * Resolves domain for an ipfs hash
-     * @deprecated this method is depricated since 1.6.0. Please use Resolution#getIpfsHash instead
+     * @deprecated this method is deprecated since 1.6.0.
+     * <p> Use {@link Resolution#getIpfsHash(String)} instead.
      * @param domain - domain name such as "brad.crypto"
      * see https://docs.ipfs.io/concepts/what-is-ipfs/
      * @throws NamingServiceException - if no record is present
@@ -118,33 +121,35 @@ public class Resolution {
     @Deprecated
     public String ipfsHash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.ipfsHash(domain);
+        return service.getIpfsHash(domain);
     }
 
     /**
-     * Resolves an email address from a domain
-     * @deprecated this method is depricated since 1.6.0. Please use Resolution#getEmail instead
+     * Resolves an getEmail address from a domain
+     * @deprecated this method is deprecated since 1.6.0.
+     * <p> Use {@link Resolution#getEmail(String)} instead.
      * @param domain - domain name such as "brad.crypto"
-     * @throws NamingServiceException - if no email is present
-     * @return email address 
+     * @throws NamingServiceException - if no getEmail is present
+     * @return getEmail address
      */
     @Deprecated
     public String email(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.email(domain);
+        return service.getEmail(domain);
     }
 
     /**
-     * Resolves owner address from a domain
-     * @deprecated this method is depricated since 1.6.0. Please use Resolution#getOwner instead
+     * Resolves getOwner address from a domain
+     * @deprecated this method is deprecated since 1.6.0.
+     * <p> Use {@link Resolution#getOwner(String)} instead.
      * @param domain - domain name such as "brad.crypto"
-     * @throws NamingServiceException - if owner is not present
-     * @return etherium address of a domain's owner
+     * @throws NamingServiceException - if getOwner is not present
+     * @return etherium address of a domain's getOwner
      */
     @Deprecated
     public String owner(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.owner(domain);
+        return service.getOwner(domain);
     }
     
     private NamingService findService(String domain) throws NamingServiceException {

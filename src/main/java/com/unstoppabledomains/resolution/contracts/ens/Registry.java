@@ -1,9 +1,9 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
 import com.unstoppabledomains.exceptions.NamingServiceException;
-import com.unstoppabledomains.resolution.contracts.Contract;
+import com.unstoppabledomains.resolution.contracts.BaseContract;
 
-public class Registry extends Contract {
+public class Registry extends BaseContract {
 
   private static final String ABI_FILE = "ens/ens_registry_abi.json";  
   private static final String namingServiceName = "ENS";
