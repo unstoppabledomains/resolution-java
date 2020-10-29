@@ -76,7 +76,7 @@ Note: if you don't wish to install Gradle you can use it with wrapper: `./gradle
 ## Internal network config
 
 Internal [network config](src/main/resources/com/unstoppabledomains/config/network/network-config.json) 
-can be updated by running `gradle pullNetworkConfig` task and commiting updated file.
+can be updated by running `gradle pullNetworkConfig` task and committing updated file.
 
 ## Versioning & release process
 
