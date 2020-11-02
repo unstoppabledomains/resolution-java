@@ -53,6 +53,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
 
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
     // Use JUnit test framework
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")

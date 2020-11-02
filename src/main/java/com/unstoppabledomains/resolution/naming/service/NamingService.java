@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.resolution.naming.service;
 
 import com.unstoppabledomains.exceptions.NamingServiceException;
 

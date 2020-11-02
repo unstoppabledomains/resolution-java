@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.resolution.naming.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,14 +16,13 @@ import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
 import com.unstoppabledomains.util.Utilities;
 
-public class ZNS implements NamingService {
+public class ZNS extends BaseNamingService {
     static final String REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793"; // eth style zil registry
                                                                                          // address
     static final String RECORDS_KEY = "records";
-    private final String provider;
 
-    public ZNS(String blockchainProviderUrl) {
-        this.provider = blockchainProviderUrl;
+    public ZNS(NSConfig nsConfig) {
+        super(nsConfig);
     }
 
     @Override
@@ -133,7 +132,7 @@ public class ZNS implements NamingService {
 
         String method = "GetSmartContractSubState";
         JsonObject body = HTTPUtil.prepareBody(method, params);
-        JsonObject response = HTTPUtil.post(provider, body);
+        JsonObject response = HTTPUtil.post(blockchainProviderUrl, body);
         JsonElement result = response.get("result");
         return result.getAsJsonObject();
     }
