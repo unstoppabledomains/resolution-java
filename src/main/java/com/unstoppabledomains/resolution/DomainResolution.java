@@ -49,7 +49,7 @@ public interface DomainResolution {
      * Resolves getOwner address from a domain
      *
      * @param domain domain name such as "brad.crypto"
-     * @return ethereum address of a domain's getOwner
+     * @return Ethereum address of a domain's getOwner
      * @throws NamingServiceException if getOwner is not present
      */
     String getOwner(String domain) throws NamingServiceException;
@@ -111,7 +111,7 @@ public interface DomainResolution {
      * Resolves getOwner address from a domain
      *
      * @param domain domain name such as "brad.crypto"
-     * @return ethereum address of a domain's getOwner
+     * @return Ethereum address of a domain's getOwner
      * @throws NamingServiceException if getOwner is not present
      * @deprecated this method is deprecated since 1.6.0.
      * <p> Use {@link DomainResolution#getOwner(String)} instead.

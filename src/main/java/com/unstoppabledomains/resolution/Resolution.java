@@ -43,7 +43,7 @@ public class Resolution implements DomainResolution {
     /**
      * Resolution object
      *
-     * @param blockchainProviderUrl url for the public ethereum provider
+     * @param blockchainProviderUrl url for the public Ethereum provider
      * @deprecated since 1.8.0
      * <p> Use {@link Resolution#builder()} instead
      */

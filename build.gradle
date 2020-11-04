@@ -82,7 +82,7 @@ publishing {
 
             pom {
                 name.set("resolution")
-                description.set("Resolution library that talks with etherium .crypto registry to resolve various information attached to .crypto domain")
+                description.set("Resolution library that talks with Ethereum .crypto registry to resolve various information attached to .crypto domain")
                 url.set("https://github.com/unstoppabledomains/resolution-java")
                 licenses {
                     license {

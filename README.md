@@ -28,11 +28,30 @@ The most recent release of this library is available on [Maven Central](https://
 
 # Usage
 
-This library uses [infura](https://infura.io/) as our blockchain provider. If you want to use an alternative blockchain provider such as [linkpool](https://www.linkpool.io/), you can change that default setting with the following command.
-
+This library uses [linkpool](https://linkpool.io/) as default blockchain provider for CNS & ENS and 
+[zilliqa](https://zilliqa.com) for ZNS (**Mainnet** is default network for all).  
+If you want to use an alternative blockchain provider such as [infura](https://infura.io/) (or any other), you can
+ change default settings:
+ 
 ```java
-resolution = new Resolution("https://main-rpc.linkpool.io");
-resolution = new Resolution("https://mainnet.infura.io/v3/<ProjectId>");
+// Default config: 
+
+DomainResolution resolution = new Resolution(); 
+
+// Optionally override default config using builder options:
+
+DomainResolution resolution = Resolution.builder()
+                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+                .providerUrl(NamingServiceType.ENS, "https://ropsten-rpc.linkpool.io/")
+                .build(); 
+
+// Infura config:
+
+DomainResolution resolution = Resolution.builder()
+                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+                .infura(NamingServiceType.ENS, <ProjectId>)
+                .infura(NamingServiceType.CNS, Network.MAINNET, <ProjectId>)
+                .build();
 ```
 
 [Live usage examples](samples.md)
@@ -42,7 +61,7 @@ resolution = new Resolution("https://mainnet.infura.io/v3/<ProjectId>");
 Resolving a domain and getting a currency address.
 
 ```java
-String addr = resolution.addr("brad.crypto", "eth");
+String addr = resolution.getAddress("brad.crypto", "eth");
 assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
 ```
 
@@ -51,19 +70,18 @@ assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
 Each decentralized domain is owned by someone on the blockchain and held within their wallet. The following command will return the domain owner's Ethereum address.
 
 ```java
-String owner = resolution.owner("brad.crypto");
+String owner = resolution.getOwner("brad.crypto");
 assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
 ```
 
 ### Getting a domain's IPFS hash
 
-
-
-Decentralized websites host their content on decentralized file storage systems such as [IPFS](http://ipfs.io/). To get the IPFS hash associated with a domain (and therefore its content), you can use the `ipfsHash` method.
+Decentralized websites host their content on decentralized file storage systems such as [IPFS](http://ipfs.io/). 
+To get the IPFS hash associated with a domain (and therefore its content), you can use the `getIpfsHash` method.
 
 ```java
-String ipfs = resolution.ipfsHash("brad.crypto");
-assertEquals( "Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
+String ipfs = resolution.getIpfsHash("brad.crypto");
+assertEquals("Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
 ```
 
 ## Errors
@@ -90,7 +108,8 @@ public enum NSExceptionCode {
 
 > Note: if you don't wish to install Gradle you can use it with wrapper: `./gradlew` instead of `gradle`.
 
-- Configure a `TESTING_PROVIDER_URL` environment variable with your blockchain provider for testing.
+- Configure a `TESTING_PROVIDER_URL` and `TESTING_INFURA_PROJECT_ID` environment variables with your blockchain
+ provider for testing.
 - To run a build with associated tests, use `gradle build`.
 - To run a build without running the tests, use `gradle build -x test`.
 
@@ -122,7 +141,3 @@ As an alternative to a CI release, you can perform a manual publish by following
 # Contributions
 
 Contributions to this library are more than welcome. The easiest way to contribute is through GitHub issues and pull requests.
-
-## To-Do
-
-Add support for Zilliqa-based domain resolution.
