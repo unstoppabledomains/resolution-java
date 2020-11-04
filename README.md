@@ -103,8 +103,7 @@ can be updated by running the `gradle pullNetworkConfig` task and committing the
 
 ### On codebase updates
 
-- [CHANGELOG.md](CHANGELOG.md) will be updated with the listed changes, and 
-the client version in [client.json](src/main/resources/com/unstoppabledomains/client/client.json) will be incremented.
+- Contributors should update [CHANGELOG.md](CHANGELOG.md) with the listed changes, and increment the client version in [client.json](src/main/resources/com/unstoppabledomains/client/client.json).
 
 ### New packages
 
