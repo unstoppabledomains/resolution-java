@@ -1,5 +1,9 @@
 ## Unreleased
 * Replace Resolution constructor with configurable builder
+* Replace deprecated APIs 
+* Update network-config 
+* Code cleanup
+* Fix infura response handling to align with a new format
 
 ## 1.7.0
 * Plugged-in network config file with contracts
