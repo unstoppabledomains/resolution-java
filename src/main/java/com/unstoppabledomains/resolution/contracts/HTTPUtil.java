@@ -39,7 +39,7 @@ public class HTTPUtil {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            return (JsonObject) new JsonParser().parse(response.toString());
+            return (JsonObject) JsonParser.parseString(response.toString());
         }
     }
 

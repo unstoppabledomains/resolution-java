@@ -40,7 +40,7 @@ public abstract class BaseContract {
 
       String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
 
-      return new JsonParser().parse(jsonString).getAsJsonArray();
+      return JsonParser.parseString(jsonString).getAsJsonArray();
   }
   
   protected <T> T fetchOne(String method, Object[] args) throws NamingServiceException {
