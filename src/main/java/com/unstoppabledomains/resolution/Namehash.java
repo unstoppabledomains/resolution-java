@@ -1,12 +1,9 @@
 package com.unstoppabledomains.resolution;
 
-/** This file was taken from Web3j and adapted accordingly
- *  https://github.com/web3j/web3j/blob/master/core/src/main/java/org/web3j/ens/NameHash.java
+/**
+ * This file was taken from Web3j and adapted accordingly
+ * https://github.com/web3j/web3j/blob/master/core/src/main/java/org/web3j/ens/NameHash.java
  */
-
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.net.IDN;
 
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
@@ -14,6 +11,9 @@ import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Hash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 
+import java.net.IDN;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class Namehash {
     private Namehash() {}
@@ -35,7 +35,7 @@ public class Namehash {
         } else {
             String[] tail;
             if (labels.length == 1) {
-                tail = new String[] {};
+                tail = new String[]{};
             } else {
                 tail = Arrays.copyOfRange(labels, 1, labels.length);
             }

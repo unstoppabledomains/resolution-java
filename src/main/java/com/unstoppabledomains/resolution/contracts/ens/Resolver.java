@@ -1,14 +1,14 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Resolver extends BaseContract {
 

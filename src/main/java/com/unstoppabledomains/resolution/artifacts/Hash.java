@@ -1,12 +1,9 @@
 package com.unstoppabledomains.resolution.artifacts;
 
-/** This code was taken from Web3j and adapted accordingly 
+/**
+ * This code was taken from Web3j and adapted accordingly
  * https://github.com/web3j/web3j/blob/5877c308e11c0de8e24e50c882effa84354a8e57/utils/src/main/java/org/web3j/crypto/Hash.java#L29
-*/
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+ */
 
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 import org.bouncycastle.crypto.digests.SHA512Digest;
@@ -15,6 +12,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.jcajce.provider.digest.Blake2b;
 import org.bouncycastle.jcajce.provider.digest.Keccak;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /** Cryptographic hash functions. */
 public class Hash {
