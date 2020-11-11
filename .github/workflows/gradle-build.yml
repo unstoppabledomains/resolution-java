@@ -5,6 +5,7 @@ name: Build & test
 
 env:
   TESTING_PROVIDER_URL: ${{ secrets.TESTING_PROVIDER_URL }}
+  TESTING_INFURA_PROJECT_ID: ${{ secrets.TESTING_INFURA_PROJECT_ID }}
   nexusUsername: ${{ secrets.NEXUS_USERNAME }}
   nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
 

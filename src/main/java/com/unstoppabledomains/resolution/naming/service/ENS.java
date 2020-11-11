@@ -1,10 +1,11 @@
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.resolution.naming.service;
 
 import java.util.Arrays;
 
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
@@ -12,17 +13,15 @@ import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
 import com.unstoppabledomains.util.Utilities;
 
-public class ENS implements NamingService {
+public class ENS extends BaseNamingService {
 
   private static final String REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-  private final String providerURL;
-  private final Registry registryContract;
-  
 
-  public ENS(String blockchainProviderURL) {
-    super();
-    this.providerURL = blockchainProviderURL;
-    this.registryContract = (Registry)buildContract(REGISTRY_ADDRESS, EnsContractType.Registry);
+  private final Registry registryContract;
+
+  public ENS(NSConfig config) {
+    super(config);
+    this.registryContract = (Registry) buildContract(REGISTRY_ADDRESS, EnsContractType.Registry);
   }
 
   @Override
@@ -88,9 +87,9 @@ public class ENS implements NamingService {
 
   private BaseContract buildContract(String address, EnsContractType type) {
     if (type.equals(EnsContractType.Resolver)) {
-      return new Resolver(providerURL, address);
+      return new Resolver(blockchainProviderUrl, address);
     }
-    return new Registry(providerURL, address);
+    return new Registry(blockchainProviderUrl, address);
   }
 
   @Override

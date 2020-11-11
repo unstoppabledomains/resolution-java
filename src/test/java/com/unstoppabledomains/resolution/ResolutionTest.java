@@ -1,20 +1,54 @@
 package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.TestUtils;
+import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResolutionTest {
-    private static Resolution resolution;
+
+    private static final String TESTING_PROVIDER_URL = System.getenv("TESTING_PROVIDER_URL");
+    private static final String TESTING_INFURA_PROJECT_ID = System.getenv("TESTING_INFURA_PROJECT_ID");
+
+    private static DomainResolution resolution;
 
     @BeforeAll
     public static void init() {
-        final String testingProviderUrl = System.getenv("TESTING_PROVIDER_URL");
-        resolution = new Resolution(testingProviderUrl);
+        resolution = Resolution.builder()
+                .providerUrl(NamingServiceType.CNS, TESTING_PROVIDER_URL)
+                .providerUrl(NamingServiceType.ENS, TESTING_PROVIDER_URL)
+                .build();
+    }
+
+    @Test
+    public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
+        DomainResolution resolutionFromBuilder = Resolution.builder()
+                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+                .providerUrl(NamingServiceType.ENS, TESTING_PROVIDER_URL)
+                .providerUrl(NamingServiceType.CNS, TESTING_PROVIDER_URL)
+                .build();
+
+        assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilder.getOwner("brad.crypto"));
+        assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
+        assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilder.getOwner("johnnyjumper.zil"));
+    }
+
+    @Test
+    public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
+        DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
+                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+                .infura(NamingServiceType.ENS, TESTING_INFURA_PROJECT_ID)
+                .infura(NamingServiceType.CNS, Network.MAINNET, TESTING_INFURA_PROJECT_ID)
+                .build();
+
+        assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilderWithInfura.getOwner("brad.crypto"));
+        assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
+        assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilderWithInfura.getOwner("johnnyjumper.zil"));
     }
 
     @Test
@@ -65,8 +99,8 @@ public class ResolutionTest {
     @Test
     public void ipfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("brad.crypto");
-        assertEquals( "Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
-        
+        assertEquals("Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
+
         ipfs = resolution.getIpfsHash("johnnyjumper.zil");
         assertEquals("QmQ38zzQHVfqMoLWq2VeiMLHHYki9XktzXxLYTWXt8cydu", ipfs);
     }
@@ -78,14 +112,14 @@ public class ResolutionTest {
     }
 
     @Test
-    public void ownerTest() throws NamingServiceException{
+    public void ownerTest() throws NamingServiceException {
         String owner = resolution.getOwner("brad.crypto");
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
 
         owner = resolution.getOwner("johnnyjumper.zil");
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", owner);
     }
-    
+
     @Test
     public void ownerFailTest() throws Exception {
         TestUtils.checkError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);

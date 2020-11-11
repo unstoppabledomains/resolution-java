@@ -1,24 +1,26 @@
 
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.resolution.naming.service;
 
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
 import com.unstoppabledomains.util.Utilities;
 
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 
-public class CNS implements NamingService {
-
-  private static final String PROXY_READER_ADDRESS = "0x7ea9Ee21077F84339eDa9C80048ec6db678642B1";
+public class CNS extends BaseNamingService {
 
   private final ProxyReader proxyReaderContract;
 
-  public CNS(String blockchainProviderUrl) {
-    this.proxyReaderContract = new ProxyReader(blockchainProviderUrl, PROXY_READER_ADDRESS);
+  public CNS(NSConfig config) {
+    super(config);
+    String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
+    this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress);
   }
 
   public Boolean isSupported(String domain) {

@@ -1,3 +1,6 @@
+## Unreleased
+* Replace Resolution constructor with configurable builder
+
 ## 1.7.0
 * Plugged-in network config file with contracts
 * Code cleanup
