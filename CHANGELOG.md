@@ -1,5 +1,6 @@
-## Unreleased
+## 1.8.0
 * Replace Resolution constructor with configurable builder
+* Introduce DomainResolution interface
 * Replace deprecated APIs 
 * Update network-config 
 * Code cleanup
