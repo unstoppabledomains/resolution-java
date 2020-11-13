@@ -31,18 +31,18 @@ public abstract class BaseContract {
     this.url = url;
     this.abi = getAbi();
   }
-  
+
   protected abstract String getAbiPath();
-  
+
   protected JsonArray getAbi() {
       String path = getAbiPath();
       final InputStreamReader reader = new InputStreamReader(BaseContract.class.getResourceAsStream(path));
 
       String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
 
-      return new JsonParser().parse(jsonString).getAsJsonArray();
+      return JsonParser.parseString(jsonString).getAsJsonArray();
   }
-  
+
   protected <T> T fetchOne(String method, Object[] args) throws NamingServiceException {
     Tuple answ = fetchMethod(method, args);
     try {
@@ -61,10 +61,10 @@ public abstract class BaseContract {
     JsonObject body = HTTPUtil.prepareBody("eth_call", params);
     try {
       JsonObject response = HTTPUtil.post(url, body);
-      String answer = response.get("result").getAsString();
-      if (isUnknownError(answer)) {
+      if (isUnknownError(response)) {
         return new Tuple();
       }
+      String answer = response.get("result").getAsString();
       final String replacedAnswer = answer.replace("0x", "");
       return function.decodeReturn(FastHex.decode(replacedAnswer));
     } catch(IOException exception) {
@@ -121,7 +121,12 @@ public abstract class BaseContract {
     return params;
   }
 
-  private boolean isUnknownError(String answer) {
+  private boolean isUnknownError(JsonObject response) {
+    JsonElement result = response.get("result");
+    if (result == null) {
+      return response.get("error") != null;
+    }
+    String answer = result.getAsString();
     return "0x".equals(answer);
   }
 }

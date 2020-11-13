@@ -1,12 +1,5 @@
 package com.unstoppabledomains.resolution.naming.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,6 +8,13 @@ import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
 import com.unstoppabledomains.util.Utilities;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class ZNS extends BaseNamingService {
     static final String REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793"; // eth style zil registry
@@ -38,30 +38,35 @@ public class ZNS extends BaseNamingService {
         return "0x" + namehash.get();
     }
 
+    @Override
     public Boolean isSupported(String domain) {
         String[] split = domain.split("\\.");
         return (split.length != 0 && split[split.length - 1].equals("zil"));
     }
 
+    @Override
     public String getAddress(String domain, String ticker) throws NamingServiceException {
         String key = "crypto." + ticker.toUpperCase() + ".address";
         try {
             return getRecord(domain, key);
-        } catch(NamingServiceException exception) {
+        } catch (NamingServiceException exception) {
             if (exception.getCode() == NSExceptionCode.RecordNotFound)
                 throw new NamingServiceException(NSExceptionCode.UnknownCurrency, new NSExceptionParams("d|c", domain, ticker));
             throw exception;
         }
     }
 
+    @Override
     public String getIpfsHash(String domain) throws NamingServiceException {
         return getRecord(domain, "ipfs.html.value");
     }
 
+    @Override
     public String getEmail(String domain) throws NamingServiceException {
         return getRecord(domain, "whois.email.value");
     }
 
+    @Override
     public String getOwner(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
@@ -85,7 +90,7 @@ public class ZNS extends BaseNamingService {
             String[] keys = {};
             JsonObject response = fetchSubState(resolverAddress, RECORDS_KEY, keys);
             return response.getAsJsonObject(RECORDS_KEY);
-        } catch(IOException error) {
+        } catch (IOException error) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound);
         }
     }
@@ -93,7 +98,7 @@ public class ZNS extends BaseNamingService {
     private String getResolverAddress(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain)); 
+            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
         }
         if (Utilities.isEmptyResponse(addresses[1])) {
             throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("%d", domain));

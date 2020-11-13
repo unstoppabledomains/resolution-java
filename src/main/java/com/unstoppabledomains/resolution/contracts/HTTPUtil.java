@@ -1,5 +1,10 @@
 package com.unstoppabledomains.resolution.contracts;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.unstoppabledomains.config.client.Client;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,11 +12,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.unstoppabledomains.config.client.Client;
 
 public class HTTPUtil {
     private HTTPUtil() {
@@ -39,7 +39,7 @@ public class HTTPUtil {
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            return (JsonObject) new JsonParser().parse(response.toString());
+            return (JsonObject) JsonParser.parseString(response.toString());
         }
     }
 

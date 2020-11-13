@@ -1,7 +1,5 @@
 package com.unstoppabledomains.resolution.naming.service;
 
-import java.util.Arrays;
-
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
@@ -12,6 +10,8 @@ import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
 import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
 import com.unstoppabledomains.util.Utilities;
+
+import java.util.Arrays;
 
 public class ENS extends BaseNamingService {
 

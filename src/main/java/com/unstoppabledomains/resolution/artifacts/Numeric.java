@@ -1,7 +1,10 @@
 package com.unstoppabledomains.resolution.artifacts;
 
-/** This code was taken from web3J and adapted accordingly
- *  https://github.com/web3j/web3j/blob/5877c308e11c0de8e24e50c882effa84354a8e57/utils/src/main/java/org/web3j/utils/Numeric.java#L27
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ * This code was taken from web3J and adapted accordingly
+ * https://github.com/web3j/web3j/blob/5877c308e11c0de8e24e50c882effa84354a8e57/utils/src/main/java/org/web3j/utils/Numeric.java#L27
  */
 public final class Numeric {
     private Numeric() {}
@@ -14,14 +17,12 @@ public final class Numeric {
         }
     }
 
-
     public static boolean containsHexPrefix(String input) {
-        return !Strings.isEmpty(input)
+        return !StringUtils.isEmpty(input)
                 && input.length() > 1
                 && input.charAt(0) == '0'
                 && input.charAt(1) == 'x';
     }
-
 
     public static byte[] hexStringToByteArray(String input) {
         String cleanInput = cleanHexPrefix(input);
@@ -29,7 +30,7 @@ public final class Numeric {
         int len = cleanInput.length();
 
         if (len == 0) {
-            return new byte[] {};
+            return new byte[]{};
         }
 
         byte[] data;
