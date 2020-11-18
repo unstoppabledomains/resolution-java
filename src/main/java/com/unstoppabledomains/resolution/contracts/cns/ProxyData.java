@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ProxyData {
-  String resolver;
-  String owner;
-  String[] values;
+  private String resolver;
+  private String owner;
+  private String[] values;
 }
