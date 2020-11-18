@@ -7,11 +7,13 @@ import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
+import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
 import com.unstoppabledomains.util.Utilities;
 
 import java.math.BigInteger;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public class CNS extends BaseNamingService {
 
@@ -42,18 +44,17 @@ public class CNS extends BaseNamingService {
   }
 
   public  String getIpfsHash(String domain) throws NamingServiceException {
-    String key = "ipfs.html.value";
-    String hash = resolveKey(key, domain);
-
-    if (hash == null) {
-      throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver,
-              new NSExceptionParams("d|r", domain, key));
-    }
-    if ("".equals(hash)) {
+    String[] keys = {"dweb.ipfs.hash", "ipfs.html.value"};
+    BigInteger tokenID = tokenID(domain);
+    ProxyData data = resolveKeys(keys, tokenID);
+    checkDomainOwnership(data, domain);
+    
+    String[] values = data.getValues();
+    if (values[0].isEmpty() && values[1].isEmpty()) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-              new NSExceptionParams("d|r", domain, key));
+              new NSExceptionParams("d|r", domain, "dweb.ipfs.hash"));
     }
-    return hash;
+    return values[0].isEmpty() ? values[1] : values[0];
   }
 
   public  String getEmail(String domain) throws NamingServiceException {
@@ -70,7 +71,8 @@ public class CNS extends BaseNamingService {
       BigInteger tokenID = tokenID(domain);
       String owner = owner(tokenID);
       if (Utilities.isEmptyResponse(owner)) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|n", domain, "CNS"));
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, 
+          new NSExceptionParams("d|n", domain, "CNS"));
       }
       return owner;
     } catch (Exception e) {
@@ -89,6 +91,17 @@ public class CNS extends BaseNamingService {
     }
   }
 
+  private void checkDomainOwnership(ProxyData data, String domain) throws NamingServiceException {
+    if (data.getOwner().isEmpty()) {
+      if (data.getResolver().isEmpty()) {
+        throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, 
+          new NSExceptionParams("d", domain));
+      }
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
+        new NSExceptionParams("d", domain));
+    }
+  }
+
   private NamingServiceException configureNamingServiceException(Exception e, NSExceptionParams params) {
     if (e instanceof NamingServiceException) {
       return (NamingServiceException) e;
@@ -103,6 +116,10 @@ public class CNS extends BaseNamingService {
 
   private String resolveKey(String key, BigInteger tokenID) throws Exception {
     return proxyReaderContract.getRecord(key, tokenID);
+  }
+
+  private ProxyData resolveKeys(String[] keys, BigInteger tokenID) throws NamingServiceException {
+    return proxyReaderContract.getProxyData(keys, tokenID);
   }
 
   private String owner(BigInteger tokenID) throws NamingServiceException {

@@ -1,5 +1,6 @@
 package com.unstoppabledomains.resolution.contracts.cns;
 
+import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 
 import java.math.BigInteger;
@@ -29,6 +30,13 @@ public class ProxyReader extends BaseContract {
         args[1] = tokenID;
 
         return fetchOne("get", args);
+    }
+
+    public ProxyData getProxyData(String[] records, BigInteger tokenID) throws NamingServiceException {
+        Object[] args = new Object[2];
+        args[0] = records;
+        args[1] = tokenID;
+        return fetchData(args);
     }
 
     @Override

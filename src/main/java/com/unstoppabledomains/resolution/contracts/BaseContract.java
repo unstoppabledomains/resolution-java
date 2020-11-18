@@ -10,12 +10,14 @@ import com.google.gson.JsonParser;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public abstract class BaseContract {
@@ -50,6 +52,23 @@ public abstract class BaseContract {
     } catch (ArrayIndexOutOfBoundsException e) {
       return null;
     }
+  }
+
+  protected ProxyData fetchData(Object[] args) throws NamingServiceException {
+    Tuple answ = fetchMethod("getData", args);
+    String resolver = "";
+    String owner = "";
+    BigInteger resolverValue = (BigInteger) answ.get(0);
+    BigInteger ownerValue = (BigInteger) answ.get(1);
+
+    if (resolverValue.intValue() != 0) {  
+      resolver = "0x" + ((BigInteger) answ.get(0)).toString(16);
+    }
+    if (ownerValue.intValue() != 0 ) {
+      owner = "0x" + ((BigInteger) answ.get(1)).toString(16);
+    }
+    String[] values = (String[]) answ.get(2);
+    return new ProxyData(resolver, owner, values);
   }
 
   private Tuple fetchMethod(String method, Object[] args) throws NamingServiceException {
