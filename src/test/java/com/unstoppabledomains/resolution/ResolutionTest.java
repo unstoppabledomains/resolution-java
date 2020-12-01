@@ -127,7 +127,9 @@ public class ResolutionTest {
 
     @Test
     public void noIpfsHash() throws Exception {
-        TestUtils.checkError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnspecifiedResolver);
+        TestUtils.checkError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.checkError(() -> resolution.getIpfsHash("pickleberrypop.crypto"), NSExceptionCode.RecordNotFound);
+
     }
 
     @Test
