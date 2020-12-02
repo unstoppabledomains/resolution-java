@@ -51,13 +51,13 @@ public class CNS extends BaseNamingService {
     String[] values = data.getValues();
     if (values[0].isEmpty() && values[1].isEmpty()) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-              new NSExceptionParams("d|r", domain, "dweb.ipfs.hash"));
+              new NSExceptionParams("d|r", domain, keys[0]));
     }
     return values[0].isEmpty() ? values[1] : values[0];
   }
 
   public  String getEmail(String domain) throws NamingServiceException {
-    String[] keys = {"whois.getEmail.value"};
+    String[] keys = {"whois.email.value"};
     ProxyData data = resolveKeys(keys, domain);
     String[] values = data.getValues();
     if ( values.length == 0 || Utilities.isEmptyResponse(values[0]))
@@ -108,10 +108,6 @@ public class CNS extends BaseNamingService {
     return new NamingServiceException(NSExceptionCode.UnknownError, params, e);
   }
 
-  private String resolveKey(String key, BigInteger tokenID) throws Exception {
-    return proxyReaderContract.getRecord(key, tokenID);
-  }
-
   private ProxyData resolveKeys(String[] keys, String domain) throws NamingServiceException {
     BigInteger tokenID = tokenID(domain);
     ProxyData data =  proxyReaderContract.getProxyData(keys, tokenID);
@@ -120,11 +116,7 @@ public class CNS extends BaseNamingService {
   }
 
   private String owner(BigInteger tokenID) throws NamingServiceException {
-    String owner = proxyReaderContract.getOwner(tokenID);
-    if (Utilities.isEmptyResponse(owner)) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
-    }
-    return owner;
+    return proxyReaderContract.getOwner(tokenID);
   }
 
   private BigInteger tokenID(String domain) throws NamingServiceException {
