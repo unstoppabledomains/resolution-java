@@ -55,7 +55,7 @@ public class Namehash {
      * href="http://docs.ens.domains/en/latest/implementers.html#normalising-and-validating-names">specification</a>.
      *
      * @param domain our user input blockchain domain
-     * @throws NamingServiceException
+     * @throws NamingServiceException - when domain is not supported
      * @return normalised blockchain domain
      */
     public static String normalise(String domain) throws NamingServiceException {
