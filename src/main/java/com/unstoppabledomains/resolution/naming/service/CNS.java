@@ -92,7 +92,7 @@ public class CNS extends BaseNamingService {
           new NSExceptionParams("d", domain));
       }
       throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver,
-        new NSExceptionParams("d", domain));
+      new NSExceptionParams("d", domain));
     }
   }
 
@@ -114,6 +114,7 @@ public class CNS extends BaseNamingService {
     checkDomainOwnership(data, domain);
     return data;
   }
+
 
   private String owner(BigInteger tokenID) throws NamingServiceException {
     return proxyReaderContract.getOwner(tokenID);
