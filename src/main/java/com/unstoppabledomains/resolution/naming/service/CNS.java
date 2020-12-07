@@ -13,6 +13,7 @@ import com.unstoppabledomains.util.Utilities;
 
 import java.math.BigInteger;
 import java.net.UnknownHostException;
+import java.util.List;
 
 public class CNS extends BaseNamingService {
 
@@ -37,7 +38,7 @@ public class CNS extends BaseNamingService {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
 
-    String address = data.getValues()[0];
+    String address = data.getValues().get(0);
     if (Utilities.isEmptyResponse(address))
       throw new NamingServiceException(NSExceptionCode.UnknownCurrency,
           new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
@@ -47,23 +48,23 @@ public class CNS extends BaseNamingService {
   public  String getIpfsHash(String domain) throws NamingServiceException {
     String[] keys = {"dweb.ipfs.hash", "ipfs.html.value"};
     ProxyData data = resolveKeys(keys, domain);
-    
-    String[] values = data.getValues();
-    if (values[0].isEmpty() && values[1].isEmpty()) {
+
+    List<String> values = data.getValues();
+    if (values.get(0).isEmpty() && values.get(1).isEmpty()) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
               new NSExceptionParams("d|r", domain, keys[0]));
     }
-    return values[0].isEmpty() ? values[1] : values[0];
+    return values.get(0).isEmpty() ? values.get(1) : values.get(0);
   }
 
   public  String getEmail(String domain) throws NamingServiceException {
     String[] keys = {"whois.email.value"};
     ProxyData data = resolveKeys(keys, domain);
-    String[] values = data.getValues();
-    if ( values.length == 0 || Utilities.isEmptyResponse(values[0]))
+    List<String> values = data.getValues();
+    if ( values.size() == 0 || Utilities.isEmptyResponse(values.get(0)))
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
           new NSExceptionParams("d|r", domain, keys[0]));
-    return values[0];
+    return values.get(0);
   }
 
   public  String getOwner(String domain) throws NamingServiceException {
