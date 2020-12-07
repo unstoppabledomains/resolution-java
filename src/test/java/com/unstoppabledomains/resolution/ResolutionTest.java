@@ -103,6 +103,9 @@ public class ResolutionTest {
 
         ipfs = resolution.getIpfsHash("johnnyjumper.zil");
         assertEquals("QmQ38zzQHVfqMoLWq2VeiMLHHYki9XktzXxLYTWXt8cydu", ipfs);
+
+        ipfs = resolution.getIpfsHash("reseller-test-udtesting-341567718146.crypto");
+        assertEquals("QmVJ26hBrwwNAPVmLavEFXDUunNDXeFSeMPmHuPxKe6dJv", ipfs);
     }
 
     @Test
