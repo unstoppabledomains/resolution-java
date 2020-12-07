@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class BaseContract {
@@ -66,7 +68,7 @@ public abstract class BaseContract {
     if (ownerValue.intValue() != 0 ) {
       owner = "0x" + ((BigInteger) answ.get(1)).toString(16);
     }
-    String[] values = (String[]) answ.get(2);
+    List<String> values = Arrays.asList((String[]) answ.get(2));
     return new ProxyData(resolver, owner, values);
   }
 
