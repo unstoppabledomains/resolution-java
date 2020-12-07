@@ -1,3 +1,7 @@
+## 1.8.1
+* Solve issue with recent etherium node update
+* Moved to use ProxyReader contract instead of direct communication with Registry/Resolver contracts
+
 ## 1.8.0
 * Replace Resolution constructor with configurable builder
 * Introduce DomainResolution interface
