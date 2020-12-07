@@ -16,8 +16,7 @@ public class ProxyReader extends BaseContract {
 
     public String getOwner(BigInteger tokenID) {
         try {
-            Object[] args = new Object[1];
-            args[0] = tokenID;
+            Object[] args = { tokenID };
             return fetchAddress("ownerOf", args);
         } catch (Exception e) {
             return null;
@@ -25,10 +24,7 @@ public class ProxyReader extends BaseContract {
     }
 
     public String getRecord(String recordKey, BigInteger tokenID) throws Exception {
-        Object[] args = new Object[2];
-        args[0] = recordKey;
-        args[1] = tokenID;
-
+        Object[] args = { recordKey, tokenID };
         return fetchOne("get", args);
     }
 
