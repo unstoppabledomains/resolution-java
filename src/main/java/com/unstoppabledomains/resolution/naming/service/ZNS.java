@@ -7,6 +7,8 @@ import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
+import com.unstoppabledomains.util.DnsRecord;
+import com.unstoppabledomains.util.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.io.IOException;
@@ -64,6 +66,11 @@ public class ZNS extends BaseNamingService {
     @Override
     public String getEmail(String domain) throws NamingServiceException {
         return getRecord(domain, "whois.email.value");
+    }
+
+    @Override
+    public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ZNS"));
     }
 
     @Override

@@ -1,6 +1,10 @@
 package com.unstoppabledomains.resolution;
 
+import java.util.List;
+
 import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.util.DnsRecord;
+import com.unstoppabledomains.util.DnsRecordsType;
 
 public interface DomainResolution {
 
@@ -53,6 +57,16 @@ public interface DomainResolution {
      * @throws NamingServiceException if getOwner is not present
      */
     String getOwner(String domain) throws NamingServiceException;
+    
+    /**
+     * Resolves dns records from a domain
+     * 
+     * @param domain domain name such as "brad.crypto"
+     * @param types List of DnsRecordsType to resolve for
+     * @return List of DnsRecord
+     * @throws NamingServiceException
+     */
+    List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException;
 
     /**
      * Resolves domain for a specific ticker address

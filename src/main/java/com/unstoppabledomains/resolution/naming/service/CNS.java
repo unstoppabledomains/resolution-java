@@ -9,11 +9,20 @@ import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
+import com.unstoppabledomains.util.DnsRecord;
+import com.unstoppabledomains.util.DnsRecordsType;
+import com.unstoppabledomains.util.DnsUtils;
 import com.unstoppabledomains.util.Utilities;
+
+import org.apache.commons.lang3.ObjectUtils.Null;
 
 import java.math.BigInteger;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CNS extends BaseNamingService {
 
@@ -82,8 +91,31 @@ public class CNS extends BaseNamingService {
     }
   }
 
+  @Override
+  public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+    DnsUtils util = new DnsUtils();
+    String[] keys = constructDnsRecords(types);
+    ProxyData data = resolveKeys(keys, domain);
+    List<String> values = data.getValues();
+    Map<String, String> rawData = new HashMap<String, String>();
+    for (int i = 0; i < values.size(); i++) {
+      rawData.put(keys[i], values.get(i));
+    }
+    return util.toList(rawData);
+  }
+
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
     return resolveKeys(new String[]{key}, domain);
+  }
+
+  private String[] constructDnsRecords(List<DnsRecordsType> types) {
+    List<String> records = new ArrayList<String>();
+    records.add("dns.ttl");
+    for (DnsRecordsType type: types) {
+      records.add("dns." + type.toString());
+      records.add("dns." + type.toString() + ".ttl");
+    }
+    return records.toArray(new String[records.size()]);
   }
 
   private void checkDomainOwnership(ProxyData data, String domain) throws NamingServiceException {

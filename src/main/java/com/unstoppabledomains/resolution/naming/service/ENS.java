@@ -9,9 +9,12 @@ import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
 import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
+import com.unstoppabledomains.util.DnsRecord;
+import com.unstoppabledomains.util.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ENS extends BaseNamingService {
 
@@ -61,6 +64,11 @@ public class ENS extends BaseNamingService {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
     }
     return owner;
+  }
+
+  @Override
+  public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ENS"));
   }
 
   private Resolver getResolverContract(String domain) throws NamingServiceException {

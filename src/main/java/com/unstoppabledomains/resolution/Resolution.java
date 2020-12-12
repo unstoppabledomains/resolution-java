@@ -10,8 +10,11 @@ import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
+import com.unstoppabledomains.util.DnsRecord;
+import com.unstoppabledomains.util.DnsRecordsType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
@@ -84,6 +87,12 @@ public class Resolution implements DomainResolution {
     public String getOwner(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
         return service.getOwner(domain);
+    }
+
+    @Override
+    public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+        NamingService service = findService(domain);
+        return service.getDns(domain, types);
     }
 
     @Override
