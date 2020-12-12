@@ -1,6 +1,7 @@
 package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.config.network.model.Network;
+import com.unstoppabledomains.exceptions.DnsException;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
@@ -90,7 +91,7 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+    public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
         NamingService service = findService(domain);
         return service.getDns(domain, types);
     }

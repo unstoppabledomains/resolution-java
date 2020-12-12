@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution.naming.service;
 
 import java.util.List;
 
+import com.unstoppabledomains.exceptions.DnsException;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.util.DnsRecord;
 import com.unstoppabledomains.util.DnsRecordsType;
@@ -19,5 +20,5 @@ public interface NamingService {
 
     String getNamehash(String domain) throws NamingServiceException;
 
-    List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException;
+    List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
 }

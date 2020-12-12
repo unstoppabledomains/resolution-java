@@ -8,9 +8,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
+import com.unstoppabledomains.exceptions.DnsException;
+import com.unstoppabledomains.exceptions.DnsExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import java.util.HashSet;
 public class DnsUtils {
   
   static Number DEFAULT_TTL = 300;
-  public List<DnsRecord> toList(Map<String, String> rawRecords) throws NamingServiceException {
+  public List<DnsRecord> toList(Map<String, String> rawRecords) throws DnsException {
     List<DnsRecord> dnsRecords = new ArrayList<DnsRecord>();
     List<DnsRecordsType> types = getAllDnsTypes(rawRecords);
     for (DnsRecordsType type: types) {
@@ -29,7 +29,7 @@ public class DnsUtils {
     return dnsRecords;
   }
 
-  public Map<String, String> toMap(List<DnsRecord> records) throws NamingServiceException {
+  public Map<String, String> toMap(List<DnsRecord> records) throws DnsException {
     Map<String, String> map = new HashMap<String, String>();
     for (DnsRecord record: records) {
       DnsRecordsType type = record.getType();
@@ -44,20 +44,20 @@ public class DnsUtils {
       }
 
       if (ttlInRecord != null && !ttlInRecord.isEmpty() && !ttlInRecord.equals(record.getTtl().toString())) {
-        throw new NamingServiceException(NSExceptionCode.InconsistentTtl, new NSExceptionParams("r", type.toString()));
+        throw new DnsException(DnsExceptionCode.InconsistentTtl, new NSExceptionParams("r", type.toString()));
       }
     }
     return map;
   }
 
-  private JsonArray getJsonArray(String jsonArray, DnsRecordsType type) throws NamingServiceException {
+  private JsonArray getJsonArray(String jsonArray, DnsRecordsType type) throws DnsException {
     try {
       return JsonParser.parseString(jsonArray).getAsJsonArray();
     } catch(NullPointerException exception) {
       // this is possible in toMap function only
       return null;
     } catch(JsonSyntaxException exception) {
-      throw new NamingServiceException(NSExceptionCode.DnsRecordCorrupted,
+      throw new DnsException(DnsExceptionCode.DnsRecordCorrupted,
         new NSExceptionParams("r", type.toString()));
     }
   }
@@ -74,7 +74,7 @@ public class DnsUtils {
     return new ArrayList<DnsRecordsType>(dnsTypes);
   }
 
-  private List<DnsRecord> constructDnsRecords(Map<String, String> rawRecords, DnsRecordsType type) throws NamingServiceException {
+  private List<DnsRecord> constructDnsRecords(Map<String, String> rawRecords, DnsRecordsType type) throws DnsException {
     Number ttl = parseTtl(rawRecords, type);
     String jsonValueString = rawRecords.get("dns." + type.toString());
     if (jsonValueString.isEmpty()) {

@@ -3,6 +3,7 @@ package com.unstoppabledomains.resolution.naming.service;
 
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.exceptions.ContractCallException;
+import com.unstoppabledomains.exceptions.DnsException;
 import com.unstoppabledomains.exceptions.NSExceptionCode;
 import com.unstoppabledomains.exceptions.NSExceptionParams;
 import com.unstoppabledomains.exceptions.NamingServiceException;
@@ -92,7 +93,7 @@ public class CNS extends BaseNamingService {
   }
 
   @Override
-  public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+  public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
     DnsUtils util = new DnsUtils();
     String[] keys = constructDnsRecords(types);
     ProxyData data = resolveKeys(keys, domain);

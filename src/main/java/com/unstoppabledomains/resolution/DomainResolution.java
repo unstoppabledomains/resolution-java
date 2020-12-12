@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution;
 
 import java.util.List;
 
+import com.unstoppabledomains.exceptions.DnsException;
 import com.unstoppabledomains.exceptions.NamingServiceException;
 import com.unstoppabledomains.util.DnsRecord;
 import com.unstoppabledomains.util.DnsRecordsType;
@@ -66,7 +67,7 @@ public interface DomainResolution {
      * @return List of DnsRecord
      * @throws NamingServiceException
      */
-    List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException;
+    List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
 
     /**
      * Resolves domain for a specific ticker address

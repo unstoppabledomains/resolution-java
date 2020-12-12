@@ -48,12 +48,6 @@ public class NamingServiceException extends Exception {
       case NotImplemented: {
         return "Method " + params.methodName + "is not implemented for this naming service: " + params.namingService;
       }
-      case DnsRecordCorrupted: {
-        return "record " + params.record + " is invalid json-string";
-      }
-      case InconsistentTtl: {
-        return "ttl for record " + params.record + "is different for other records of the same type";
-      }
       case UnknownError:
       default: 
         return "Unknown Error occured";

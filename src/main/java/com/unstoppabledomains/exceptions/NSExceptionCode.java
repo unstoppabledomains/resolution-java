@@ -11,7 +11,5 @@ public enum NSExceptionCode {
   IncorrectMethodName,
   UnspecifiedResolver,
   UnsupportedCurrency,
-  NotImplemented,
-  DnsRecordCorrupted,
-  InconsistentTtl;
+  NotImplemented;
 }
