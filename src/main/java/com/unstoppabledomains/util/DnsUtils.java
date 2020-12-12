@@ -84,7 +84,7 @@ public class DnsUtils {
       JsonArray arr = getJsonArray(jsonValueString, type);
       for (JsonElement elem: arr) {
         String value = elem.getAsString();
-        if (!value.isBlank()) {
+        if (value != null && !value.isEmpty()) {
           data.add(new DnsRecord(type, ttl, value));
         }
       }
