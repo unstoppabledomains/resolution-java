@@ -30,7 +30,7 @@ public class DnsUtils {
   }
 
   public Map<String, String> toMap(List<DnsRecord> records) throws DnsException {
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new HashMap();
     for (DnsRecord record: records) {
       DnsRecordsType type = record.getType();
       String ttlInRecord = map.get("dns." + type + ".ttl");
