@@ -50,7 +50,7 @@ public class NamingServiceException extends Exception {
       }
       case UnknownError:
       default: 
-        return "Unknown Error occured";
+        return "Unknown Error occurred";
     }
   }
 

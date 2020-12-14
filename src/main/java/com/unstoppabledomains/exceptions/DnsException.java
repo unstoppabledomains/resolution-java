@@ -28,7 +28,7 @@ public class DnsException extends Exception {
         return "ttl for record " + params.record + "is different for other records of the same type";
       }
       default: 
-        return "Unknown Error occured";
+        return "Unknown Error occurred";
     }
   }
 
