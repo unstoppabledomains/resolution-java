@@ -63,7 +63,7 @@ public class DnsUtils {
   }
 
   private List<DnsRecordsType> getAllDnsTypes(Map<String, String> rawRecords) {
-    Set<DnsRecordsType> dnsTypes = new HashSet<DnsRecordsType>();
+    Set<DnsRecordsType> dnsTypes = new HashSet();
     for (Map.Entry<String, String> entry : rawRecords.entrySet()) {
       String[] chunks = entry.getKey().split("\\.");
       Boolean isDnsType = chunks[0].equals("dns") && !chunks[1].equals("ttl");
