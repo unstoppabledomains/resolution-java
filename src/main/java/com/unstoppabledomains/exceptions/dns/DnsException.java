@@ -1,4 +1,6 @@
-package com.unstoppabledomains.exceptions;
+package com.unstoppabledomains.exceptions.dns;
+
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 
 public class DnsException extends Exception {
   private static final long serialVersionUID = 1L;

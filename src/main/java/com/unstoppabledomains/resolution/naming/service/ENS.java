@@ -1,16 +1,16 @@
 package com.unstoppabledomains.resolution.naming.service;
 
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
 import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
-import com.unstoppabledomains.util.DnsRecord;
-import com.unstoppabledomains.util.DnsRecordsType;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.util.Arrays;

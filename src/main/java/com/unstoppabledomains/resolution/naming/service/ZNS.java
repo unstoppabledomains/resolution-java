@@ -3,12 +3,12 @@ package com.unstoppabledomains.resolution.naming.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
-import com.unstoppabledomains.util.DnsRecord;
-import com.unstoppabledomains.util.DnsRecordsType;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.io.IOException;

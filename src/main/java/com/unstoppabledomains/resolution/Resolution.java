@@ -1,18 +1,18 @@
 package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.config.network.model.Network;
-import com.unstoppabledomains.exceptions.DnsException;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.dns.DnsException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.CNS;
 import com.unstoppabledomains.resolution.naming.service.ENS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
-import com.unstoppabledomains.util.DnsRecord;
-import com.unstoppabledomains.util.DnsRecordsType;
 
 import java.util.HashMap;
 import java.util.List;

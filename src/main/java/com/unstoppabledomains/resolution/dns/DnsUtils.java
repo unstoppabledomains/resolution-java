@@ -1,4 +1,4 @@
-package com.unstoppabledomains.util;
+package com.unstoppabledomains.resolution.dns;
 
 import java.util.List;
 import java.util.Map;
@@ -8,9 +8,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.unstoppabledomains.exceptions.DnsException;
-import com.unstoppabledomains.exceptions.DnsExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
+import com.unstoppabledomains.exceptions.dns.DnsException;
+import com.unstoppabledomains.exceptions.dns.DnsExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;

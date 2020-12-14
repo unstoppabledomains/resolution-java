@@ -3,16 +3,16 @@ package com.unstoppabledomains.resolution.naming.service;
 
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.exceptions.ContractCallException;
-import com.unstoppabledomains.exceptions.DnsException;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.dns.DnsException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
-import com.unstoppabledomains.util.DnsRecord;
-import com.unstoppabledomains.util.DnsRecordsType;
-import com.unstoppabledomains.util.DnsUtils;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
+import com.unstoppabledomains.resolution.dns.DnsUtils;
 import com.unstoppabledomains.util.Utilities;
 
 import org.apache.commons.lang3.ObjectUtils.Null;

@@ -1,4 +1,4 @@
-package com.unstoppabledomains.exceptions;
+package com.unstoppabledomains.exceptions.dns;
 
 public enum DnsExceptionCode {
   DnsRecordCorrupted,

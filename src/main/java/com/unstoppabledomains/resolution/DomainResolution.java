@@ -2,10 +2,10 @@ package com.unstoppabledomains.resolution;
 
 import java.util.List;
 
-import com.unstoppabledomains.exceptions.DnsException;
-import com.unstoppabledomains.exceptions.NamingServiceException;
-import com.unstoppabledomains.util.DnsRecord;
-import com.unstoppabledomains.util.DnsRecordsType;
+import com.unstoppabledomains.exceptions.dns.DnsException;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 
 public interface DomainResolution {
 

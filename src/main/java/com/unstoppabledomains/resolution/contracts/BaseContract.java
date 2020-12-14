@@ -7,9 +7,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
 
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package com.unstoppabledomains.util;
+package com.unstoppabledomains.resolution.dns;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
