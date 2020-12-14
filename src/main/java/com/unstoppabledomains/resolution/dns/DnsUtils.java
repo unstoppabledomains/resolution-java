@@ -20,7 +20,7 @@ public class DnsUtils {
   
   public static Number DEFAULT_TTL = 300;
   public List<DnsRecord> toList(Map<String, String> rawRecords) throws DnsException {
-    List<DnsRecord> dnsRecords = new ArrayList<DnsRecord>();
+    List<DnsRecord> dnsRecords = new ArrayList();
     List<DnsRecordsType> types = getAllDnsTypes(rawRecords);
     for (DnsRecordsType type: types) {
       List<DnsRecord> dnsType = constructDnsRecords(rawRecords, type);
@@ -80,7 +80,7 @@ public class DnsUtils {
     if (jsonValueString.isEmpty()) {
         return null;
     }
-    List<DnsRecord> data = new ArrayList<DnsRecord>();
+    List<DnsRecord> data = new ArrayList();
       JsonArray arr = getJsonArray(jsonValueString, type);
       for (JsonElement elem: arr) {
         String value = elem.getAsString();
