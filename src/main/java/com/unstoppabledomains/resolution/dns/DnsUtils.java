@@ -54,10 +54,11 @@ public class DnsUtils {
 
   private JsonArray getJsonArray(String jsonArray, DnsRecordsType type) throws DnsException {
     try {
+      if (StringUtils.isBlank(jsonArray)) {
+        return null;
+      }
       return JsonParser.parseString(jsonArray).getAsJsonArray();
-    } catch(NullPointerException exception) {
-      // this is possible in toMap function only
-      return null;
+      
     } catch(JsonSyntaxException exception) {
       throw new DnsException(DnsExceptionCode.DnsRecordCorrupted,
         new NSExceptionParams("r", type.toString()));
