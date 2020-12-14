@@ -12,6 +12,8 @@ import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.dns.DnsExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,12 +68,12 @@ public class DnsUtils {
     Set<DnsRecordsType> dnsTypes = new HashSet();
     for (Map.Entry<String, String> entry : rawRecords.entrySet()) {
       String[] chunks = entry.getKey().split("\\.");
-      Boolean isDnsType = chunks[0].equals("dns") && !chunks[1].equals("ttl");
-      if (isDnsType.equals(Boolean.TRUE)) {
+      boolean isDnsType = chunks[0].equals("dns") && !chunks[1].equals("ttl");
+      if (isDnsType) {
         dnsTypes.add(DnsRecordsType.valueOf(chunks[1]));
       }
     }
-    return new ArrayList<DnsRecordsType>(dnsTypes);
+    return new ArrayList(dnsTypes);
   }
 
   private List<DnsRecord> constructDnsRecords(Map<String, String> rawRecords, DnsRecordsType type) throws DnsException {
@@ -84,7 +86,7 @@ public class DnsUtils {
       JsonArray arr = getJsonArray(jsonValueString, type);
       for (JsonElement elem: arr) {
         String value = elem.getAsString();
-        if (value != null && !value.isEmpty()) {
+        if (!StringUtils.isEmpty(value)) {
           data.add(new DnsRecord(type, ttl, value));
         }
       }
@@ -105,7 +107,7 @@ public class DnsUtils {
   }
 
   private Number parseIfNumber(String str) {
-    if (str.isEmpty()) {
+    if (StringUtils.isEmpty(str)) {
       return null;
     }
     try {
