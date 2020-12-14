@@ -80,7 +80,7 @@ public class DnsUtils {
   private List<DnsRecord> constructDnsRecords(Map<String, String> rawRecords, DnsRecordsType type) throws DnsException {
     int ttl = parseTtl(rawRecords, type);
     String jsonValueString = rawRecords.get("dns." + type.toString());
-    if (jsonValueString.isEmpty()) {
+    if (StringUtils.isEmpty(jsonValueString)) {
         return null;
     }
     List<DnsRecord> data = new ArrayList();
