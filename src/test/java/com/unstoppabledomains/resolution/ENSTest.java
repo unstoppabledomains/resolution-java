@@ -1,8 +1,8 @@
 package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.TestUtils;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

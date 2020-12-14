@@ -11,6 +11,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class DnsRecord {
   private DnsRecordsType type;
-  private Number ttl;
+  private int ttl;
   private String data;
 }

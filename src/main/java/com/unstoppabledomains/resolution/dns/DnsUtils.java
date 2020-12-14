@@ -20,7 +20,7 @@ import java.util.HashSet;
 
 public class DnsUtils {
   
-  public static Number DEFAULT_TTL = 300;
+  public static int DEFAULT_TTL = 300;
   public List<DnsRecord> toList(Map<String, String> rawRecords) throws DnsException {
     List<DnsRecord> dnsRecords = new ArrayList();
     List<DnsRecordsType> types = getAllDnsTypes(rawRecords);
@@ -42,10 +42,10 @@ public class DnsUtils {
         map.put("dns." + type, dnsInRecord.toString());
       } else {
         map.put("dns." + type, "["+record.getData()+"]");
-        map.put("dns." + type + ".ttl", record.getTtl().toString());
+        map.put("dns." + type + ".ttl", Integer.toString(record.getTtl()));
       }
 
-      if (ttlInRecord != null && !ttlInRecord.isEmpty() && !ttlInRecord.equals(record.getTtl().toString())) {
+      if (ttlInRecord != null && !ttlInRecord.isEmpty() && !ttlInRecord.equals(Integer.toString(record.getTtl()))) {
         throw new DnsException(DnsExceptionCode.InconsistentTtl, new NSExceptionParams("r", type.toString()));
       }
     }
@@ -77,7 +77,7 @@ public class DnsUtils {
   }
 
   private List<DnsRecord> constructDnsRecords(Map<String, String> rawRecords, DnsRecordsType type) throws DnsException {
-    Number ttl = parseTtl(rawRecords, type);
+    int ttl = parseTtl(rawRecords, type);
     String jsonValueString = rawRecords.get("dns." + type.toString());
     if (jsonValueString.isEmpty()) {
         return null;
@@ -93,27 +93,27 @@ public class DnsUtils {
       return data;
   }
 
-  private Number parseTtl(Map<String, String> rawRecords, DnsRecordsType type) {
-    Number recordTtl = parseIfNumber(rawRecords.get("dns." + type.toString() + ".ttl"));
-    if (recordTtl != null) {
+  private int parseTtl(Map<String, String> rawRecords, DnsRecordsType type) {
+    int recordTtl = parseIfNumber(rawRecords.get("dns." + type.toString() + ".ttl"));
+    if (recordTtl != -1) {
       return recordTtl;
     }
-    Number defaultRecordTtl = parseIfNumber(rawRecords.get("dns.ttl"));
-    if (defaultRecordTtl != null) {
+    int defaultRecordTtl = parseIfNumber(rawRecords.get("dns.ttl"));
+    if (defaultRecordTtl != -1) {
       return defaultRecordTtl;
     }
 
     return DEFAULT_TTL;
   }
 
-  private Number parseIfNumber(String str) {
+  private int parseIfNumber(String str) {
     if (StringUtils.isEmpty(str)) {
-      return null;
+      return -1;
     }
     try {
       return(Integer.parseInt(str));
     } catch(NumberFormatException exception) {
-      return null;
+      return -1;
     }
   }
 }
