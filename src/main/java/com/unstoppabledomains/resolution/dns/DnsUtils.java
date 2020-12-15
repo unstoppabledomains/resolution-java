@@ -20,7 +20,7 @@ import java.util.HashSet;
 
 public class DnsUtils {
   
-  public static int DEFAULT_TTL = 300;
+  public static final int DEFAULT_TTL = 300;
   public List<DnsRecord> toList(Map<String, String> rawRecords) throws DnsException {
     List<DnsRecord> dnsRecords = new ArrayList();
     List<DnsRecordsType> types = getAllDnsTypes(rawRecords);
