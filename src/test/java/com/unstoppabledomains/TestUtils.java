@@ -1,7 +1,7 @@
 package com.unstoppabledomains;
 
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 
 import java.util.concurrent.Callable;
 

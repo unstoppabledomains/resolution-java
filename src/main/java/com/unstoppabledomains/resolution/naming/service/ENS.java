@@ -1,17 +1,20 @@
 package com.unstoppabledomains.resolution.naming.service;
 
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
 import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ENS extends BaseNamingService {
 
@@ -61,6 +64,11 @@ public class ENS extends BaseNamingService {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
     }
     return owner;
+  }
+
+  @Override
+  public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ENS"));
   }
 
   private Resolver getResolverContract(String domain) throws NamingServiceException {

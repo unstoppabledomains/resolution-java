@@ -1,3 +1,5 @@
+## Unreleased
+* Introduced Resolution#dns method to query dns records from .crypto domains
 ## 1.8.1
 * Solve issue with recent etherium node update
 * Moved to use ProxyReader contract instead of direct communication with Registry/Resolver contracts

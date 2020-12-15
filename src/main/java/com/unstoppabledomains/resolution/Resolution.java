@@ -1,9 +1,12 @@
 package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.config.network.model.Network;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.dns.DnsException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.CNS;
 import com.unstoppabledomains.resolution.naming.service.ENS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
@@ -12,6 +15,7 @@ import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
@@ -84,6 +88,12 @@ public class Resolution implements DomainResolution {
     public String getOwner(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
         return service.getOwner(domain);
+    }
+
+    @Override
+    public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
+        NamingService service = findService(domain);
+        return service.getDns(domain, types);
     }
 
     @Override

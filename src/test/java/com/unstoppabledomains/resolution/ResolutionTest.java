@@ -2,13 +2,21 @@ package com.unstoppabledomains.resolution;
 
 import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.config.network.model.Network;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
+import com.unstoppabledomains.resolution.dns.DnsUtils;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class ResolutionTest {
 
@@ -138,5 +146,24 @@ public class ResolutionTest {
     @Test
     public void noEmailRecord() throws Exception {
         TestUtils.checkError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
+    }
+
+    @Test
+    public void dnsRecords() throws Exception {
+        String domain = "udtestdev-reseller-test-udtesting-875948372642.crypto";
+        List<DnsRecordsType> types = Arrays.asList(DnsRecordsType.A, DnsRecordsType.AAAA);
+        List<DnsRecord> dnsRecords = resolution.getDns(domain, types);
+        assertEquals(2, dnsRecords.size());
+        List<DnsRecord> correctResult = Arrays.asList(new DnsRecord(DnsRecordsType.A, 98, "10.0.0.1"), new DnsRecord(DnsRecordsType.A, 98, "10.0.0.3"));
+        assertEquals(dnsRecords, correctResult);
+    }
+
+    @Test
+    public void dnsRecordsToMap() throws Exception {
+        DnsUtils utils = new DnsUtils();
+        List<DnsRecord> dnsRecords = Arrays.asList(new DnsRecord(DnsRecordsType.A, 98, "10.0.0.1"), new DnsRecord(DnsRecordsType.A, 98, "10.0.0.3"));
+        Map<String, String> map = utils.toMap(dnsRecords);
+        List<DnsRecord> revert = utils.toList(map);
+        assertEquals(dnsRecords, revert);
     }
 }

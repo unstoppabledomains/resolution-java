@@ -3,10 +3,12 @@ package com.unstoppabledomains.resolution.naming.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.io.IOException;
@@ -64,6 +66,11 @@ public class ZNS extends BaseNamingService {
     @Override
     public String getEmail(String domain) throws NamingServiceException {
         return getRecord(domain, "whois.email.value");
+    }
+
+    @Override
+    public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ZNS"));
     }
 
     @Override

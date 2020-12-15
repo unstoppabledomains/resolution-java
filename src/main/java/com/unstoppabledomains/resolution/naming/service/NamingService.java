@@ -1,6 +1,11 @@
 package com.unstoppabledomains.resolution.naming.service;
 
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import java.util.List;
+
+import com.unstoppabledomains.exceptions.dns.DnsException;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.dns.DnsRecord;
+import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 
 public interface NamingService {
     Boolean isSupported(String domain);
@@ -14,4 +19,6 @@ public interface NamingService {
     String getOwner(String domain) throws NamingServiceException;
 
     String getNamehash(String domain) throws NamingServiceException;
+
+    List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
 }

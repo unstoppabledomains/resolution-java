@@ -1,4 +1,4 @@
-package com.unstoppabledomains.exceptions;
+package com.unstoppabledomains.exceptions.ns;
 
 public class NamingServiceException extends Exception {
   private static final long serialVersionUID = 1L;
@@ -50,7 +50,7 @@ public class NamingServiceException extends Exception {
       }
       case UnknownError:
       default: 
-        return "Unknown Error occured";
+        return "Unknown Error occurred";
     }
   }
 

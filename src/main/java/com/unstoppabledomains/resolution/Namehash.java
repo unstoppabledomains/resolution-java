@@ -5,9 +5,9 @@ package com.unstoppabledomains.resolution;
  * https://github.com/web3j/web3j/blob/master/core/src/main/java/org/web3j/ens/NameHash.java
  */
 
-import com.unstoppabledomains.exceptions.NSExceptionCode;
-import com.unstoppabledomains.exceptions.NSExceptionParams;
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Hash;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 

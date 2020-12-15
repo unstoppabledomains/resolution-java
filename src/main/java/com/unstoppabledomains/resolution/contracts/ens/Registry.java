@@ -1,6 +1,6 @@
 package com.unstoppabledomains.resolution.contracts.ens;
 
-import com.unstoppabledomains.exceptions.NamingServiceException;
+import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 
 public class Registry extends BaseContract {
