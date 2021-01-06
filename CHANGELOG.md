@@ -1,5 +1,6 @@
-## Unreleased
+## 1.9.1
 * Introduced Resolution#dns method to query dns records from .crypto domains
+* Introduced Resolution#usdt method to query usdt address of different chains such as tron, omni, eos and erc20
 ## 1.8.1
 * Solve issue with recent etherium node update
 * Moved to use ProxyReader contract instead of direct communication with Registry/Resolver contracts
