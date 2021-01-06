@@ -8,7 +8,7 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 
 public interface NamingService {
-    NamingServiceType getName();
+    NamingServiceType getType();
 
     Boolean isSupported(String domain);
 

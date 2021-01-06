@@ -11,6 +11,8 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,14 +43,16 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
-    public NamingServiceType getName() {
+    public NamingServiceType getType() {
       return NamingServiceType.ZNS;
     }
 
     @Override
     public Boolean isSupported(String domain) {
-        String[] split = domain.split("\\.");
-        return (split.length != 0 && split[split.length - 1].equals("zil"));
+        if (domain.equals("zil")) {
+            return true;
+        }
+        return StringUtils.endsWith(domain, ".zil");
     }
 
     @Override

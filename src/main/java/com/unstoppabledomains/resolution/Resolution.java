@@ -67,8 +67,9 @@ public class Resolution implements DomainResolution {
         try {
             return service.getRecord(domain, recordKey);
         } catch(NamingServiceException exception) {
-            if (exception.getCode().equals(NSExceptionCode.RecordNotFound)) {
-                throw new NamingServiceException(NSExceptionCode.UnknownCurrency, new NSExceptionParams("d|c", domain, ticker));
+            if (exception.getCode() == NSExceptionCode.RecordNotFound) {
+                throw new NamingServiceException(NSExceptionCode.UnknownCurrency, 
+                    new NSExceptionParams("d|c", domain, ticker));
             }
             throw exception;
         }
@@ -77,7 +78,7 @@ public class Resolution implements DomainResolution {
     @Override
     public String getUsdt(String domain, TickerVersion version) throws NamingServiceException {
         NamingService service = findService(domain);
-        if (service.getName().equals(NamingServiceType.ENS)) {
+        if (service.getType() == NamingServiceType.ENS) {
             throw new NamingServiceException(NSExceptionCode.NotImplemented, 
                 new NSExceptionParams("d|m", domain, "getUsdt"));
         }

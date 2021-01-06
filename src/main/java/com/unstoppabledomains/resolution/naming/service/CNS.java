@@ -32,7 +32,7 @@ public class CNS extends BaseNamingService {
   }
 
   @Override
-  public NamingServiceType getName() {
+  public NamingServiceType getType() {
     return NamingServiceType.CNS;
   }
 

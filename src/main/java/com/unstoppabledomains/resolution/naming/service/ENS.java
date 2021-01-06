@@ -28,7 +28,7 @@ public class ENS extends BaseNamingService {
   }
 
   @Override
-  public NamingServiceType getName() {
+  public NamingServiceType getType() {
     return NamingServiceType.ENS;
   }
 
