@@ -88,6 +88,7 @@ public abstract class BaseContract {
       final String replacedAnswer = answer.replace("0x", "");
       return function.decodeReturn(FastHex.decode(replacedAnswer));
     } catch(IOException exception) {
+      exception.printStackTrace();
       throw new NamingServiceException(
         NSExceptionCode.BlockchainIsDown,
         new NSExceptionParams("n", namingServiceName),

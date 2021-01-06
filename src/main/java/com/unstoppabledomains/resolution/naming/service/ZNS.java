@@ -47,28 +47,6 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
-    public String getAddress(String domain, String ticker) throws NamingServiceException {
-        String key = "crypto." + ticker.toUpperCase() + ".address";
-        try {
-            return getRecord(domain, key);
-        } catch (NamingServiceException exception) {
-            if (exception.getCode() == NSExceptionCode.RecordNotFound)
-                throw new NamingServiceException(NSExceptionCode.UnknownCurrency, new NSExceptionParams("d|c", domain, ticker));
-            throw exception;
-        }
-    }
-
-    @Override
-    public String getIpfsHash(String domain) throws NamingServiceException {
-        return getRecord(domain, "ipfs.html.value");
-    }
-
-    @Override
-    public String getEmail(String domain) throws NamingServiceException {
-        return getRecord(domain, "whois.email.value");
-    }
-
-    @Override
     public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
         throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ZNS"));
     }
@@ -82,10 +60,11 @@ public class ZNS extends BaseNamingService {
         return addresses[0];
     }
 
-    private String getRecord(String domain, String key) throws NamingServiceException {
+    @Override
+    public String getRecord(String domain, String key) throws NamingServiceException {
         try {
-        JsonObject records = getAllRecords(domain);
-        return records.get(key).getAsString();
+            JsonObject records = getAllRecords(domain);
+            return records.get(key).getAsString();
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }

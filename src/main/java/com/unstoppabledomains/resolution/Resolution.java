@@ -63,7 +63,15 @@ public class Resolution implements DomainResolution {
     @Override
     public String getAddress(String domain, String ticker) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.getAddress(domain, ticker);
+        String recordKey = "crypto." + ticker.toUpperCase() + ".address";
+        try {
+            return service.getRecord(domain, recordKey);
+        } catch(NamingServiceException exception) {
+            if (exception.getCode().equals(NSExceptionCode.RecordNotFound)) {
+                throw new NamingServiceException(NSExceptionCode.UnknownCurrency, new NSExceptionParams("d|c", domain, ticker));
+            }
+            throw exception;
+        }
     }
 
     @Override
@@ -75,13 +83,15 @@ public class Resolution implements DomainResolution {
     @Override
     public String getIpfsHash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.getIpfsHash(domain);
+        String recordKey = "dweb.ipfs.hash";
+        return service.getRecord(domain, recordKey);
     }
 
     @Override
     public String getEmail(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
-        return service.getEmail(domain);
+        String recordKey = "whois.email.value";
+        return service.getRecord(domain, recordKey);
     }
 
     @Override
@@ -98,32 +108,27 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String addr(String domain, String ticker) throws NamingServiceException {
-        NamingService service = findService(domain);
-        return service.getAddress(domain, ticker);
+        return getAddress(domain, ticker);
     }
 
     @Override
     public String namehash(String domain) throws NamingServiceException {
-        NamingService service = findService(domain);
-        return service.getNamehash(domain);
+        return getNamehash(domain);
     }
 
     @Override
     public String ipfsHash(String domain) throws NamingServiceException {
-        NamingService service = findService(domain);
-        return service.getIpfsHash(domain);
+        return getIpfsHash(domain);
     }
 
     @Override
     public String email(String domain) throws NamingServiceException {
-        NamingService service = findService(domain);
-        return service.getEmail(domain);
+        return getEmail(domain);
     }
 
     @Override
     public String owner(String domain) throws NamingServiceException {
-        NamingService service = findService(domain);
-        return service.getOwner(domain);
+        return getOwner(domain);
     }
 
     private Map<NamingServiceType, NamingService> getServices(String blockchainProviderUrl) {
