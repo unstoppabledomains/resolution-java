@@ -75,6 +75,17 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public String getUsdt(String domain, TickerVersion version) throws NamingServiceException {
+        NamingService service = findService(domain);
+        if (service.getName().equals(NamingServiceType.ENS)) {
+            throw new NamingServiceException(NSExceptionCode.NotImplemented, 
+                new NSExceptionParams("d|m", domain, "getUsdt"));
+        }
+        String recordKey = "crypto.USDT.version." + version.toString() + ".address";
+        return service.getRecord(domain, recordKey);
+    }
+
+    @Override
     public String getNamehash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
         return service.getNamehash(domain);

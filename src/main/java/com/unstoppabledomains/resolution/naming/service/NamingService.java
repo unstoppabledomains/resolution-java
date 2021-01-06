@@ -8,6 +8,8 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 
 public interface NamingService {
+    NamingServiceType getName();
+
     Boolean isSupported(String domain);
 
     String getRecord(String domain, String recordKey) throws NamingServiceException;

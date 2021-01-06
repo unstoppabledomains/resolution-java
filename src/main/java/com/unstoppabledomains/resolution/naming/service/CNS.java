@@ -23,13 +23,17 @@ import java.util.List;
 import java.util.Map;
 
 public class CNS extends BaseNamingService {
-
   private final ProxyReader proxyReaderContract;
 
   public CNS(NSConfig config) {
     super(config);
     String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress);
+  }
+
+  @Override
+  public NamingServiceType getName() {
+    return NamingServiceType.CNS;
   }
 
   public Boolean isSupported(String domain) {

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ENS extends BaseNamingService {
-
+  
   private static final String REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
 
   private final Registry registryContract;
@@ -25,6 +25,11 @@ public class ENS extends BaseNamingService {
   public ENS(NSConfig config) {
     super(config);
     this.registryContract = (Registry) buildContract(REGISTRY_ADDRESS, EnsContractType.Registry);
+  }
+
+  @Override
+  public NamingServiceType getName() {
+    return NamingServiceType.ENS;
   }
 
   @Override

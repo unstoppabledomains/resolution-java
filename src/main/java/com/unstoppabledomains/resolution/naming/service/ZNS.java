@@ -41,6 +41,11 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
+    public NamingServiceType getName() {
+      return NamingServiceType.ZNS;
+    }
+
+    @Override
     public Boolean isSupported(String domain) {
         String[] split = domain.split("\\.");
         return (split.length != 0 && split[split.length - 1].equals("zil"));
