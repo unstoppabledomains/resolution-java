@@ -132,6 +132,30 @@ public class ResolutionTest {
     }
 
     @Test
+    public void usdtTest() throws Exception {
+        String domain = "udtestdev-usdt.crypto";
+        String erc20 = resolution.getUsdt(domain, TickerVersion.ERC20);
+        assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", erc20);
+        String tron = resolution.getUsdt(domain, TickerVersion.TRON);
+        assertEquals("TNemhXhpX7MwzZJa3oXvfCjo5pEeXrfN2h", tron);
+        String omni = resolution.getUsdt(domain, TickerVersion.OMNI);
+        assertEquals("19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ", omni);
+        String eos = resolution.getUsdt(domain, TickerVersion.EOS);
+        assertEquals("letsminesome", eos);
+
+        TestUtils.checkError(
+            () -> resolution.getUsdt("unregistered.crypto", TickerVersion.ERC20),
+            NSExceptionCode.UnregisteredDomain
+        );
+        
+        TestUtils.checkError(
+            () -> resolution.getUsdt("homecakes.crypto", TickerVersion.TRON),
+            NSExceptionCode.RecordNotFound
+        );
+    }
+
+
+    @Test
     public void ownerFailTest() throws Exception {
         TestUtils.checkError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
     }

@@ -11,6 +11,8 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,31 +43,16 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
+    public NamingServiceType getType() {
+      return NamingServiceType.ZNS;
+    }
+
+    @Override
     public Boolean isSupported(String domain) {
-        String[] split = domain.split("\\.");
-        return (split.length != 0 && split[split.length - 1].equals("zil"));
-    }
-
-    @Override
-    public String getAddress(String domain, String ticker) throws NamingServiceException {
-        String key = "crypto." + ticker.toUpperCase() + ".address";
-        try {
-            return getRecord(domain, key);
-        } catch (NamingServiceException exception) {
-            if (exception.getCode() == NSExceptionCode.RecordNotFound)
-                throw new NamingServiceException(NSExceptionCode.UnknownCurrency, new NSExceptionParams("d|c", domain, ticker));
-            throw exception;
+        if (domain.equals("zil")) {
+            return true;
         }
-    }
-
-    @Override
-    public String getIpfsHash(String domain) throws NamingServiceException {
-        return getRecord(domain, "ipfs.html.value");
-    }
-
-    @Override
-    public String getEmail(String domain) throws NamingServiceException {
-        return getRecord(domain, "whois.email.value");
+        return StringUtils.endsWith(domain, ".zil");
     }
 
     @Override
@@ -82,13 +69,29 @@ public class ZNS extends BaseNamingService {
         return addresses[0];
     }
 
-    private String getRecord(String domain, String key) throws NamingServiceException {
+    @Override
+    public String getRecord(String domain, String key) throws NamingServiceException {
         try {
-        JsonObject records = getAllRecords(domain);
-        return records.get(key).getAsString();
+            JsonObject records = getAllRecords(domain);
+            if (key.equals("dweb.ipfs.hash") || key.equals("ipfs.html.value")) {
+                return getIpfsHash(records);
+            }
+            return records.get(key).getAsString();
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }
+    }
+
+    private String getIpfsHash(JsonObject records) {
+        JsonElement newRecord = records.get("dweb.ipfs.hash");
+        JsonElement oldRecord = records.get("ipfs.html.value");
+        if (newRecord == null) {
+            if (oldRecord == null) {
+                throw new NullPointerException();
+            }
+            return oldRecord.getAsString();
+        }
+        return newRecord.getAsString();
     }
 
     private JsonObject getAllRecords(String domain) throws NamingServiceException {

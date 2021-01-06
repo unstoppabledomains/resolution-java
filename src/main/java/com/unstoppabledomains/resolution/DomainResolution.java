@@ -70,6 +70,19 @@ public interface DomainResolution {
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
 
     /**
+     * Resolves usdt record for a specific ticker Version
+     * Ticker version can be any supported chain with usdt coin on it.
+     * Such as erc20, tron, eos or omni
+     * 
+     * @param domain - domain name such as "brad.crypto"
+     * @param version which chain version you are interested in
+     * @return resolved address as a String
+     * @throws NamingServiceException when record is not found or domain is not registered
+     */
+    String getUsdt(String domain, TickerVersion version) throws NamingServiceException;
+
+
+    /**
      * Resolves domain for a specific ticker address
      *
      * @param domain domain name such as "brad.crypto"

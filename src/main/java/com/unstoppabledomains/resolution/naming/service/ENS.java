@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ENS extends BaseNamingService {
-
+  
   private static final String REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
 
   private final Registry registryContract;
@@ -25,6 +25,11 @@ public class ENS extends BaseNamingService {
   public ENS(NSConfig config) {
     super(config);
     this.registryContract = (Registry) buildContract(REGISTRY_ADDRESS, EnsContractType.Registry);
+  }
+
+  @Override
+  public NamingServiceType getType() {
+    return NamingServiceType.ENS;
   }
 
   @Override
@@ -36,24 +41,22 @@ public class ENS extends BaseNamingService {
   }
 
   @Override
-  public String getAddress(String domain, String ticker) throws NamingServiceException {
-    if (!ticker.equalsIgnoreCase("ETH")) {
-      throw new NamingServiceException(NSExceptionCode.UnsupportedCurrency, new NSExceptionParams("c", ticker.toUpperCase()));
+  public String getRecord(String domain, String recordKey) throws NamingServiceException {
+    if (recordKey.startsWith("crypto.")) {
+      String ticker = recordKey.split("\\.")[1];
+      return getAddress(domain, ticker);
+    }
+    if (recordKey.equals("ipfs.html.value") || recordKey.equals("dweb.ipfs.hash")) {
+      return getIpfsHash(domain);
     }
     Resolver resolver = getResolverContract(domain);
     byte[] tokenId = tokenId(domain);
-    return resolver.addr(tokenId, ticker.toUpperCase());
-  }
-
-  @Override
-  public String getEmail(String domain) throws NamingServiceException {
-    Resolver resolver = getResolverContract(domain);
-    byte[] tokenId = tokenId(domain);
-    String emailRecord = resolver.getTextRecord(tokenId, "whois.email.value");
-    if (Utilities.isEmptyResponse(emailRecord)) {
-      throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, "getEmail"));
+    String record = resolver.getTextRecord(tokenId, recordKey);
+    if (Utilities.isEmptyResponse(record)) {
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound,
+        new NSExceptionParams("d|r", domain, recordKey));
     }
-    return emailRecord;
+    return record;
   }
 
   @Override
@@ -69,6 +72,16 @@ public class ENS extends BaseNamingService {
   @Override
   public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
     throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ENS"));
+  }
+
+  private String getAddress(String domain, String ticker) throws NamingServiceException {
+    if (!ticker.equalsIgnoreCase("ETH")) {
+      throw new NamingServiceException(NSExceptionCode.UnsupportedCurrency, 
+        new NSExceptionParams("c", ticker.toUpperCase()));
+    }
+    Resolver resolver = getResolverContract(domain);
+    byte[] tokenId = tokenId(domain);
+    return resolver.addr(tokenId, ticker.toUpperCase());
   }
 
   private Resolver getResolverContract(String domain) throws NamingServiceException {
@@ -100,8 +113,7 @@ public class ENS extends BaseNamingService {
     return new Registry(blockchainProviderUrl, address);
   }
 
-  @Override
-  public String getIpfsHash(String domain) throws NamingServiceException {
+  private String getIpfsHash(String domain) throws NamingServiceException {
     throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getIpfsHash" ,"ENS"));
   }
 

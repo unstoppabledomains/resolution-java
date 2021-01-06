@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 public class CNS extends BaseNamingService {
-
   private final ProxyReader proxyReaderContract;
 
   public CNS(NSConfig config) {
@@ -32,46 +31,28 @@ public class CNS extends BaseNamingService {
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress);
   }
 
+  @Override
+  public NamingServiceType getType() {
+    return NamingServiceType.CNS;
+  }
+
   public Boolean isSupported(String domain) {
     String[] split = domain.split("\\.");
     return (split.length != 0 && split[split.length - 1].equals("crypto"));
   }
 
-  public String getAddress(String domain, String ticker) throws NamingServiceException {
-    String key = "crypto." + ticker.toUpperCase() + ".address";
-    ProxyData data = resolveKey(key, domain);
-    String owner = data.getOwner();
-    if (Utilities.isEmptyResponse(owner))
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
-          new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
-
-    String address = data.getValues().get(0);
-    if (Utilities.isEmptyResponse(address))
-      throw new NamingServiceException(NSExceptionCode.UnknownCurrency,
-          new NSExceptionParams("d|c|n", domain, ticker, "CNS"));
-    return address;
-  }
-
-  public  String getIpfsHash(String domain) throws NamingServiceException {
-    String[] keys = {"dweb.ipfs.hash", "ipfs.html.value"};
-    ProxyData data = resolveKeys(keys, domain);
-
-    List<String> values = data.getValues();
-    if (values.get(0).isEmpty() && values.get(1).isEmpty()) {
-      throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-              new NSExceptionParams("d|r", domain, keys[0]));
+  @Override
+  public String getRecord(String domain, String recordKey) throws NamingServiceException {
+    if (recordKey.equals("dweb.ipfs.hash") || recordKey.equals("ipfs.html.value")) {
+      return getIpfsHash(domain);
     }
-    return values.get(0).isEmpty() ? values.get(1) : values.get(0);
-  }
-
-  public  String getEmail(String domain) throws NamingServiceException {
-    String[] keys = {"whois.email.value"};
-    ProxyData data = resolveKeys(keys, domain);
-    List<String> values = data.getValues();
-    if ( values.size() == 0 || Utilities.isEmptyResponse(values.get(0)))
-      throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-          new NSExceptionParams("d|r", domain, keys[0]));
-    return values.get(0);
+    ProxyData data = resolveKey(recordKey, domain);
+    checkDomainOwnership(data, domain);
+    String result = data.getValues().get(0);
+    if (Utilities.isEmptyResponse(result)) {
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, recordKey));
+    }
+    return result;
   }
 
   public  String getOwner(String domain) throws NamingServiceException {
@@ -104,6 +85,18 @@ public class CNS extends BaseNamingService {
 
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
     return resolveKeys(new String[]{key}, domain);
+  }
+
+  private  String getIpfsHash(String domain) throws NamingServiceException {
+    String[] keys = {"dweb.ipfs.hash", "ipfs.html.value"};
+    ProxyData data = resolveKeys(keys, domain);
+
+    List<String> values = data.getValues();
+    if (values.get(0).isEmpty() && values.get(1).isEmpty()) {
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound,
+              new NSExceptionParams("d|r", domain, keys[0]));
+    }
+    return values.get(0).isEmpty() ? values.get(1) : values.get(0);
   }
 
   private List<String> constructDnsRecords(List<DnsRecordsType> types) {
