@@ -64,10 +64,25 @@ public class ZNS extends BaseNamingService {
     public String getRecord(String domain, String key) throws NamingServiceException {
         try {
             JsonObject records = getAllRecords(domain);
+            if (key.equals("dweb.ipfs.hash") || key.equals("ipfs.html.value")) {
+                return getIpfsHash(records);
+            }
             return records.get(key).getAsString();
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }
+    }
+
+    private String getIpfsHash(JsonObject records) {
+        JsonElement newRecord = records.get("dweb.ipfs.hash");
+        JsonElement oldRecord = records.get("ipfs.html.value");
+        if (newRecord == null) {
+            if (oldRecord == null) {
+                throw new NullPointerException();
+            }
+            return oldRecord.getAsString();
+        }
+        return newRecord.getAsString();
     }
 
     private JsonObject getAllRecords(String domain) throws NamingServiceException {
