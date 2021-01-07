@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +59,15 @@ public class ResolutionTest {
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilderWithInfura.getOwner("brad.crypto"));
         assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilderWithInfura.getOwner("johnnyjumper.zil"));
+    }
+
+    @Test
+    public void isSupported() {
+        boolean isValid = resolution.isSupported("brad.crypto");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("brad.unupported");
+        assertFalse(isValid);
     }
 
     @Test

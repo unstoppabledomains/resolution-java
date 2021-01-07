@@ -61,6 +61,15 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public boolean isSupported(String domain) {
+        for (NamingService service : services.values()) {
+            if (Boolean.TRUE.equals(service.isSupported(domain))) return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public String getAddress(String domain, String ticker) throws NamingServiceException {
         NamingService service = findService(domain);
         String recordKey = "crypto." + ticker.toUpperCase() + ".address";
