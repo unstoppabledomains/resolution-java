@@ -10,6 +10,14 @@ import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 public interface DomainResolution {
 
     /**
+     * Checks if the domain name is valid according to naming service rules for valid domain names
+     *
+     * @param domain domain name to be checked
+     * @return true if domain name is valid
+     */
+    boolean isSupported(String domain);
+
+    /**
      * Resolves domain for a specific ticker address
      *
      * @param domain domain name such as "brad.crypto"

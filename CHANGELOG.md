@@ -1,3 +1,5 @@
+## 1.9.1
+* Adding ability to instantly check a domain according to naming service rules for valid domain names
 ## 1.9.0
 * Introduced Resolution#dns method to query dns records from .crypto domains
 * Introduced Resolution#usdt method to query usdt address of different chains such as tron, omni, eos and erc20
