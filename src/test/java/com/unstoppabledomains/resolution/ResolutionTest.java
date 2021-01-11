@@ -66,7 +66,7 @@ public class ResolutionTest {
         boolean isValid = resolution.isSupported("brad.crypto");
         assertTrue(isValid);
 
-        isValid = resolution.isSupported("brad.unupported");
+        isValid = resolution.isSupported("brad.unsupported");
         assertFalse(isValid);
     }
 
