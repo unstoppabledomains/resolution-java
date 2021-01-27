@@ -20,8 +20,6 @@ Resoultion-Java supports decentralized domains across two zones:
   - `.xyz`
   - `.luxe`
 
-For more information, see our detailed [API Referrence](https://unstoppabledomains.github.io/resolution/).
-
 # Releases
 
 The most recent release of this library is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution). 
