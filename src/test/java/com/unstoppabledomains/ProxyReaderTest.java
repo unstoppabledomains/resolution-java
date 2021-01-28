@@ -1,6 +1,6 @@
 package com.unstoppabledomains;
 
-import com.unstoppabledomains.resolution.contracts.BaseProvider;
+import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ public class ProxyReaderTest {
     @BeforeAll
     public static void init() {
         final String testingProviderUrl = System.getenv("TESTING_PROVIDER_URL");
-        proxyReaderContract = new ProxyReader(testingProviderUrl, ADDRESS, new BaseProvider());
+        proxyReaderContract = new ProxyReader(testingProviderUrl, ADDRESS, new DefaultProvider());
     }
 
     @Test

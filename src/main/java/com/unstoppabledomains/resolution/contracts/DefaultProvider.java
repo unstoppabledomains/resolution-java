@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class BaseProvider implements IProvider {
+public class DefaultProvider implements IProvider {
 
   @Override
   public JsonObject post(String url, JsonObject body) throws IOException {

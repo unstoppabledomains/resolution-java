@@ -5,7 +5,7 @@ import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.contracts.BaseProvider;
+import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
@@ -43,7 +43,7 @@ public class Resolution implements DomainResolution {
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
-        IProvider provider = new BaseProvider();
+        IProvider provider = new DefaultProvider();
         services = getServices(LINKPOOL_DEFAULT_URL, provider);
     }
 
@@ -56,7 +56,7 @@ public class Resolution implements DomainResolution {
      */
     @Deprecated
     public Resolution(String blockchainProviderUrl) {
-        IProvider provider = new BaseProvider();
+        IProvider provider = new DefaultProvider();
         services = getServices(blockchainProviderUrl, provider);
     }
 
@@ -179,7 +179,7 @@ public class Resolution implements DomainResolution {
                 put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, LINKPOOL_DEFAULT_URL));
                 put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
             }};
-            provider = new BaseProvider();
+            provider = new DefaultProvider();
         }
 
         /**
