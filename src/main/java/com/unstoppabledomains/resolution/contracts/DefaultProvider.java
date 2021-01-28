@@ -33,7 +33,7 @@ public class DefaultProvider implements IProvider {
     }
   }
 
-  private static HttpURLConnection createAndConfigureCon(String url) throws IOException {
+  protected HttpURLConnection createAndConfigureCon(String url) throws IOException {
     URL posturl = new URL(url);
     HttpURLConnection con = (HttpURLConnection) posturl.openConnection();
     con.setRequestMethod("POST");
@@ -44,7 +44,7 @@ public class DefaultProvider implements IProvider {
     return con;
   }
 
-  private static String getUserAgent() {
+  protected String getUserAgent() {
     String agent = "UnstoppableDomains/resolution-java";
     String version = Client.getVersion();
     return version.isEmpty() ? agent : agent + "/" + version;
