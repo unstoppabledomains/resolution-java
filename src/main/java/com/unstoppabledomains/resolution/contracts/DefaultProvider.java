@@ -12,8 +12,48 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class DefaultProvider implements IProvider {
+
+  private Map<String, String> headers;
+
+  /**
+   * Default constructor
+   */
+  public DefaultProvider() {
+    headers = new HashMap<String, String>();
+    headers.put("Content-Type", "application/json");
+    headers.put("Accept", "application/json");
+    headers.put("User-Agent", getUserAgent());
+  }
+
+  /**
+   * Constructor with empty headers
+   * @return DefaultProvider for chaining
+   */
+  static public DefaultProvider cleanBuild() {
+    DefaultProvider provider = new DefaultProvider();
+    provider.headers = new HashMap<String, String>();
+    return provider;
+  }
+
+  /**
+   * Set the header for future builds
+   * @param key header key
+   * @param value header value
+   * @return DefaultProvider
+   */
+  public DefaultProvider setHeader(String key, String value) {
+    headers.put(key, value);
+    return this;
+  }
+
+  public Map<String,String> getHeaders() {
+    return headers;
+  }
 
   @Override
   public JsonObject request(String url, JsonObject body) throws IOException {
@@ -37,9 +77,9 @@ public class DefaultProvider implements IProvider {
     URL posturl = new URL(url);
     HttpURLConnection con = (HttpURLConnection) posturl.openConnection();
     con.setRequestMethod("POST");
-    con.setRequestProperty("Content-Type", "application/json");
-    con.setRequestProperty("Accept", "application/json");
-    con.addRequestProperty("User-Agent", getUserAgent());
+    for(Entry<String, String> entry:headers.entrySet()) {
+      con.setRequestProperty(entry.getKey(), entry.getValue());
+    }
     con.setDoOutput(true);
     return con;
   }
@@ -49,5 +89,4 @@ public class DefaultProvider implements IProvider {
     String version = Client.getVersion();
     return version.isEmpty() ? agent : agent + "/" + version;
   }
-
 }

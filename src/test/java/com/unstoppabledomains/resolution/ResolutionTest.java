@@ -261,4 +261,13 @@ public class ResolutionTest {
         JsonObject correctAnswer = JsonParser.parseString("{\"Content-Length\":\"87\",\"Content-Type\":\"application/json\",\"freeform\":\"\"}").getAsJsonObject();
         assertEquals(correctAnswer, result);
     }
+
+    @Test
+    public void buildingDefaultProvider() throws Exception {
+        DefaultProvider provider = DefaultProvider.cleanBuild().setHeader("custom-header", "custom-value").setHeader("new-key", "new-value");
+        Map<String,String> headers = provider.getHeaders();
+        assertEquals(headers.size(), 2);
+        assertEquals("custom-value", headers.get("custom-header"));
+        assertEquals("new-value", headers.get("new-key"));
+    }
 }
