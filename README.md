@@ -52,6 +52,7 @@ DomainResolution resolution = Resolution.builder()
                 .build();
 
 // Custom provider config:
+
 DomainResolution resolution = Resolution.builder()
                 .provider(new IProvider() {      
                     @Override
