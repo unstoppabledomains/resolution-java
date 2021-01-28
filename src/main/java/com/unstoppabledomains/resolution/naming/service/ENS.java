@@ -9,6 +9,7 @@ import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.ens.EnsContractType;
 import com.unstoppabledomains.resolution.contracts.ens.Registry;
 import com.unstoppabledomains.resolution.contracts.ens.Resolver;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
@@ -22,9 +23,9 @@ public class ENS extends BaseNamingService {
 
   private final Registry registryContract;
 
-  public ENS(NSConfig config) {
-    super(config);
-    this.registryContract = (Registry) buildContract(REGISTRY_ADDRESS, EnsContractType.Registry);
+  public ENS(NSConfig config, IProvider provider) {
+    super(config, provider);
+    this.registryContract = (Registry) buildContract(REGISTRY_ADDRESS, EnsContractType.Registry, provider);
   }
 
   @Override
@@ -93,7 +94,7 @@ public class ENS extends BaseNamingService {
       }
       throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("d", domain));
     }
-    return (Resolver) buildContract(resolverAddress, EnsContractType.Resolver);
+    return (Resolver) buildContract(resolverAddress, EnsContractType.Resolver, provider);
   }
   
   private byte[] tokenId(String domain) throws NamingServiceException {
@@ -106,11 +107,11 @@ public class ENS extends BaseNamingService {
     return registryContract.getResolverAddress(tokenId);
   }
 
-  private BaseContract buildContract(String address, EnsContractType type) {
+  private BaseContract buildContract(String address, EnsContractType type, IProvider provider) {
     if (type.equals(EnsContractType.Resolver)) {
-      return new Resolver(blockchainProviderUrl, address);
+      return new Resolver(blockchainProviderUrl, address, provider);
     }
-    return new Registry(blockchainProviderUrl, address);
+    return new Registry(blockchainProviderUrl, address, provider);
   }
 
   private String getIpfsHash(String domain) throws NamingServiceException {

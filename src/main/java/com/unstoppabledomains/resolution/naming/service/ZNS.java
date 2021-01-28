@@ -7,6 +7,7 @@ import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
@@ -25,8 +26,8 @@ public class ZNS extends BaseNamingService {
                                                                                          // address
     static final String RECORDS_KEY = "records";
 
-    public ZNS(NSConfig nsConfig) {
-        super(nsConfig);
+    public ZNS(NSConfig nsConfig, IProvider provider) {
+        super(nsConfig, provider);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class ZNS extends BaseNamingService {
     public String getOwner(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
         }
         return addresses[0];
     }
@@ -108,10 +109,10 @@ public class ZNS extends BaseNamingService {
     private String getResolverAddress(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
         }
         if (Utilities.isEmptyResponse(addresses[1])) {
-            throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("%d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("d", domain));
         }
         return addresses[1];
     }
@@ -130,7 +131,7 @@ public class ZNS extends BaseNamingService {
           }
           return list.toArray(new String[list.size()]);
         } catch (IOException error) {
-            throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("%n", "ZNS"), error);
+            throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", "ZNS"), error);
         } catch (IllegalStateException exception) {
             return null;
         }
@@ -147,7 +148,7 @@ public class ZNS extends BaseNamingService {
 
         String method = "GetSmartContractSubState";
         JsonObject body = HTTPUtil.prepareBody(method, params);
-        JsonObject response = HTTPUtil.post(blockchainProviderUrl, body);
+        JsonObject response = provider.request(blockchainProviderUrl, body);
         JsonElement result = response.get("result");
         return result.getAsJsonObject();
     }

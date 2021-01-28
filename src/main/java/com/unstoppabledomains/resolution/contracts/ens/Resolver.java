@@ -5,6 +5,7 @@ import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -16,8 +17,8 @@ public class Resolver extends BaseContract {
   private static final String namingServiceName = "ENS";
   private final Map<String, String> uDRecordsToENS = new HashMap<>();
 
-  public Resolver(String url, String address) {
-    super(namingServiceName, url, address);
+  public Resolver(String url, String address, IProvider provider) {
+    super(namingServiceName, url, address, provider);
     configureRecordsMap();
   }
 

@@ -1,9 +1,14 @@
 package com.unstoppabledomains.resolution;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.contracts.DefaultProvider;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.dns.DnsUtils;
@@ -16,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +91,7 @@ public class ResolutionTest {
 
     @Test
     public void wrongDomainNamehash() throws Exception {
-        TestUtils.checkError(() -> resolution.getNamehash("unupported"), NSExceptionCode.UnsupportedDomain);
+        TestUtils.expectError(() -> resolution.getNamehash("unupported"), NSExceptionCode.UnsupportedDomain);
     }
 
     @Test
@@ -100,19 +106,18 @@ public class ResolutionTest {
         assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", addr, "johnnyjumper.zil --> eth");
     }
 
-
     @Test
     public void wrongDomainAddr() throws Exception {
-        TestUtils.checkError(() -> resolution.getAddress("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
-        TestUtils.checkError(() -> resolution.getAddress("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void UnknownCurrency() throws Exception {
-        TestUtils.checkError(() -> resolution.getAddress("brad.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
-        TestUtils.checkError(() -> resolution.getAddress("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
-        TestUtils.checkError(() -> resolution.getAddress("brad.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
-        TestUtils.checkError(() -> resolution.getAddress("johnnyjumper.zil", "dodge"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("brad.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("brad.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "dodge"), NSExceptionCode.UnknownCurrency);
     }
 
     @Test
@@ -154,33 +159,32 @@ public class ResolutionTest {
         String eos = resolution.getUsdt(domain, TickerVersion.EOS);
         assertEquals("letsminesome", eos);
 
-        TestUtils.checkError(
+        TestUtils.expectError(
             () -> resolution.getUsdt("unregistered.crypto", TickerVersion.ERC20),
             NSExceptionCode.UnregisteredDomain
         );
         
-        TestUtils.checkError(
+        TestUtils.expectError(
             () -> resolution.getUsdt("homecakes.crypto", TickerVersion.TRON),
             NSExceptionCode.RecordNotFound
         );
     }
 
-
     @Test
     public void ownerFailTest() throws Exception {
-        TestUtils.checkError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void noIpfsHash() throws Exception {
-        TestUtils.checkError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
-        TestUtils.checkError(() -> resolution.getIpfsHash("pickleberrypop.crypto"), NSExceptionCode.RecordNotFound);
+        TestUtils.expectError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getIpfsHash("pickleberrypop.crypto"), NSExceptionCode.RecordNotFound);
 
     }
 
     @Test
     public void noEmailRecord() throws Exception {
-        TestUtils.checkError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
+        TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
     }
 
     @Test
@@ -200,5 +204,70 @@ public class ResolutionTest {
         Map<String, String> map = utils.toMap(dnsRecords);
         List<DnsRecord> revert = utils.toList(map);
         assertEquals(dnsRecords, revert);
+    }
+
+    @Test
+    public void passingCustomProvider() throws Exception {
+        IOException cause = new IOException("for testing purposes");
+        IProvider provider = new IProvider() {
+
+            @Override
+            public JsonObject request(String url, JsonObject body) throws IOException {
+                throw cause;
+            }
+            
+        };
+        Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
+        TestUtils.expectError(
+            () -> resolutionWithProvider.getAddress("brad.crypto", "eth"),
+            NSExceptionCode.BlockchainIsDown,
+            cause
+        );
+    }
+
+    @Test
+    public void passingCorrectProvider() throws Exception {
+        IProvider provider = new IProvider() {
+            @Override
+            public JsonObject request(String url, JsonObject body) throws IOException {
+                if (body.has("params")) {
+                    JsonArray params = body.getAsJsonArray("params");
+                    JsonObject object = params.get(0).getAsJsonObject();
+                    if (
+                        object.has("data") &&
+                        object.get("data").getAsString()
+                            .equals("0x91015f6b0000000000000000000000000000000000000000000000000000000000000040756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001263727970746f2e4554482e616464726573730000000000000000000000000000")
+                    ) {
+                        JsonObject answer = new JsonObject();                        
+                        answer.addProperty("jsonrpc", "2.0");
+                        answer.addProperty("id", "1");
+                        answer.addProperty("method", "eth_call");
+                        answer.addProperty("result", "0x000000000000000000000000b66dce2da6afaaa98f2013446dbcb0f4b0ab28420000000000000000000000008aad44321a86b170879d7a244c1e8d360c99dda8000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002a30783861614434343332314138366231373038373964374132343463316538643336306339394464413800000000000000000000000000000000000000000000");
+                        return answer;
+                    }
+                }
+                throw new IOException("body has incorrect data in the test");
+            }
+        };
+        Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
+        String ethAddress = resolutionWithProvider.getAddress("brad.crypto", "eth");
+        assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", ethAddress);
+    }
+
+    @Test
+    public void defaultProvider() throws Exception {
+        IProvider provider = new DefaultProvider();
+        JsonObject result = provider.request("https://httpbin.org/response-headers?freeform=", new JsonObject());
+        JsonObject correctAnswer = JsonParser.parseString("{\"Content-Length\":\"87\",\"Content-Type\":\"application/json\",\"freeform\":\"\"}").getAsJsonObject();
+        assertEquals(correctAnswer, result);
+    }
+
+    @Test
+    public void buildingDefaultProvider() throws Exception {
+        DefaultProvider provider = DefaultProvider.cleanBuild().setHeader("custom-header", "custom-value").setHeader("new-key", "new-value");
+        Map<String,String> headers = provider.getHeaders();
+        assertEquals(headers.size(), 2);
+        assertEquals("custom-value", headers.get("custom-header"));
+        assertEquals("new-value", headers.get("new-key"));
     }
 }

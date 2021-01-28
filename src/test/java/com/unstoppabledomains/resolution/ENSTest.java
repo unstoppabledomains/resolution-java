@@ -29,9 +29,9 @@ public class ENSTest {
 
   @Test
   public void errorTest() throws Exception {
-    TestUtils.checkError(() -> resolution.getEmail("monkybrain.eth"), NSExceptionCode.RecordNotFound);
-    TestUtils.checkError(() -> resolution.getAddress("brad.eth", "btc"), NSExceptionCode.UnsupportedCurrency);
-    TestUtils.checkError(() -> resolution.getAddress("unregistered23.eth", "eth"), NSExceptionCode.UnregisteredDomain);
+    TestUtils.expectError(() -> resolution.getEmail("monkybrain.eth"), NSExceptionCode.RecordNotFound);
+    TestUtils.expectError(() -> resolution.getAddress("brad.eth", "btc"), NSExceptionCode.UnsupportedCurrency);
+    TestUtils.expectError(() -> resolution.getAddress("unregistered23.eth", "eth"), NSExceptionCode.UnregisteredDomain);
   }
 
   @Test

@@ -50,6 +50,20 @@ DomainResolution resolution = Resolution.builder()
                 .infura(NamingServiceType.ENS, <ProjectId>)
                 .infura(NamingServiceType.CNS, Network.MAINNET, <ProjectId>)
                 .build();
+
+// Custom provider config:
+
+DomainResolution resolution = Resolution.builder()
+                .provider(new IProvider() {      
+                    @Override
+                    public JsonObject post(String url, JsonObject body) throws IOException {
+                        // TODO Make post request to url with given body 
+                        // and return JsonObject from the response
+                        return null;
+                    }
+                })
+                .build();
+
 ```
 
 [Live usage examples](samples.md)
