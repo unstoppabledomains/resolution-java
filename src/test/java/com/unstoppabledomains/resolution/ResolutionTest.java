@@ -89,7 +89,7 @@ public class ResolutionTest {
 
     @Test
     public void wrongDomainNamehash() throws Exception {
-        TestUtils.checkError(() -> resolution.getNamehash("unupported"), NSExceptionCode.UnsupportedDomain);
+        TestUtils.expectError(() -> resolution.getNamehash("unupported"), NSExceptionCode.UnsupportedDomain);
     }
 
     @Test
@@ -106,16 +106,16 @@ public class ResolutionTest {
 
     @Test
     public void wrongDomainAddr() throws Exception {
-        TestUtils.checkError(() -> resolution.getAddress("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
-        TestUtils.checkError(() -> resolution.getAddress("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void UnknownCurrency() throws Exception {
-        TestUtils.checkError(() -> resolution.getAddress("brad.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
-        TestUtils.checkError(() -> resolution.getAddress("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
-        TestUtils.checkError(() -> resolution.getAddress("brad.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
-        TestUtils.checkError(() -> resolution.getAddress("johnnyjumper.zil", "dodge"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("brad.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("brad.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "dodge"), NSExceptionCode.UnknownCurrency);
     }
 
     @Test
@@ -157,12 +157,12 @@ public class ResolutionTest {
         String eos = resolution.getUsdt(domain, TickerVersion.EOS);
         assertEquals("letsminesome", eos);
 
-        TestUtils.checkError(
+        TestUtils.expectError(
             () -> resolution.getUsdt("unregistered.crypto", TickerVersion.ERC20),
             NSExceptionCode.UnregisteredDomain
         );
         
-        TestUtils.checkError(
+        TestUtils.expectError(
             () -> resolution.getUsdt("homecakes.crypto", TickerVersion.TRON),
             NSExceptionCode.RecordNotFound
         );
@@ -170,19 +170,19 @@ public class ResolutionTest {
 
     @Test
     public void ownerFailTest() throws Exception {
-        TestUtils.checkError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void noIpfsHash() throws Exception {
-        TestUtils.checkError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
-        TestUtils.checkError(() -> resolution.getIpfsHash("pickleberrypop.crypto"), NSExceptionCode.RecordNotFound);
+        TestUtils.expectError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getIpfsHash("pickleberrypop.crypto"), NSExceptionCode.RecordNotFound);
 
     }
 
     @Test
     public void noEmailRecord() throws Exception {
-        TestUtils.checkError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
+        TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
     }
 
     @Test
@@ -216,7 +216,7 @@ public class ResolutionTest {
             
         };
         Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
-        TestUtils.checkError(
+        TestUtils.expectError(
             () -> resolutionWithProvider.getAddress("brad.crypto", "eth"),
             NSExceptionCode.BlockchainIsDown,
             cause

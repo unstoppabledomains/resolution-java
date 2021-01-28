@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestUtils {
-    public static void checkError(Callable<String> f, NSExceptionCode code) throws Exception {
+    public static void expectError(Callable<String> f, NSExceptionCode code) throws Exception {
         try {
             f.call();
             System.out.println("Didn't throw an " + code + " exception");
@@ -22,7 +22,7 @@ public class TestUtils {
         }
     }
 
-    public static void checkError(Callable<String> f, NSExceptionCode code, Throwable cause) throws Exception {
+    public static void expectError(Callable<String> f, NSExceptionCode code, Throwable cause) throws Exception {
         try {
             f.call();
             System.out.println("Didn't throw an " + code + " exception");
