@@ -2,10 +2,12 @@ package com.unstoppabledomains.resolution;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
@@ -250,5 +252,13 @@ public class ResolutionTest {
         Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
         String ethAddress = resolutionWithProvider.getAddress("brad.crypto", "eth");
         assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", ethAddress);
+    }
+
+    @Test
+    public void defaultProvider() throws Exception {
+        IProvider provider = new DefaultProvider();
+        JsonObject result = provider.request("https://httpbin.org/response-headers?freeform=", new JsonObject());
+        JsonObject correctAnswer = JsonParser.parseString("{\"Content-Length\":\"87\",\"Content-Type\":\"application/json\",\"freeform\":\"\"}").getAsJsonObject();
+        assertEquals(correctAnswer, result);
     }
 }
