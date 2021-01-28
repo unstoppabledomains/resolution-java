@@ -12,5 +12,5 @@ public interface IProvider {
    * @return - returns JsonObject as a result from the url
    * @throws IOException
    */
-  abstract JsonObject post(String url, JsonObject body) throws IOException;
+  abstract JsonObject request(String url, JsonObject body) throws IOException;
 }

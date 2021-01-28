@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class DefaultProvider implements IProvider {
 
   @Override
-  public JsonObject post(String url, JsonObject body) throws IOException {
+  public JsonObject request(String url, JsonObject body) throws IOException {
     HttpURLConnection con = createAndConfigureCon(url);
     try (OutputStream os = con.getOutputStream()) {
       byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);

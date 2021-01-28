@@ -148,7 +148,7 @@ public class ZNS extends BaseNamingService {
 
         String method = "GetSmartContractSubState";
         JsonObject body = HTTPUtil.prepareBody(method, params);
-        JsonObject response = provider.post(blockchainProviderUrl, body);
+        JsonObject response = provider.request(blockchainProviderUrl, body);
         JsonElement result = response.get("result");
         return result.getAsJsonObject();
     }

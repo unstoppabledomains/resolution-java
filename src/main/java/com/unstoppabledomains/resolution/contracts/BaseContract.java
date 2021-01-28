@@ -85,7 +85,7 @@ public abstract class BaseContract {
     JsonArray params = prepareParamsForBody(data, address);
     JsonObject body = HTTPUtil.prepareBody("eth_call", params);
     try {
-      JsonObject response = provider.post(url, body);
+      JsonObject response = provider.request(url, body);
       if (isUnknownError(response)) {
         return new Tuple();
       }
