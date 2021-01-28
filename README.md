@@ -61,6 +61,7 @@ DomainResolution resolution = Resolution.builder()
                         return null;
                     }
                 })
+                .build();
 
 ```
 
