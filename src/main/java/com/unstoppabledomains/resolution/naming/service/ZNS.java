@@ -64,7 +64,7 @@ public class ZNS extends BaseNamingService {
     public String getOwner(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
         }
         return addresses[0];
     }
@@ -108,10 +108,10 @@ public class ZNS extends BaseNamingService {
     private String getResolverAddress(String domain) throws NamingServiceException {
         String[] addresses = getRecordAddresses(domain);
         if (addresses == null || Utilities.isEmptyResponse(addresses[0])) {
-            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("%d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
         }
         if (Utilities.isEmptyResponse(addresses[1])) {
-            throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("%d", domain));
+            throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver, new NSExceptionParams("d", domain));
         }
         return addresses[1];
     }
@@ -130,7 +130,7 @@ public class ZNS extends BaseNamingService {
           }
           return list.toArray(new String[list.size()]);
         } catch (IOException error) {
-            throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("%n", "ZNS"), error);
+            throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", "ZNS"), error);
         } catch (IllegalStateException exception) {
             return null;
         }
