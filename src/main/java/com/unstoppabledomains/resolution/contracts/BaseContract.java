@@ -3,14 +3,17 @@ package com.unstoppabledomains.resolution.contracts;
 import com.esaulpaugh.headlong.abi.Function;
 import com.esaulpaugh.headlong.abi.Tuple;
 import com.esaulpaugh.headlong.util.FastHex;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,14 +30,16 @@ public abstract class BaseContract {
   private String address;
   private String url;
   private JsonArray abi;
+  private IProvider provider;
 
-  protected BaseContract(String namingServiceName, String url, String address) {
+  protected BaseContract(String namingServiceName, String url, String address, IProvider provider) {
     this.namingServiceName = namingServiceName;
     this.address = address;
     this.url = url;
     this.abi = getAbi();
+    this.provider = provider;
   }
-
+  
   protected abstract String getAbiPath();
 
   protected JsonArray getAbi() {
@@ -80,7 +85,7 @@ public abstract class BaseContract {
     JsonArray params = prepareParamsForBody(data, address);
     JsonObject body = HTTPUtil.prepareBody("eth_call", params);
     try {
-      JsonObject response = HTTPUtil.post(url, body);
+      JsonObject response = provider.post(url, body);
       if (isUnknownError(response)) {
         return new Tuple();
       }

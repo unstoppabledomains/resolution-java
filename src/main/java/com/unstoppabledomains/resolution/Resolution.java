@@ -5,6 +5,8 @@ import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.contracts.BaseProvider;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.CNS;
@@ -41,7 +43,8 @@ public class Resolution implements DomainResolution {
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
-        services = getServices(LINKPOOL_DEFAULT_URL);
+        IProvider provider = new BaseProvider();
+        services = getServices(LINKPOOL_DEFAULT_URL, provider);
     }
 
     /**
@@ -53,7 +56,8 @@ public class Resolution implements DomainResolution {
      */
     @Deprecated
     public Resolution(String blockchainProviderUrl) {
-        services = getServices(blockchainProviderUrl);
+        IProvider provider = new BaseProvider();
+        services = getServices(blockchainProviderUrl, provider);
     }
 
     private Resolution(Map<NamingServiceType, NamingService> services) {
@@ -148,11 +152,11 @@ public class Resolution implements DomainResolution {
         return getOwner(domain);
     }
 
-    private Map<NamingServiceType, NamingService> getServices(String blockchainProviderUrl) {
+    private Map<NamingServiceType, NamingService> getServices(String blockchainProviderUrl, IProvider provider) {
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, blockchainProviderUrl)));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, blockchainProviderUrl)));
-            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL)));
+            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, blockchainProviderUrl), provider));
+            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, blockchainProviderUrl), provider));
+            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL), provider));
         }};
     }
 
@@ -167,6 +171,7 @@ public class Resolution implements DomainResolution {
         private static final String INFURA_URL = "https://%s.infura.io/v3/%s";
 
         private final Map<NamingServiceType, NSConfig> serviceConfigs;
+        private IProvider provider;
 
         private Builder() {
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
@@ -174,6 +179,7 @@ public class Resolution implements DomainResolution {
                 put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, LINKPOOL_DEFAULT_URL));
                 put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
             }};
+            provider = new BaseProvider();
         }
 
         /**
@@ -233,17 +239,31 @@ public class Resolution implements DomainResolution {
         }
 
         /**
+         * Configuration for provider interface, use if needed to take control over network calls
+         * @param provider must implement IProvider interface
+         * @return builder object to allow chaining
+         */
+        public Builder provider(IProvider provider) {
+            setProvider(provider);
+            return this;
+        } 
+
+        /**
          * Call directly to get default configs or override them with {@link Builder} methods
          *
          * @return resolution object
          */
         public Resolution build() {
             Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.CNS, new CNS(serviceConfigs.get(NamingServiceType.CNS)));
-                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS)));
-                put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS)));
+                put(NamingServiceType.CNS, new CNS(serviceConfigs.get(NamingServiceType.CNS), provider));
+                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
+                put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
             }};
             return new Resolution(services);
+        }
+
+        private void setProvider(IProvider provider) {
+            this.provider = provider;
         }
     }
 }

@@ -7,6 +7,7 @@ import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.HTTPUtil;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
@@ -25,8 +26,8 @@ public class ZNS extends BaseNamingService {
                                                                                          // address
     static final String RECORDS_KEY = "records";
 
-    public ZNS(NSConfig nsConfig) {
-        super(nsConfig);
+    public ZNS(NSConfig nsConfig, IProvider provider) {
+        super(nsConfig, provider);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class ZNS extends BaseNamingService {
 
         String method = "GetSmartContractSubState";
         JsonObject body = HTTPUtil.prepareBody(method, params);
-        JsonObject response = HTTPUtil.post(blockchainProviderUrl, body);
+        JsonObject response = provider.post(blockchainProviderUrl, body);
         JsonElement result = response.get("result");
         return result.getAsJsonObject();
     }

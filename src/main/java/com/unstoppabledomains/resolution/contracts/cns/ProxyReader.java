@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution.contracts.cns;
 
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 
 import java.math.BigInteger;
 
@@ -10,8 +11,8 @@ public class ProxyReader extends BaseContract {
     private static final String ABI_FILE = "cns/proxy_reader_abi.json";
     private static final String namingServiceName = "CNS";
 
-    public ProxyReader(String url, String address) {
-        super(namingServiceName, url, address);
+    public ProxyReader(String url, String address, IProvider provider) {
+        super(namingServiceName, url, address, provider);
     }
 
     public String getOwner(BigInteger tokenID) {

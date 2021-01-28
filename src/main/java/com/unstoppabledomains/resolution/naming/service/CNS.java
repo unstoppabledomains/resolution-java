@@ -10,6 +10,7 @@ import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
+import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.dns.DnsUtils;
@@ -24,11 +25,11 @@ import java.util.Map;
 
 public class CNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
-
-  public CNS(NSConfig config) {
-    super(config);
+  
+  public CNS(NSConfig config, IProvider provider) {
+    super(config, provider);
     String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
-    this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress);
+    this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
   }
 
   @Override

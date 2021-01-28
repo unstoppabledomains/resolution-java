@@ -1,3 +1,6 @@
+## 1.10.0
+* Fixed missing information on NamingServiceException thrown from ZNS
+* Introduced IProvider interface -- implement it in order to get full controll over http requests to blockchain provider  
 ## 1.9.1
 * Added ability to instantly check a domain according to naming service rules for valid domain names
 
