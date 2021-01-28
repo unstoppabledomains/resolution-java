@@ -210,7 +210,7 @@ public class ResolutionTest {
         IProvider provider = new IProvider() {
 
             @Override
-            public JsonObject post(String url, JsonObject body) throws IOException {
+            public JsonObject request(String url, JsonObject body) throws IOException {
                 throw cause;
             }
             
@@ -227,7 +227,7 @@ public class ResolutionTest {
     public void passingCorrectProvider() throws Exception {
         IProvider provider = new IProvider() {
             @Override
-            public JsonObject post(String url, JsonObject body) throws IOException {
+            public JsonObject request(String url, JsonObject body) throws IOException {
                 if (body.has("params")) {
                     JsonArray params = body.getAsJsonArray("params");
                     JsonObject object = params.get(0).getAsJsonObject();
