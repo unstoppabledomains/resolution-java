@@ -56,7 +56,7 @@ DomainResolution resolution = Resolution.builder()
 DomainResolution resolution = Resolution.builder()
                 .provider(new IProvider() {      
                     @Override
-                    public JsonObject post(String url, JsonObject body) throws IOException {
+                    public JsonObject request(String url, JsonObject body) throws IOException {
                         // TODO Make post request to url with given body 
                         // and return JsonObject from the response
                         return null;
