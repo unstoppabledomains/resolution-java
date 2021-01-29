@@ -2,7 +2,7 @@
 Android development is very strict on the blocking the main UI thread.
 And it order to make a call using our library you might want to wrap the call into AsyncTask or simillar classes which allows executing async operations on a separate threads
 This example is in Kotlin:
-```
+```kotlin
 import android.os.AsyncTask
 import com.unstoppabledomains.exceptions.NamingServiceException
 import com.unstoppabledomains.resolution.Resolution
@@ -26,7 +26,7 @@ class AsyncResolution : AsyncTask<String, String, ResolutionResult>() {
 }
 ```
 After you can use it in the following manner: 
-```
+```kotlin
 val task = AsyncResolution().execute("brad.crypto", "ETH")
 val result: ResolutionResult = task.get()
 if (result.error != null) {
@@ -57,7 +57,7 @@ public enum NSExceptionCode {
 In order to retrieve any other information like ipfs hash you can find a method on Resolution object for such
 ### Example on how to retrieve ipfs hash with asyncTask
 
-```
+```kotlin
 import android.os.AsyncTask
 import com.unstoppabledomains.exceptions.NamingServiceException
 import com.unstoppabledomains.resolution.Resolution
