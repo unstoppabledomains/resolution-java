@@ -64,6 +64,19 @@ DomainResolution resolution = Resolution.builder()
                 })
                 .build();
 
+// Adding a custom header to the DefaultProvider
+
+DefaultProvider myProvider = DefaultProvider
+                .cleanBuild()
+                .setHeader("custom-header", "custom-value")
+                .setHeader("new-key", "new-value");
+
+DomainResolution resolution = Resolution.builder()
+                .provider(myProvider)
+                .build();
+
+// All network calls will be made with headers "custom-header" and "new-key" instead of default ones
+
 ```
 
 [Live usage examples](samples.md)
