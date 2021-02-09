@@ -14,7 +14,7 @@ public class ENSTest {
   
   @BeforeAll
   public static void init() {
-    final String testingProviderUrl = System.getenv("TESTING_PROVIDER_URL");
+    final String testingProviderUrl = System.getenv("TESTING_ENS_PROVIDER_URL");
     resolution = Resolution.builder()
             .providerUrl(NamingServiceType.CNS, testingProviderUrl)
             .providerUrl(NamingServiceType.ENS, testingProviderUrl)

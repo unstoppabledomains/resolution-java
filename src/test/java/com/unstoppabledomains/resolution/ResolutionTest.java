@@ -29,7 +29,10 @@ import java.util.Map;
 public class ResolutionTest {
 
     private static final String TESTING_PROVIDER_URL = System.getenv("TESTING_PROVIDER_URL");
+    private static final String TESTING_ENS_PROVIDER_URL = System.getenv("TESTING_ENS_PROVIDER_URL");
     private static final String TESTING_INFURA_PROJECT_ID = System.getenv("TESTING_INFURA_PROJECT_ID");
+    private static final String TESTING_INFURA_ENS_PROJECT_ID = System.getenv("TESTING_INFURA_ENS_PROJECT_ID");
+
 
     private static DomainResolution resolution;
 
@@ -37,7 +40,7 @@ public class ResolutionTest {
     public static void init() {
         resolution = Resolution.builder()
                 .providerUrl(NamingServiceType.CNS, TESTING_PROVIDER_URL)
-                .providerUrl(NamingServiceType.ENS, TESTING_PROVIDER_URL)
+                .providerUrl(NamingServiceType.ENS, TESTING_ENS_PROVIDER_URL)
                 .build();
     }
 
@@ -45,7 +48,7 @@ public class ResolutionTest {
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
                 .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-                .providerUrl(NamingServiceType.ENS, TESTING_PROVIDER_URL)
+                .providerUrl(NamingServiceType.ENS, TESTING_ENS_PROVIDER_URL)
                 .providerUrl(NamingServiceType.CNS, TESTING_PROVIDER_URL)
                 .build();
 
@@ -58,7 +61,7 @@ public class ResolutionTest {
     public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
         DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
                 .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-                .infura(NamingServiceType.ENS, TESTING_INFURA_PROJECT_ID)
+                .infura(NamingServiceType.ENS, TESTING_INFURA_ENS_PROJECT_ID)
                 .infura(NamingServiceType.CNS, Network.MAINNET, TESTING_INFURA_PROJECT_ID)
                 .build();
 
