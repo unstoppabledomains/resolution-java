@@ -1,5 +1,5 @@
 ## 1.11.0
-* Use Infura Etherum Provider by default
+* Use Infura Ethereum Provider by default
 
 ## 1.10.0
 * Fixed missing information on NamingServiceException thrown from ZNS
