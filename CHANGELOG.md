@@ -1,3 +1,6 @@
+## 1.11.0
+* Use Infura Etherum Provider by default
+
 ## 1.10.0
 * Fixed missing information on NamingServiceException thrown from ZNS
 * Introduced IProvider interface -- implement it in order to get full control over HTTP requests to blockchain provider  
