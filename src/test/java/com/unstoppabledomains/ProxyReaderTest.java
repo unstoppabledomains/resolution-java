@@ -18,8 +18,7 @@ public class ProxyReaderTest {
 
     @BeforeAll
     public static void init() {
-        final String testingProviderUrl = System.getenv("TESTING_PROVIDER_URL");
-        proxyReaderContract = new ProxyReader(testingProviderUrl, ADDRESS, new DefaultProvider());
+        proxyReaderContract = new ProxyReader(TestUtils.TESTING_CNS_PROVIDER_URL, ADDRESS, new DefaultProvider());
     }
 
     @Test

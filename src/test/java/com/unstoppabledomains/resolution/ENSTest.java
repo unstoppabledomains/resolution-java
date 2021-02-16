@@ -3,7 +3,6 @@ package com.unstoppabledomains.resolution;
 import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +13,7 @@ public class ENSTest {
   
   @BeforeAll
   public static void init() {
-    final String testingProviderUrl = System.getenv("TESTING_ENS_PROVIDER_URL");
-    resolution = Resolution.builder()
-            .providerUrl(NamingServiceType.CNS, testingProviderUrl)
-            .providerUrl(NamingServiceType.ENS, testingProviderUrl)
-            .build();
+    resolution = new Resolution();
   }
 
   @Test

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
-    private static final String CNS_DEFAULT_URL = "https://mainnet.infura.io/v3/c4bb906ed6904c42b19c95825fe55f39";
+    private static final String CNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
