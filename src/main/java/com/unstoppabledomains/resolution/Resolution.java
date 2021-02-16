@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
-    private static final String LINKPOOL_DEFAULT_URL = "https://main-rpc.linkpool.io";
+    private static final String CNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+    private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     private Map<NamingServiceType, NamingService> services;
@@ -39,12 +40,12 @@ public class Resolution implements DomainResolution {
 
     /**
      * Create resolution object with default config:
-     * <a href="https://linkpool.io">linkpool</a> blockchain provider for ENS and CNS and
+     * <a href="https://infura.io">infura</a> blockchain provider for ENS and CNS and
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
         IProvider provider = new DefaultProvider();
-        services = getServices(LINKPOOL_DEFAULT_URL, provider);
+        services = getServices(CNS_DEFAULT_URL, ENS_DEFAULT_URL, provider);
     }
 
     /**
@@ -57,7 +58,7 @@ public class Resolution implements DomainResolution {
     @Deprecated
     public Resolution(String blockchainProviderUrl) {
         IProvider provider = new DefaultProvider();
-        services = getServices(blockchainProviderUrl, provider);
+        services = getServices(blockchainProviderUrl, blockchainProviderUrl, provider);
     }
 
     private Resolution(Map<NamingServiceType, NamingService> services) {
@@ -152,10 +153,10 @@ public class Resolution implements DomainResolution {
         return getOwner(domain);
     }
 
-    private Map<NamingServiceType, NamingService> getServices(String blockchainProviderUrl, IProvider provider) {
+    private Map<NamingServiceType, NamingService> getServices(String CnsProviderUrl, String EnsProviderUrl, IProvider provider) {
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, blockchainProviderUrl), provider));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, blockchainProviderUrl), provider));
+            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, CnsProviderUrl), provider));
+            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl), provider));
             put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL), provider));
         }};
     }
@@ -175,8 +176,8 @@ public class Resolution implements DomainResolution {
 
         private Builder() {
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.CNS, new NSConfig(Network.MAINNET, LINKPOOL_DEFAULT_URL));
-                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, LINKPOOL_DEFAULT_URL));
+                put(NamingServiceType.CNS, new NSConfig(Network.MAINNET, CNS_DEFAULT_URL));
+                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL));
                 put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
             }};
             provider = new DefaultProvider();

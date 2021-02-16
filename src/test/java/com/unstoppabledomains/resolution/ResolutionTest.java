@@ -28,25 +28,19 @@ import java.util.Map;
 
 public class ResolutionTest {
 
-    private static final String TESTING_PROVIDER_URL = System.getenv("TESTING_PROVIDER_URL");
-    private static final String TESTING_INFURA_PROJECT_ID = System.getenv("TESTING_INFURA_PROJECT_ID");
-
     private static DomainResolution resolution;
 
     @BeforeAll
     public static void init() {
-        resolution = Resolution.builder()
-                .providerUrl(NamingServiceType.CNS, TESTING_PROVIDER_URL)
-                .providerUrl(NamingServiceType.ENS, TESTING_PROVIDER_URL)
-                .build();
+        resolution = new Resolution();
     }
 
     @Test
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
                 .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-                .providerUrl(NamingServiceType.ENS, TESTING_PROVIDER_URL)
-                .providerUrl(NamingServiceType.CNS, TESTING_PROVIDER_URL)
+                .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+                .providerUrl(NamingServiceType.CNS, TestUtils.TESTING_CNS_PROVIDER_URL)
                 .build();
 
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilder.getOwner("brad.crypto"));
@@ -58,8 +52,8 @@ public class ResolutionTest {
     public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
         DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
                 .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-                .infura(NamingServiceType.ENS, TESTING_INFURA_PROJECT_ID)
-                .infura(NamingServiceType.CNS, Network.MAINNET, TESTING_INFURA_PROJECT_ID)
+                .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
+                .infura(NamingServiceType.CNS, Network.MAINNET, TestUtils.TESTING_INFURA_CNS_PROJECT_ID)
                 .build();
 
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilderWithInfura.getOwner("brad.crypto"));
