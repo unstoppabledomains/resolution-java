@@ -36,6 +36,30 @@ public class ResolutionTest {
     }
 
     @Test
+    public void testDifferentNetworks() throws Exception {
+        DomainResolution customCnsNetwork = Resolution.builder()
+            .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(NamingServiceType.ENS, "https://goerli-light.eth.linkpool.io/")
+            .chainId(NamingServiceType.ZNS, Network.KOVAN)
+            .build();
+            
+        Network customCnsChainId = customCnsNetwork.getChainId(NamingServiceType.CNS);
+        Network customEnsChainId = customCnsNetwork.getChainId(NamingServiceType.ENS);
+        Network customZnsChainId = customCnsNetwork.getChainId(NamingServiceType.ZNS);
+        assertEquals(Network.RINKEBY, customCnsChainId);
+        assertEquals(Network.GOERLI, customEnsChainId);
+        assertEquals(Network.KOVAN, customZnsChainId);
+
+        DomainResolution defaultSettings = new Resolution();
+        Network defaultCnsChainId = defaultSettings.getChainId(NamingServiceType.CNS);
+        Network defaultEnsChainId = defaultSettings.getChainId(NamingServiceType.ENS);
+        Network defaultZnsChainId = defaultSettings.getChainId(NamingServiceType.ZNS);
+        assertEquals(Network.MAINNET, defaultCnsChainId);
+        assertEquals(Network.MAINNET, defaultEnsChainId);
+        assertEquals(Network.MAINNET, defaultZnsChainId);
+    }
+
+    @Test
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
                 .chainId(NamingServiceType.ENS, Network.ROPSTEN)

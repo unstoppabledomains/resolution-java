@@ -1,3 +1,6 @@
+## 1.12.0
+* Autoconfigure chainId from the blockchainprovider url when setting one via Builder#ProviderUrl
+
 ## 1.11.0
 * Use Infura Ethereum Provider by default
 

@@ -14,4 +14,13 @@ public enum Network {
 
     private final int code;
     private final String name;
+
+    public static Network getByChainId(int chainId) {
+            for (Network value : Network.values()) {
+                if (value.code == chainId) {
+                    return value;
+                }
+            }
+            return null;
+    }
 }

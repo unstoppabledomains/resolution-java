@@ -2,10 +2,12 @@ package com.unstoppabledomains.resolution;
 
 import java.util.List;
 
+import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
+import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 
 public interface DomainResolution {
 
@@ -16,6 +18,13 @@ public interface DomainResolution {
      * @return true if domain name is valid
      */
     boolean isSupported(String domain);
+
+    /**
+     * Returns configured network id
+     * @param type which NamingService you are interested in
+     * @return Network object with name and code property
+     */
+    Network getChainId(NamingServiceType type);
 
     /**
      * Resolves domain for a specific ticker address
