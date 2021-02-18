@@ -2,6 +2,7 @@
 package com.unstoppabledomains.resolution.naming.service;
 
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
+import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;

@@ -36,6 +36,43 @@ public class ResolutionTest {
     }
 
     @Test
+    public void resolveRinkebyDomain() throws Exception {
+        DomainResolution rinkebyResolution = Resolution.builder()
+            .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .build();
+        String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
+        assertEquals("0x1C8b9B78e3085866521FE206fa4c1a67F49f153A", ethAddress);
+
+    }
+
+    @Test
+    public void testDifferentNetworks() throws Exception {
+        DomainResolution customCnsNetwork = Resolution.builder()
+            .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(NamingServiceType.ENS, "https://goerli.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .chainId(NamingServiceType.ZNS, Network.KOVAN)
+            .build();
+            
+        Network customCnsChainId = customCnsNetwork.getNetwork(NamingServiceType.CNS);
+        Network customEnsChainId = customCnsNetwork.getNetwork(NamingServiceType.ENS);
+        Network customZnsChainId = customCnsNetwork.getNetwork(NamingServiceType.ZNS);
+        assertEquals(Network.RINKEBY, customCnsChainId);
+        assertEquals(Network.GOERLI, customEnsChainId);
+        assertEquals(Network.KOVAN, customZnsChainId);
+    }
+
+    @Test
+    public void testDefaultNetworks() throws Exception {
+        DomainResolution defaultSettings = new Resolution();
+        Network defaultCnsChainId = defaultSettings.getNetwork(NamingServiceType.CNS);
+        Network defaultEnsChainId = defaultSettings.getNetwork(NamingServiceType.ENS);
+        Network defaultZnsChainId = defaultSettings.getNetwork(NamingServiceType.ZNS);
+        assertEquals(Network.MAINNET, defaultCnsChainId);
+        assertEquals(Network.MAINNET, defaultEnsChainId);
+        assertEquals(Network.MAINNET, defaultZnsChainId);
+    }
+
+    @Test
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
                 .chainId(NamingServiceType.ENS, Network.ROPSTEN)

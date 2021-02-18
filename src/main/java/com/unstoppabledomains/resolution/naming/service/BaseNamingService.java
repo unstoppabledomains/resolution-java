@@ -13,4 +13,8 @@ public abstract class BaseNamingService implements NamingService {
         this.blockchainProviderUrl = nsConfig.getBlockchainProviderUrl();
         this.provider = provider;
     }
+
+    public Network getNetwork() {
+        return chainId;
+    }
 }

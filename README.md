@@ -39,10 +39,10 @@ To resolve ENS domains on production it's recommended to change Ethereum provide
 DomainResolution resolution = new Resolution(); 
 
 // Optionally override default config using builder options:
-
+// providerUrl overwrites chainId by making net_version JSON RPC call to the provider
+// in the following example blockchain would be set to the rinkeby testnet
 DomainResolution resolution = Resolution.builder()
-                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-                .providerUrl(NamingServiceType.ENS, "https://ropsten-rpc.linkpool.io/")
+                .providerUrl(NamingServiceType.ENS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
                 .build(); 
 
 // Infura config:
@@ -71,13 +71,13 @@ DomainResolution resolution = Resolution.builder()
 DefaultProvider myProvider = DefaultProvider
                 .cleanBuild()
                 .setHeader("custom-header", "custom-value")
-                .setHeader("new-key", "new-value");
+                .setHeader("new-header", "new-value");
 
 DomainResolution resolution = Resolution.builder()
                 .provider(myProvider)
                 .build();
 
-// All network calls will be made with headers "custom-header" and "new-key" instead of default ones
+// All network calls will be made with headers "custom-header" and "new-header" instead of default ones
 
 ```
 
@@ -135,8 +135,6 @@ public enum NSExceptionCode {
 
 > Note: if you don't wish to install Gradle you can use it with wrapper: `./gradlew` instead of `gradle`.
 
-- Configure a `TESTING_PROVIDER_URL` and `TESTING_INFURA_PROJECT_ID` environment variables with your blockchain
- provider for testing.
 - To run a build with associated tests, use `gradle build`.
 - To run a build without running the tests, use `gradle build -x test`.
 

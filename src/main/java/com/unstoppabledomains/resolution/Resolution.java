@@ -1,5 +1,7 @@
 package com.unstoppabledomains.resolution;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
@@ -68,6 +70,12 @@ public class Resolution implements DomainResolution {
     @Override
     public boolean isSupported(String domain) {
         return services.values().stream().anyMatch(s -> s.isSupported(domain));
+    }
+
+    @Override
+    public Network getNetwork(NamingServiceType type) {
+        NamingService service = services.get(type);
+        return service.getNetwork();
     }
 
     @Override
@@ -201,7 +209,12 @@ public class Resolution implements DomainResolution {
          */
         public Builder providerUrl(NamingServiceType nsType, String providerUrl) {
             NSConfig nsConfig = serviceConfigs.get(nsType);
+            Network chainId = getNetworkId(providerUrl);
+            if (chainId == null) {
+                chainId = nsConfig.getChainId();
+            }
             nsConfig.setBlockchainProviderUrl(providerUrl);
+            nsConfig.setChainId(chainId);
             return this;
         }
 
@@ -265,6 +278,26 @@ public class Resolution implements DomainResolution {
 
         private void setProvider(IProvider provider) {
             this.provider = provider;
+        }
+
+        /**
+         * Makes a call via provider to the blockchainProviderUrl and returns the networkId
+         * @param blockchainProviderUrl
+         * @return Network object or null if couldn't retrive the network
+         */
+        private Network getNetworkId(String blockchainProviderUrl) {
+            JsonObject body = new JsonObject();
+            body.addProperty("jsonrpc", "2.0");
+            body.addProperty("method", "net_version");
+            body.add("params", new JsonArray());
+            body.addProperty("id", 67);
+            try {
+                JsonObject response = provider.request(blockchainProviderUrl, body);
+                return Network.getNetwork(response.get("result").getAsInt());
+            } catch(Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 }
