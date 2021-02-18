@@ -39,7 +39,7 @@ public class ResolutionTest {
     public void testDifferentNetworks() throws Exception {
         DomainResolution customCnsNetwork = Resolution.builder()
             .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
-            .providerUrl(NamingServiceType.ENS, "https://goerli-light.eth.linkpool.io/")
+            .providerUrl(NamingServiceType.ENS, "https://goerli.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .chainId(NamingServiceType.ZNS, Network.KOVAN)
             .build();
             
@@ -49,7 +49,10 @@ public class ResolutionTest {
         assertEquals(Network.RINKEBY, customCnsChainId);
         assertEquals(Network.GOERLI, customEnsChainId);
         assertEquals(Network.KOVAN, customZnsChainId);
+    }
 
+    @Test
+    public void testDefaultNetworks() throws Exception {
         DomainResolution defaultSettings = new Resolution();
         Network defaultCnsChainId = defaultSettings.getNetwork(NamingServiceType.CNS);
         Network defaultEnsChainId = defaultSettings.getNetwork(NamingServiceType.ENS);
