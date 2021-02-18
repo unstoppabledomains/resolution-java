@@ -43,17 +43,17 @@ public class ResolutionTest {
             .chainId(NamingServiceType.ZNS, Network.KOVAN)
             .build();
             
-        Network customCnsChainId = customCnsNetwork.getChainId(NamingServiceType.CNS);
-        Network customEnsChainId = customCnsNetwork.getChainId(NamingServiceType.ENS);
-        Network customZnsChainId = customCnsNetwork.getChainId(NamingServiceType.ZNS);
+        Network customCnsChainId = customCnsNetwork.getNetwork(NamingServiceType.CNS);
+        Network customEnsChainId = customCnsNetwork.getNetwork(NamingServiceType.ENS);
+        Network customZnsChainId = customCnsNetwork.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.RINKEBY, customCnsChainId);
         assertEquals(Network.GOERLI, customEnsChainId);
         assertEquals(Network.KOVAN, customZnsChainId);
 
         DomainResolution defaultSettings = new Resolution();
-        Network defaultCnsChainId = defaultSettings.getChainId(NamingServiceType.CNS);
-        Network defaultEnsChainId = defaultSettings.getChainId(NamingServiceType.ENS);
-        Network defaultZnsChainId = defaultSettings.getChainId(NamingServiceType.ZNS);
+        Network defaultCnsChainId = defaultSettings.getNetwork(NamingServiceType.CNS);
+        Network defaultEnsChainId = defaultSettings.getNetwork(NamingServiceType.ENS);
+        Network defaultZnsChainId = defaultSettings.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.MAINNET, defaultCnsChainId);
         assertEquals(Network.MAINNET, defaultEnsChainId);
         assertEquals(Network.MAINNET, defaultZnsChainId);

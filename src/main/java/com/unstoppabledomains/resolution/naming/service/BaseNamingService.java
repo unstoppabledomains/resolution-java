@@ -14,7 +14,7 @@ public abstract class BaseNamingService implements NamingService {
         this.provider = provider;
     }
 
-    public Network getChainId() {
+    public Network getNetwork() {
         return chainId;
     }
 }

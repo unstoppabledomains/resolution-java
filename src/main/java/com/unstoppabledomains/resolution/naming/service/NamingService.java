@@ -21,5 +21,5 @@ public interface NamingService {
 
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
     
-    Network getChainId();
+    Network getNetwork();
 }

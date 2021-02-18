@@ -24,7 +24,7 @@ public interface DomainResolution {
      * @param type which NamingService you are interested in
      * @return Network object with name and code property
      */
-    Network getChainId(NamingServiceType type);
+    Network getNetwork(NamingServiceType type);
 
     /**
      * Resolves domain for a specific ticker address

@@ -73,9 +73,9 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public Network getChainId(NamingServiceType type) {
+    public Network getNetwork(NamingServiceType type) {
         NamingService service = services.get(type);
-        return service.getChainId();
+        return service.getNetwork();
     }
 
     @Override
@@ -293,7 +293,7 @@ public class Resolution implements DomainResolution {
             body.addProperty("id", 67);
             try {
                 JsonObject response = provider.request(blockchainProviderUrl, body);
-                return Network.getByChainId(response.get("result").getAsInt());
+                return Network.getNetwork(response.get("result").getAsInt());
             } catch(Exception e) {
                 e.printStackTrace();
                 return null;
