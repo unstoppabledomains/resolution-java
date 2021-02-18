@@ -39,9 +39,10 @@ If you want to use an alternative blockchain provider such as [infura](https://i
 DomainResolution resolution = new Resolution(); 
 
 // Optionally override default config using builder options:
-// providerUrl overwrites chainId by maing net_version JSON RPC call to the provider
+// providerUrl overwrites chainId by making net_version JSON RPC call to the provider
+// in the following example blockchain would be set to the rinkeby testnet
 DomainResolution resolution = Resolution.builder()
-                .providerUrl(NamingServiceType.ENS, "https://goerli-light.eth.linkpool.io/")
+                .providerUrl(NamingServiceType.ENS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
                 .build(); 
 
 // Infura config:
