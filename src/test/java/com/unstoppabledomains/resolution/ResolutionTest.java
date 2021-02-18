@@ -36,6 +36,16 @@ public class ResolutionTest {
     }
 
     @Test
+    public void resolveRinkebyDomain() throws Exception {
+        DomainResolution rinkebyResolution = Resolution.builder()
+            .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .build();
+        String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
+        assertEquals("0x1C8b9B78e3085866521FE206fa4c1a67F49f153A", ethAddress);
+
+    }
+
+    @Test
     public void testDifferentNetworks() throws Exception {
         DomainResolution customCnsNetwork = Resolution.builder()
             .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
