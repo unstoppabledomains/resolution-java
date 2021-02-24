@@ -4,18 +4,12 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
-    // Note: requires nexusUsername and nexusPassword properties to be defined
-    id 'io.codearte.nexus-staging' version '0.22.0'
+    id 'io.codearte.nexus-staging' version '0.22.0' // Requires nexusUsername and nexusPassword properties to be defined
     id 'de.undercouch.download' version '4.1.1'
 }
 
 group = 'com.unstoppabledomains'
 archivesBaseName = 'resolution'
-
-task getVersion {
-    def client = file('src/main/resources/com/unstoppabledomains/config/client/client.json')
-    version = new JsonSlurper().parseText(client.text).'version'
-}
 
 repositories {
     mavenCentral()
@@ -27,7 +21,6 @@ java {
 }
 
 dependencies {
-    implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'com.esaulpaugh:headlong:3.4.1'
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -37,8 +30,8 @@ dependencies {
 
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
 
-    testImplementation(platform('org.junit:junit-bom:5.7.0'))
-    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
 }
 
 test {
@@ -111,6 +104,11 @@ signing {
 nexusStaging {
     username = System.getenv('nexusUsername')
     password = System.getenv('nexusPassword')
+}
+
+task getVersion {
+    def client = file('src/main/resources/com/unstoppabledomains/config/client/client.json')
+    version = new JsonSlurper().parseText(client.text).'version'
 }
 
 task pullNetworkConfig(type: Download) {
