@@ -6,6 +6,7 @@ plugins {
     id 'signing'
     id 'io.codearte.nexus-staging' version '0.22.0' // Requires nexusUsername and nexusPassword properties to be defined
     id 'de.undercouch.download' version '4.1.1'
+    id 'nebula.lint' version '16.17.0'
 }
 
 group = 'com.unstoppabledomains'
@@ -18,6 +19,10 @@ repositories {
 java {
     withSourcesJar()
     withJavadocJar()
+}
+
+gradleLint {
+    rules=['unused-dependency','duplicate-dependency-class']
 }
 
 dependencies {

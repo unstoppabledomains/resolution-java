@@ -137,6 +137,7 @@ public enum NSExceptionCode {
 
 - To run a build with associated tests, use `gradle build`.
 - To run a build without running the tests, use `gradle build -x test`.
+- To check unused dependencies use `gradle lintGradle`.
 
 ## Internal network config
 
