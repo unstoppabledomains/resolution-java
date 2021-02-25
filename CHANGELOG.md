@@ -1,3 +1,7 @@
+## 1.12.1
+* Remove dependency 'org.apache.commons:commons-math3:3.6.1' 
+* Added linter to make sure there is no unused dependencies. 
+
 ## 1.12.0
 * Autoconfigure chainId from the blockchainprovider url when setting one via Builder#ProviderUrl
 
