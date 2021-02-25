@@ -94,6 +94,17 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
+        NamingService service = findService(domain);
+        if (service.getType().equals(NamingServiceType.ENS)) {
+            throw new NamingServiceException(NSExceptionCode.NotImplemented,
+                new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
+        }
+        String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
+        return service.getRecord(domain, recordKey);
+    }
+
+    @Override
     public String getUsdt(String domain, TickerVersion version) throws NamingServiceException {
         NamingService service = findService(domain);
         if (service.getType() == NamingServiceType.ENS) {
