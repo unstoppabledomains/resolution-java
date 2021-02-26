@@ -90,6 +90,13 @@ Resolving a domain and getting a currency address.
 ```java
 String addr = resolution.getAddress("brad.crypto", "eth");
 assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+
+// Get address of token present in multiple chains
+String usdtErc20Addr = resolution.getMultiChainAddress("brad.crypto", "USDT", "ERC20");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", usdtErc20Addr);
+
+String usdtOmniAddr = resolution.getMultiChainAddress("brad.crypto", "USDT", "OMNI");
+assertEquals("1Ap8kmF4ZoPjt6ZYAfCaTKsbncky3F8eTV", usdtOmniAddr);
 ```
 
 ### Getting a domain owner's Ethereum address

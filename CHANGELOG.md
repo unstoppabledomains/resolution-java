@@ -1,3 +1,7 @@
+## 1.13.0
+* Introduce DomainResolution#getMultiChainAddress general method to fetch a ticker address from specific chain
+* Deprecate DomainResolution#getUsdt method in favor of DomainResolution#getMultiChainAddress
+
 ## 1.12.1
 * Remove dependency 'org.apache.commons:commons-math3:3.6.1' 
 * Added linter to make sure there is no unused dependencies. 

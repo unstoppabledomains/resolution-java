@@ -301,4 +301,18 @@ public class ResolutionTest {
         assertEquals("custom-value", headers.get("custom-header"));
         assertEquals("new-value", headers.get("new-key"));
     }
+
+    @Test
+    public void testGetMultiChainAddress() throws Exception {
+        String domainWithMultiChainRecords = "udtestdev-usdt.crypto";
+
+        String erc20 = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "erc20");
+        assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", erc20);
+        String tron = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "tron");
+        assertEquals("TNemhXhpX7MwzZJa3oXvfCjo5pEeXrfN2h", tron);
+        String omni = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "omni");
+        assertEquals("19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ", omni);
+
+        
+    }
 }

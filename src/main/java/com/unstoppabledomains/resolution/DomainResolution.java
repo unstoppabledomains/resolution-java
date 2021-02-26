@@ -37,6 +37,16 @@ public interface DomainResolution {
     String getAddress(String domain, String ticker) throws NamingServiceException;
 
     /**
+     * Resolves domain for a cross chain address
+     * @param domain domain name usch as "brad.crypto"
+     * @param ticker coin ticker such as usdt, ftm and etc.
+     * @param chain chain to look for, usually means blockcahin ( erc20,  omni, tron, etc. )
+     * @return address for specific chain
+     * @throws NamingServiceException when domain has no record
+     */
+    String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException;
+
+    /**
      * Produces a getNamehash for a specific domain
      *
      * @param domain domain name such as "brad.crypto"
@@ -95,7 +105,10 @@ public interface DomainResolution {
      * @param version which chain version you are interested in
      * @return resolved address as a String
      * @throws NamingServiceException when record is not found or domain is not registered
+     * @deprecated this method is deprecated since 1.13.0 in favor of getMultiChainAddress
+     * <p> Use {@link DomainResolution#getMultiChainAddress(String, String, String)} instead.
      */
+    @Deprecated 
     String getUsdt(String domain, TickerVersion version) throws NamingServiceException;
 
 
