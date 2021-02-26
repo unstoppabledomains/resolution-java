@@ -105,7 +105,7 @@ public interface DomainResolution {
      * @param version which chain version you are interested in
      * @return resolved address as a String
      * @throws NamingServiceException when record is not found or domain is not registered
-     * @deprecated this method is deprecated since 1.13.0 in faor of getMultiChainAddress
+     * @deprecated this method is deprecated since 1.13.0 in favor of getMultiChainAddress
      * <p> Use {@link DomainResolution#getMultiChainAddress(String, String, String)} instead.
      */
     @Deprecated 

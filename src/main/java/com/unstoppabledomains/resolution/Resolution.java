@@ -96,7 +96,7 @@ public class Resolution implements DomainResolution {
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
         NamingService service = findService(domain);
-        if (service.getType().equals(NamingServiceType.ENS)) {
+        if (service.getType() == NamingServiceType.ENS) {
             throw new NamingServiceException(NSExceptionCode.NotImplemented,
                 new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
         }
