@@ -27,6 +27,16 @@ public interface DomainResolution {
     Network getNetwork(NamingServiceType type);
 
     /**
+     * Resolves domain for a specific record
+     *
+     * @param domain domain name such as "brad.crypto"
+     * @param recordKey key of the record
+     * @return address in hex-string format
+     * @throws NamingServiceException when domain has no record of key
+     */
+    String getRecord(String domain, String recordKey) throws NamingServiceException;
+    
+    /**
      * Resolves domain for a specific ticker address
      *
      * @param domain domain name such as "brad.crypto"

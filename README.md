@@ -118,6 +118,15 @@ String ipfs = resolution.getIpfsHash("brad.crypto");
 assertEquals("Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
 ```
 
+### Getting a domain's record
+
+Retrieve any record of domain. Applications sometimes set custom records for a domain to use within their application. To read these records, use the `getRecord` method.
+
+```java
+String record = resolution.getRecord("ryan.crypto", "custom.record.value");
+assertEquals("Example custom record value", record);
+```
+
 ## Errors
 
 If the domain you requested is not registered or doesn't have the record you are looking for, this library will throw a `NamingServiceException` error with one of these codes. We recommend creating customized errors in your app based on the return value of the error.
