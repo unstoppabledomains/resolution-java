@@ -126,6 +126,17 @@ public class ResolutionTest {
     }
 
     @Test
+    public void getRecord() throws Exception {
+        String recordValue = resolution.getRecord("ryan.crypto", "custom.record.value");
+        assertEquals("Example custom record value", recordValue);
+    }
+
+    @Test
+    public void noRecord() throws Exception {
+        TestUtils.expectError(() -> resolution.getRecord("ryan.crypto", "invalid.record.value"), NSExceptionCode.RecordNotFound);
+    }
+
+    @Test
     public void addr() throws Exception {
         String addr = resolution.getAddress("homecakes.crypto", "eth");
         assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", addr);

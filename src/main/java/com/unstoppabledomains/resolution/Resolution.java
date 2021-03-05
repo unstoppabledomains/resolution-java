@@ -79,6 +79,11 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public String getRecord(String domain, String recordKey) throws NamingServiceException {
+        return findService(domain).getRecord(domain, recordKey);
+    }
+
+    @Override
     public String getAddress(String domain, String ticker) throws NamingServiceException {
         NamingService service = findService(domain);
         String recordKey = "crypto." + ticker.toUpperCase() + ".address";
