@@ -31,6 +31,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65.01'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.4'
     compileOnly 'org.projectlombok:lombok-maven-plugin:1.18.16.0'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
