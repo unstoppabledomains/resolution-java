@@ -1,3 +1,6 @@
+## 1.13.1
+* Fix the deserialization bug with Jakson on NetworkConfigLoader.java
+
 ## 1.13.0
 * Introduce DomainResolution#getMultiChainAddress general method to fetch a ticker address from specific chain
 * Deprecate DomainResolution#getUsdt method in favor of DomainResolution#getMultiChainAddress
