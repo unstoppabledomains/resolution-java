@@ -127,8 +127,8 @@ public class ResolutionTest {
 
     @Test
     public void getRecord() throws Exception {
-        String recordValue = resolution.getRecord("ryan.crypto", "custom.record.value");
-        assertEquals("Example custom record value", recordValue);
+        String recordValue = resolution.getRecord("ryan.crypto", "crypto.ETH.address");
+        assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", recordValue);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ResolutionTest {
     @Test
     public void ipfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("brad.crypto");
-        assertEquals("Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6", ipfs);
+        assertEquals("QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb", ipfs);
 
         ipfs = resolution.getIpfsHash("johnnyjumper.zil");
         assertEquals("QmQ38zzQHVfqMoLWq2VeiMLHHYki9XktzXxLYTWXt8cydu", ipfs);
