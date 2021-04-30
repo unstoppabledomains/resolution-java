@@ -30,9 +30,7 @@ public class ProxyReader extends BaseContract {
     }
 
     public ProxyData getProxyData(String[] records, BigInteger tokenID) throws NamingServiceException {
-        Object[] args = new Object[2];
-        args[0] = records;
-        args[1] = tokenID;
+        Object[] args = { records, tokenID };
         return fetchData(args);
     }
 

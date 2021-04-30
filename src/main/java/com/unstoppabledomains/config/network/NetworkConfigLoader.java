@@ -1,8 +1,6 @@
 package com.unstoppabledomains.config.network;
 
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.unstoppabledomains.config.network.model.Contract;
 import com.unstoppabledomains.config.network.model.Contracts;
 import com.unstoppabledomains.config.network.model.Network;
@@ -41,9 +39,7 @@ public abstract class NetworkConfigLoader {
         try {
             final InputStreamReader reader = new InputStreamReader(NetworkConfigLoader.class.getResourceAsStream(CONFIG_FILE));
             final String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-            final ObjectMapper mapper = new ObjectMapper().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-
-            config = mapper.readValue(jsonString, NetworkConfig.class);
+            config = new Gson().fromJson(jsonString, NetworkConfig.class);
         } catch (Exception e) {
             throw new RuntimeException("Couldn't load network config", e);
         }
