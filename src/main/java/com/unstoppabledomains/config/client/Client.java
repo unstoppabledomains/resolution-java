@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public abstract class Client {
 
-    
     private static final String CLIENT_FILE = "client.json";
 
     private static final String VERSION = initClientVersion();
