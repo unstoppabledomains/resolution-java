@@ -1,3 +1,6 @@
+## 1.13.2
+* Remove Jakson dependency in favor of gson
+
 ## 1.13.1
 * Fix the deserialization bug with Jakson on NetworkConfigLoader.java
 
