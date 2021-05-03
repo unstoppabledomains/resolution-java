@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 public abstract class Client {
 
@@ -28,7 +27,6 @@ public abstract class Client {
                 jsonString = jsonString.concat(line);
                 line = buffer.readLine();
             }
-            System.out.println(jsonString);
             final JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
 
             return jsonObj.get("version").getAsString();
