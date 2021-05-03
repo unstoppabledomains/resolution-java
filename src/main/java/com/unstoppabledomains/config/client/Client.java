@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,21 @@ public abstract class Client {
 
     private static String initClientVersion() {
         final InputStreamReader reader = new InputStreamReader(Client.class.getResourceAsStream(CLIENT_FILE));
-        final String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-        final JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
+        final BufferedReader buffer = new BufferedReader(reader);
+        try {
+            String jsonString = "";
+            String line = buffer.readLine();
+            while ( line != null) {
+                jsonString = jsonString.concat(line);
+                line = buffer.readLine();
+            }
+            System.out.println(jsonString);
+            final JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
 
-        return jsonObj.get("version").getAsString();
+            return jsonObj.get("version").getAsString();
+        } catch(IOException err) {
+            err.printStackTrace();
+        }
+        return "-2";
     }
 }
