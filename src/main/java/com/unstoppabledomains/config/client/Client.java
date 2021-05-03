@@ -22,17 +22,20 @@ public abstract class Client {
         final BufferedReader buffer = new BufferedReader(reader);
         try {
             String jsonString = "";
-            String line = buffer.readLine();
+            String line;
+            // We use readLine instead of lines 
+            // because some of the clients had issues with old Android devices
+            line = buffer.readLine();
             while ( line != null) {
                 jsonString = jsonString.concat(line);
                 line = buffer.readLine();
             }
             final JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
-
             return jsonObj.get("version").getAsString();
-        } catch(IOException err) {
-            err.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "-2";
         }
-        return "-2";
+        
     }
 }
