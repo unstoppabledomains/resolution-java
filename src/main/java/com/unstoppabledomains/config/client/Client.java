@@ -2,9 +2,7 @@ package com.unstoppabledomains.config.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
+import com.google.gson.stream.JsonReader;
 import java.io.InputStreamReader;
 
 public abstract class Client {
@@ -18,24 +16,11 @@ public abstract class Client {
     }
 
     private static String initClientVersion() {
-        final InputStreamReader reader = new InputStreamReader(Client.class.getResourceAsStream(CLIENT_FILE));
-        final BufferedReader buffer = new BufferedReader(reader);
-        try {
-            String jsonString = "";
-            String line;
-            // We use readLine instead of lines 
-            // because some of the clients had issues with old Android devices
-            line = buffer.readLine();
-            while ( line != null) {
-                jsonString = jsonString.concat(line);
-                line = buffer.readLine();
-            }
-            final JsonObject jsonObj = new Gson().fromJson(jsonString, JsonObject.class);
-            return jsonObj.get("version").getAsString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "-2";
-        }
-        
+        final JsonReader jsonReader =
+                new JsonReader(new InputStreamReader(Client.class.getResourceAsStream(CLIENT_FILE)));
+        final JsonObject jsonObj = new Gson().fromJson(jsonReader, JsonObject.class);
+
+        return jsonObj.get("version").getAsString();
     }
+
 }
