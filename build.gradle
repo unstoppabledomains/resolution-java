@@ -11,6 +11,9 @@ plugins {
 group = 'com.unstoppabledomains'
 archivesBaseName = 'resolution'
 
+sourceCompatibility=JavaVersion.VERSION_1_8
+targetCompatibility=JavaVersion.VERSION_1_8
+
 repositories {
     mavenCentral()
 }
@@ -25,7 +28,7 @@ dependencies {
     implementation 'com.esaulpaugh:headlong:3.4.1'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65.01'
-    
+
     compileOnly 'org.projectlombok:lombok-maven-plugin:1.18.16.0'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
