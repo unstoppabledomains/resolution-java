@@ -1,6 +1,7 @@
 package com.unstoppabledomains.config.network;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.unstoppabledomains.config.network.model.Contract;
 import com.unstoppabledomains.config.network.model.Contracts;
 import com.unstoppabledomains.config.network.model.Network;
@@ -37,9 +38,9 @@ public abstract class NetworkConfigLoader {
     private static NetworkConfig initNetworkConfig() {
         NetworkConfig config;
         try {
-            final InputStreamReader reader = new InputStreamReader(NetworkConfigLoader.class.getResourceAsStream(CONFIG_FILE));
-            final String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-            config = new Gson().fromJson(jsonString, NetworkConfig.class);
+            final JsonReader jsonReader =
+                new JsonReader(new InputStreamReader(NetworkConfigLoader.class.getResourceAsStream(CONFIG_FILE)));
+            config = new Gson().fromJson(jsonReader, NetworkConfig.class);
         } catch (Exception e) {
             throw new RuntimeException("Couldn't load network config", e);
         }

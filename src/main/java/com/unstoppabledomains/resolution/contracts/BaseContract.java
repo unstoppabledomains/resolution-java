@@ -3,12 +3,12 @@ package com.unstoppabledomains.resolution.contracts;
 import com.esaulpaugh.headlong.abi.Function;
 import com.esaulpaugh.headlong.abi.Tuple;
 import com.esaulpaugh.headlong.util.FastHex;
-
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
+import com.google.gson.stream.JsonReader;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -44,11 +44,9 @@ public abstract class BaseContract {
 
   protected JsonArray getAbi() {
       String path = getAbiPath();
-      final InputStreamReader reader = new InputStreamReader(BaseContract.class.getResourceAsStream(path));
-
-      String jsonString = new BufferedReader(reader).lines().collect(Collectors.joining("\n"));
-
-      return JsonParser.parseString(jsonString).getAsJsonArray();
+      final JsonReader jsonReader =
+                new JsonReader( new InputStreamReader(BaseContract.class.getResourceAsStream(path)));
+      return new Gson().fromJson(jsonReader, JsonArray.class);
   }
 
   protected <T> T fetchOne(String method, Object[] args) throws NamingServiceException {
