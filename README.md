@@ -28,6 +28,10 @@ The most recent release of this library is available on [Maven Central](https://
 
 # Usage
 
+### Prerequisites
+
+Java 8+ version is required to use this library.  
+
 ### Default Ethereum Providers
 resolution-java library provides zero-configuration experience by using built-in production-ready Infura endpoint by default.
 Default Ethereum provider is free to use without restrictions and rate-limits for CNS (.crypto domains) resolution.
