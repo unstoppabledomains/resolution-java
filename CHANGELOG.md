@@ -1,5 +1,5 @@
 ## 1.13.3
-* removed Buffered.lines() due to incompatibility with lower android versions (< 7)
+* removed BufferedReader#lines due to incompatibility with lower android versions (< 7)
 
 ## 1.13.2
 * Remove Jakson dependency in favor of gson
