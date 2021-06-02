@@ -1,3 +1,6 @@
+## 2.0.0
+* remove ENS support
+
 ## 1.13.3
 * removed BufferedReader#lines due to incompatibility with lower android versions (< 7)
 
