@@ -16,56 +16,51 @@ Resoultion-Java supports decentralized domains across three zones:
   - `.crypto`
 - Zilliqa Name Service (ZNS)
   - `.zil`
-- Ethereum Name Service (ENS)
-  - `.eth`
-  - `.kred`
-  - `.xyz`
-  - `.luxe`
 
 # Releases
 
-The most recent release of this library is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution). 
+The most recent release of this library is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution).
 
 # Usage
 
 ### Prerequisites
 
-Java 8+ version is required to use this library.  
+Java 8+ version is required to use this library.
 
 ### Default Ethereum Providers
+
 resolution-java library provides zero-configuration experience by using built-in production-ready Infura endpoint by default.
 Default Ethereum provider is free to use without restrictions and rate-limits for CNS (.crypto domains) resolution.
-To resolve ENS domains on production it's recommended to change Ethereum provider.
 
 ### Custom Ethereum provider configuration
- 
-```java
-// Default config: 
 
-DomainResolution resolution = new Resolution(); 
+```java
+// Default config:
+
+DomainResolution resolution = new Resolution();
 
 // Optionally override default config using builder options:
 // providerUrl overwrites chainId by making net_version JSON RPC call to the provider
 // in the following example blockchain would be set to the rinkeby testnet
 DomainResolution resolution = Resolution.builder()
-                .providerUrl(NamingServiceType.ENS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
-                .build(); 
+                .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+                .build();
 
 // Infura config:
 
 DomainResolution resolution = Resolution.builder()
-                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-                .infura(NamingServiceType.ENS, <ProjectId>)
+                .chainId(NamingServiceType.CNS, Network.ROPSTEN)
+                .infura(NamingServiceType.CNS, <ProjectId>)
                 .infura(NamingServiceType.CNS, Network.MAINNET, <ProjectId>)
                 .build();
 
 // Custom provider config:
 
 DomainResolution resolution = Resolution.builder()
-                .provider(new IProvider() {      
+                .provider(new IProvider() {
                     @Override
                     public JsonObject request(String url, JsonObject body) throws IOException {
-                        // TODO Make post request to url with given body 
+                        // TODO Make post request to url with given body
                         // and return JsonObject from the response
                         return null;
                     }
@@ -116,7 +111,7 @@ assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
 
 ### Getting a domain's IPFS hash
 
-Decentralized websites host their content on decentralized file storage systems such as [IPFS](http://ipfs.io/). 
+Decentralized websites host their content on decentralized file storage systems such as [IPFS](http://ipfs.io/).
 To get the IPFS hash associated with a domain (and therefore its content), you can use the `getIpfsHash` method.
 
 ```java
@@ -162,7 +157,7 @@ public enum NSExceptionCode {
 
 ## Internal network config
 
-Internal [network config](src/main/resources/com/unstoppabledomains/config/network/network-config.json) 
+Internal [network config](src/main/resources/com/unstoppabledomains/config/network/network-config.json)
 can be updated by running the `gradle pullNetworkConfig` task and committing the updated file.
 
 ## Versioning & release process
@@ -176,7 +171,7 @@ can be updated by running the `gradle pullNetworkConfig` task and committing the
 - Create a new Github release (using `semver`);
 - Wait for a successful Github Workflow publishing;
 - Release staging repository by logging into [Nexus Repository Manager](https://oss.sonatype.org/) and
- performing 'close' and then 'release' actions.
+  performing 'close' and then 'release' actions.
 
 As an alternative to a CI release, you can perform a manual publish by following these steps:
 
@@ -196,4 +191,5 @@ Once your app has a working Unstoppable Domains integration, [register it here](
 Also, every week we select a newly-integrated app to feature in the Unstoppable Update newsletter. This newsletter is delivered to straight into the inbox of ~100,000 crypto fanatics — all of whom could be new customers to grow your business.
 
 # Get help
-[Join our discord community](https://discord.com/invite/b6ZVxSZ9Hn) and ask questions.  
+
+[Join our discord community](https://discord.com/invite/b6ZVxSZ9Hn) and ask questions.
