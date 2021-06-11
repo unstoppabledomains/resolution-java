@@ -1,5 +1,7 @@
 package com.unstoppabledomains.util;
 
+import java.math.BigInteger;
+
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -30,5 +32,23 @@ public class Utilities {
     digester.doFinal(retValue, 0);
     String result = Numeric.toHexString(retValue);
     return result.replace("0x", "");
+  }
+
+  /**
+   * Converts a numerical token id to a namehash
+   * @param tokenID a numerical token id
+   * @return namehash from provided token id
+   */
+  public static String tokenIDToNamehash(BigInteger tokenID) {
+    return String.format("0x%1$064d", tokenID.toString(16));
+  }
+
+  /**
+   * Converts a namehash to numerical token id
+   * @param namehash a namehash in "0x..." format
+   * @return token id from provided namehash
+   */
+  public static BigInteger namehashToTokenID(String namehash) {
+    return new BigInteger(namehash.substring(2), 16);
   }
 }

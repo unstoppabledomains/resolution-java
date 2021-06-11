@@ -3,11 +3,13 @@ package com.unstoppabledomains.resolution;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.unstoppabledomains.config.network.model.Network;
+import com.unstoppabledomains.config.network.model.TokenUriMetadata;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
+import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
@@ -16,7 +18,9 @@ import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
+import com.unstoppabledomains.util.Utilities;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +169,41 @@ public class Resolution implements DomainResolution {
     @Override
     public String owner(String domain) throws NamingServiceException {
         return getOwner(domain);
+    }
+    
+    @Override
+    public String tokenURI(String domain) throws NamingServiceException {
+        NamingService service = findService(domain);
+        String namehash = service.getNamehash(domain);
+        BigInteger tokenId = Utilities.namehashToTokenID(namehash);
+        return service.getTokenUri(tokenId);
+    }
+
+    @Override
+    public TokenUriMetadata tokenURIMetadata(String domain) throws NamingServiceException {
+        String tokenURI = tokenURI(domain);
+        return getMetadataFromTokenURI(tokenURI);
+    }
+
+    @Override
+    public String unhash(String hash, NamingServiceType serviceType) throws NamingServiceException {
+        NamingService service = services.get(serviceType);
+        BigInteger tokenId = Utilities.namehashToTokenID(hash);
+        String tokenURI = service.getTokenUri(tokenId);
+        TokenUriMetadata metadata = getMetadataFromTokenURI(tokenURI);
+        if (!service.getNamehash(metadata.getName()).equals(hash)) {
+            throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "unhash"));
+        }
+        return metadata.getName();
+    }
+
+    private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {
+        try {
+            JsonProvider provider = new JsonProvider();
+            return provider.request(tokenURI, null, TokenUriMetadata.class);
+        } catch (Exception e) {
+            throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "getMetadataFromTokenURI"), e);
+        }
     }
 
     private Map<NamingServiceType, NamingService> getServices(String CnsProviderUrl, IProvider provider) {

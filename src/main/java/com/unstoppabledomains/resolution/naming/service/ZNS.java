@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.math.BigInteger;
 
 public class ZNS extends BaseNamingService {
     static final String REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793"; // eth style zil registry
@@ -81,6 +82,11 @@ public class ZNS extends BaseNamingService {
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }
+    }
+
+    @Override
+    public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", "ZNS"));
     }
 
     private String getIpfsHash(JsonObject records) {

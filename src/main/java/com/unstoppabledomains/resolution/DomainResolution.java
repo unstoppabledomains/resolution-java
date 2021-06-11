@@ -3,6 +3,7 @@ package com.unstoppabledomains.resolution;
 import java.util.List;
 
 import com.unstoppabledomains.config.network.model.Network;
+import com.unstoppabledomains.config.network.model.TokenUriMetadata;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
@@ -105,6 +106,35 @@ public interface DomainResolution {
      * @throws NamingServiceException
      */
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
+
+    /**
+     * Retrieves the tokenURI from the registry smart contract.
+     *
+     * @param domain domain name such as "brad.crypto"
+     * @return the ERC721Metadata#tokenURI contract method result
+     * @throws NamingServiceException if domain is not found or invalid
+     */
+    String tokenURI(String domain) throws NamingServiceException;
+
+    /**
+     * Retrieves the data from the endpoint provided by tokenURI from the registry smart contract.
+     *
+     * @param domain domain name such as "brad.crypto"
+     * @return the JSON response of the token URI endpoint
+     * @throws NamingServiceException if domain is not found or invalid
+     */
+    TokenUriMetadata tokenURIMetadata(String domain) throws NamingServiceException;
+
+    /**
+     * Retrieves the domain name from token metadata that is provided by tokenURI from the registry smart contract.
+     * The function also checks if the returned domain matches the hash parameter.
+     *
+     * @param hash domain name hash
+     * @param service nameservice which is used for lookup
+     * @return the JSON response of the token URI endpoint
+     * @throws NamingServiceException if domain is not found or invalid
+     */
+    String unhash(String hash, NamingServiceType service) throws NamingServiceException;
 
     /**
      * Resolves usdt record for a specific ticker Version
