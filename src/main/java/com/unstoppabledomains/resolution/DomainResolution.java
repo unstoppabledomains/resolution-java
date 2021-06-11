@@ -3,7 +3,6 @@ package com.unstoppabledomains.resolution;
 import java.util.List;
 
 import com.unstoppabledomains.config.network.model.Network;
-import com.unstoppabledomains.config.network.model.TokenUriMetadata;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.dns.DnsRecord;

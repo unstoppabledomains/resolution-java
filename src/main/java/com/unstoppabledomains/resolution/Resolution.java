@@ -3,7 +3,6 @@ package com.unstoppabledomains.resolution;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.unstoppabledomains.config.network.model.Network;
-import com.unstoppabledomains.config.network.model.TokenUriMetadata;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;

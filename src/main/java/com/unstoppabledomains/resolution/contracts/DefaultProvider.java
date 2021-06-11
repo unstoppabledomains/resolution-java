@@ -63,9 +63,11 @@ public class DefaultProvider implements IProvider {
 
   protected String rawRequest(String url, JsonObject body) throws IOException {
     HttpURLConnection con = createAndConfigureCon(url);
-    try (OutputStream os = con.getOutputStream()) {
-      byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);
-      os.write(input, 0, input.length);
+    if (body != null) {
+      try (OutputStream os = con.getOutputStream()) {
+        byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);
+        os.write(input, 0, input.length);
+      }
     }
 
     try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
