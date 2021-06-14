@@ -7,6 +7,7 @@ import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
+import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataAttribute;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -316,5 +318,47 @@ public class ResolutionTest {
         assertEquals("19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ", omni);
 
         
+    }
+
+    @Test
+    public void testTokenURICNS() throws Exception {
+        String testDomain = "brad.crypto";
+
+        String tokenUri = resolution.tokenURI(testDomain);
+        assertEquals("https://metadata.unstoppabledomains.com/metadata/brad.crypto", tokenUri);
+    }
+
+    @Test
+    public void testTokenURIZNS() throws Exception {
+        String testDomain = "brad.zil";
+        TestUtils.expectError(() -> resolution.tokenURI(testDomain), NSExceptionCode.NotImplemented);
+    }
+
+    @Test
+    public void testTokenURIMetadata() throws Exception {
+        String testDomain = "brad.crypto";
+
+        TokenUriMetadata metadata = resolution.tokenURIMetadata(testDomain);
+        assertNotNull(metadata);
+        assertEquals(metadata.getName(), testDomain);
+        assertEquals(metadata.getAttributes().size(), 8);
+        TokenUriMetadataAttribute attribute = metadata.new TokenUriMetadataAttribute();
+        attribute.setTraitType("ETH");
+        attribute.setValue("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
+        assertTrue(metadata.getAttributes().contains(attribute));
+    }
+
+    @Test
+    public void testUnhashCNS() throws Exception {
+        String testHash = "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9";
+
+        String tokenName = resolution.unhash(testHash, NamingServiceType.CNS);
+        assertEquals("brad.crypto", tokenName);
+    }
+
+    @Test
+    public void testUnhashZNS() throws Exception {
+        String testHash = "0x5fc604da00f502da70bfbc618088c0ce468ec9d18d05540935ae4118e8f50787";
+        TestUtils.expectError(() -> resolution.unhash(testHash, NamingServiceType.ZNS), NSExceptionCode.NotImplemented);
     }
 }
