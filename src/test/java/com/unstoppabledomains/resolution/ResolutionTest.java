@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -91,11 +90,20 @@ public class ResolutionTest {
 
     @Test
     public void isSupported() {
-        boolean isValid = resolution.isSupported("brad.crypto");
+        boolean isValid = resolution.isSupported("example.test");
         assertTrue(isValid);
 
-        isValid = resolution.isSupported("brad.unsupported");
-        assertFalse(isValid);
+        isValid = resolution.isSupported("example.tqwdest");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.qwdqwdq.wd.tqwdest");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.crypto");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.zil");
+        assertTrue(isValid);
     }
 
     @Test
@@ -109,11 +117,6 @@ public class ResolutionTest {
         assertEquals("0x9915d0456b878862e822e2361da37232f626a2e47505c8795134a95d36138ed3", hash);
         hash = resolution.getNamehash("johnnyjumper.zil");
         assertEquals("0x08ab2ffa92966738c881a37d0d97f168d2e076d24639921762d0985ebaa62e31", hash);
-    }
-
-    @Test
-    public void wrongDomainNamehash() throws Exception {
-        TestUtils.expectError(() -> resolution.getNamehash("unupported"), NSExceptionCode.UnsupportedDomain);
     }
 
     @Test
