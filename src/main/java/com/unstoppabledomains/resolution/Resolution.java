@@ -172,10 +172,17 @@ public class Resolution implements DomainResolution {
     
     @Override
     public String tokenURI(String domain) throws NamingServiceException {
-        NamingService service = findService(domain);
-        String namehash = service.getNamehash(domain);
-        BigInteger tokenId = Utilities.namehashToTokenID(namehash);
-        return service.getTokenUri(tokenId);
+        try {
+            NamingService service = findService(domain);
+            String namehash = service.getNamehash(domain);
+            BigInteger tokenId = Utilities.namehashToTokenID(namehash);
+            return service.getTokenUri(tokenId);
+        } catch (NamingServiceException e) {
+            if (e.getCode() == NSExceptionCode.UnregisteredDomain) {
+                throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|m", domain, "tokenURI"), e);
+            }
+            throw e;
+        }
     }
 
     @Override

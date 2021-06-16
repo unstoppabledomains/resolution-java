@@ -88,6 +88,9 @@ public class CNS extends BaseNamingService {
   public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
     try {
       String tokenURI = proxyReaderContract.getTokenUri(tokenID);
+      if (tokenURI == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "CNS"));
+      }
       return tokenURI;
     } catch (Exception e) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "CNS"), e);

@@ -322,10 +322,10 @@ public class ResolutionTest {
 
     @Test
     public void testTokenURICNS() throws Exception {
-        String testDomain = "brad.crypto";
-
-        String tokenUri = resolution.tokenURI(testDomain);
+        String tokenUri = resolution.tokenURI("brad.crypto");
         assertEquals("https://metadata.unstoppabledomains.com/metadata/brad.crypto", tokenUri);
+
+        TestUtils.expectError(() -> resolution.tokenURI("fake-domain-that-does-not-exist.crypto"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
