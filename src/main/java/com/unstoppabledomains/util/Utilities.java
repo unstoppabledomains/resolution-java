@@ -40,7 +40,7 @@ public class Utilities {
    * @return namehash from provided token id
    */
   public static String tokenIDToNamehash(BigInteger tokenID) {
-    return String.format("0x%1$064d", tokenID.toString(16));
+    return String.format("0x%64s", tokenID.toString(16)).replace(' ', '0');
   }
 
   /**
