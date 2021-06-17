@@ -206,7 +206,7 @@ public class Resolution implements DomainResolution {
     private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {
         try {
             JsonProvider provider = new JsonProvider();
-            return provider.request(tokenURI, null, TokenUriMetadata.class);
+            return provider.request(tokenURI, TokenUriMetadata.class);
         } catch (Exception e) {
             throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "getMetadataFromTokenURI"), e);
         }

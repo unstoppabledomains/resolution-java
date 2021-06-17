@@ -26,6 +26,10 @@ public class JsonProvider extends DefaultProvider {
     this.method = method;
   }
 
+  public <T> T request(String url, java.lang.Class<T> classOfT) throws IOException {
+    return this.request(url, null, classOfT);
+  }
+
   public <T> T request(String url, JsonObject body, java.lang.Class<T> classOfT) throws IOException {
     String rawResponse = super.rawRequest(url, body);
     return gson.fromJson(rawResponse, classOfT);
