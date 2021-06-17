@@ -39,7 +39,7 @@ public class CNS extends BaseNamingService {
 
   public Boolean isSupported(String domain) {
     String[] split = domain.split("\\.");
-    return (split.length != 0 && split[split.length - 1].equals("crypto"));
+    return (split.length != 0 && !split[split.length - 1].equals("zil"));
   }
 
   @Override
