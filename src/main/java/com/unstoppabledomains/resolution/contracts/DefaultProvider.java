@@ -57,10 +57,17 @@ public class DefaultProvider implements IProvider {
 
   @Override
   public JsonObject request(String url, JsonObject body) throws IOException {
+    String rawResponse = rawRequest(url, body);
+    return (JsonObject) JsonParser.parseString(rawResponse);
+  }
+
+  protected String rawRequest(String url, JsonObject body) throws IOException {
     HttpURLConnection con = createAndConfigureCon(url);
-    try (OutputStream os = con.getOutputStream()) {
-      byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);
-      os.write(input, 0, input.length);
+    if (body != null) {
+      try (OutputStream os = con.getOutputStream()) {
+        byte[] input = body.toString().getBytes(StandardCharsets.UTF_8);
+        os.write(input, 0, input.length);
+      }
     }
 
     try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
@@ -69,7 +76,7 @@ public class DefaultProvider implements IProvider {
       while ((responseLine = br.readLine()) != null) {
         response.append(responseLine.trim());
       }
-      return (JsonObject) JsonParser.parseString(response.toString());
+      return response.toString();
     }
   }
 

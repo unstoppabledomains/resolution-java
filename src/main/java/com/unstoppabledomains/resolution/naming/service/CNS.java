@@ -84,6 +84,19 @@ public class CNS extends BaseNamingService {
     return util.toList(rawData);
   }
 
+  @Override
+  public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String tokenURI = proxyReaderContract.getTokenUri(tokenID);
+      if (tokenURI == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "CNS"));
+      }
+      return tokenURI;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "CNS"), e);
+    }
+  }
+
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
     return resolveKeys(new String[]{key}, domain);
   }

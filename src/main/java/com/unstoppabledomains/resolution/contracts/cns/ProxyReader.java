@@ -34,6 +34,11 @@ public class ProxyReader extends BaseContract {
         return fetchData(args);
     }
 
+    public String getTokenUri(BigInteger tokenID) throws Exception {
+        Object[] args = { tokenID };
+        return fetchOne("tokenURI", args);
+    }
+
     @Override
     protected String getAbiPath() {
       return ABI_FILE;
