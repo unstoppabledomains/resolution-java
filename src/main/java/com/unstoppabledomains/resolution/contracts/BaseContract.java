@@ -12,7 +12,7 @@ import com.google.gson.stream.JsonReader;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
+import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 
 import java.io.BufferedReader;

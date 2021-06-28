@@ -12,7 +12,7 @@ import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
-import com.unstoppabledomains.resolution.naming.service.CNS;
+import com.unstoppabledomains.resolution.naming.service.UNS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
-    private static final String CNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+    private static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     private Map<NamingServiceType, NamingService> services;
@@ -43,12 +43,12 @@ public class Resolution implements DomainResolution {
 
     /**
      * Create resolution object with default config:
-     * <a href="https://infura.io">infura</a> blockchain provider for CNS and
+     * <a href="https://infura.io">infura</a> blockchain provider for UNS and
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
         IProvider provider = new DefaultProvider();
-        services = getServices(CNS_DEFAULT_URL, provider);
+        services = getServices(UNS_DEFAULT_URL, provider);
     }
 
     /**
@@ -212,9 +212,9 @@ public class Resolution implements DomainResolution {
         }
     }
 
-    private Map<NamingServiceType, NamingService> getServices(String CnsProviderUrl, IProvider provider) {
+    private Map<NamingServiceType, NamingService> getServices(String UnsProviderUrl, IProvider provider) {
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, CnsProviderUrl), provider));
+            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, UnsProviderUrl), provider));
             put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL), provider));
         }};
     }
@@ -234,7 +234,7 @@ public class Resolution implements DomainResolution {
 
         private Builder() {
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.CNS, new NSConfig(Network.MAINNET, CNS_DEFAULT_URL));
+                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL));
                 put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
             }};
             provider = new DefaultProvider();
@@ -318,7 +318,7 @@ public class Resolution implements DomainResolution {
          */
         public Resolution build() {
             Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.CNS, new CNS(serviceConfigs.get(NamingServiceType.CNS), provider));
+                put(NamingServiceType.UNS, new UNS(serviceConfigs.get(NamingServiceType.UNS), provider));
                 put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
             }};
             return new Resolution(services);
