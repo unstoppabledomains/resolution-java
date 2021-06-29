@@ -51,10 +51,7 @@ public class ZNS extends BaseNamingService {
 
     @Override
     public Boolean isSupported(String domain) throws NamingServiceException {
-        if (domain.equals("zil")) {
-            return true;
-        }
-        return StringUtils.endsWith(domain, ".zil");
+        return (domain.equals("zil") || StringUtils.endsWith(domain, ".zil"));
     }
 
     @Override
