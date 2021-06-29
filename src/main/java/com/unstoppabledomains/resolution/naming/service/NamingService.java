@@ -12,7 +12,7 @@ import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 public interface NamingService {
     NamingServiceType getType();
 
-    Boolean isSupported(String domain);
+    Boolean isSupported(String domain) throws NamingServiceException;
 
     String getRecord(String domain, String recordKey) throws NamingServiceException;
 

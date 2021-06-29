@@ -39,7 +39,7 @@ public class ProxyReader extends BaseContract {
         return fetchOne("tokenURI", args);
     }
 
-    public String getExists(BigInteger tokenID) throws Exception {
+    public Boolean getExists(BigInteger tokenID) throws NamingServiceException {
         Object[] args = { tokenID };
         return fetchOne("exists", args);
     }

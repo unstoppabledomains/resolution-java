@@ -69,8 +69,13 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public boolean isSupported(String domain) {
-        return services.values().stream().anyMatch(s -> s.isSupported(domain));
+    public boolean isSupported(String domain) throws NamingServiceException {
+        for (NamingService service: services.values()) {
+            if (service.isSupported(domain)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

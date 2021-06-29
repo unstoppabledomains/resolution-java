@@ -37,9 +37,18 @@ public class UNS extends BaseNamingService {
     return NamingServiceType.UNS;
   }
 
-  public Boolean isSupported(String domain) {
+  public Boolean isSupported(String domain) throws NamingServiceException {
     String[] split = domain.split("\\.");
-    return (split.length != 0 && !split[split.length - 1].equals("zil"));
+    if (split.length == 0 || split[split.length - 1].equals("zil")) {
+      return false;
+    }
+    BigInteger tokenID;
+    try {
+      tokenID = tokenID(split[split.length - 1]);
+    } catch (Exception e) {
+      return false;
+    }
+    return proxyReaderContract.getExists(tokenID);
   }
 
   @Override
