@@ -10,6 +10,7 @@ import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyReader;
+import com.unstoppabledomains.resolution.contracts.uns.Registry;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
@@ -25,11 +26,14 @@ import java.util.Map;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
+  private final Registry registryContract;
   
   public UNS(NSConfig config, IProvider provider) {
     super(config, provider);
     String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
+    String registryAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "Registry");
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
+    this.registryContract = new Registry(config.getBlockchainProviderUrl(), registryAddress, provider);
   }
 
   @Override
@@ -94,6 +98,19 @@ public class UNS extends BaseNamingService {
       return tokenURI;
     } catch (Exception e) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "UNS"), e);
+    }
+  }
+
+  @Override
+  public String getDomainName(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String domainName = registryContract.getDomainName(tokenID);
+      if (domainName == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "CNS"));
+      }
+      return domainName;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "CNS"), e);
     }
   }
 

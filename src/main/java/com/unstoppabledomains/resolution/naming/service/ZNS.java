@@ -89,6 +89,11 @@ public class ZNS extends BaseNamingService {
         throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", "ZNS"));
     }
 
+    @Override
+    public String getDomainName(BigInteger tokenID) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", "ZNS"));
+    }
+
     private String getIpfsHash(JsonObject records) {
         JsonElement newRecord = records.get("dweb.ipfs.hash");
         JsonElement oldRecord = records.get("ipfs.html.value");
