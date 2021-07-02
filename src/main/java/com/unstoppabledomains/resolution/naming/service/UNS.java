@@ -26,14 +26,11 @@ import java.util.Map;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
-  private final Registry registryContract;
   
   public UNS(NSConfig config, IProvider provider) {
     super(config, provider);
     String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
-    String registryAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "Registry");
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
-    this.registryContract = new Registry(config.getBlockchainProviderUrl(), registryAddress, provider);
   }
 
   @Override
@@ -104,13 +101,27 @@ public class UNS extends BaseNamingService {
   @Override
   public String getDomainName(BigInteger tokenID) throws NamingServiceException {
     try {
+      String registryAddress = this.getRegistryAddress(tokenID);
+      Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
       String domainName = registryContract.getDomainName(tokenID);
       if (domainName == null) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "CNS"));
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"));
       }
       return domainName;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "CNS"), e);
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"), e);
+    }
+  }
+
+  private String getRegistryAddress(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String tokenURI = proxyReaderContract.registryOf(tokenID);
+      if (tokenURI == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"));
+      }
+      return tokenURI;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"), e);
     }
   }
 

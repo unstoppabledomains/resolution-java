@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution.contracts.cns;
+package com.unstoppabledomains.resolution.contracts.uns;
 
 import com.esaulpaugh.headlong.abi.Tuple;
 import com.unstoppabledomains.resolution.contracts.BaseContract;

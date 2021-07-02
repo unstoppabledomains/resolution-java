@@ -125,7 +125,6 @@ public abstract class BaseContract {
       }
       return logs;
     } catch(IOException exception) {
-      exception.printStackTrace();
       throw new NamingServiceException(
         NSExceptionCode.BlockchainIsDown,
         new NSExceptionParams("n", namingServiceName),
