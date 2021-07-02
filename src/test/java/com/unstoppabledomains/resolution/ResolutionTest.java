@@ -105,6 +105,9 @@ public class ResolutionTest {
         isValid = resolution.isSupported("example.qwdqwdq.wd.tqwdest");
         assertTrue(isValid);
 
+        isValid = resolution.isSupported("udtestdev-my-new-tls.wallet");
+        assertTrue(isValid);
+
         isValid = resolution.isSupported("example.crypto");
         assertTrue(isValid);
 
@@ -119,6 +122,11 @@ public class ResolutionTest {
         hash = resolution.getNamehash("brad.crypto");
         assertEquals("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9", hash);
 
+        hash = resolution.getNamehash("wallet");
+        assertEquals("0x1e3f482b3363eb4710dae2cb2183128e272eafbe137f686851c1caea32502230", hash);
+        hash = resolution.getNamehash("udtestdev-my-new-tls.wallet");
+        assertEquals("0x1586d090e1b5781399f988e4b4f5639f4c2775ef5ec093d1279bb95b9bceb1a0", hash);
+
         hash = resolution.getNamehash("zil");
         assertEquals("0x9915d0456b878862e822e2361da37232f626a2e47505c8795134a95d36138ed3", hash);
         hash = resolution.getNamehash("johnnyjumper.zil");
@@ -129,6 +137,10 @@ public class ResolutionTest {
     public void getRecord() throws Exception {
         String recordValue = resolution.getRecord("testing.crypto", "crypto.ETH.address");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", recordValue);
+
+        recordValue = resolution.getRecord("udtestdev-my-new-tls.wallet", "crypto.BTC.address");
+        assertEquals("bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", recordValue);
+
     }
 
     @Test
@@ -141,6 +153,9 @@ public class ResolutionTest {
         String addr = resolution.getAddress("udtestdev--awefawef.crypto", "eth");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", addr);
 
+        addr = resolution.getAddress("udtestdev-my-new-tls.wallet", "eth");
+        assertEquals("0x6EC0DEeD30605Bcd19342f3c30201DB263291589", addr, "udtestdev-my-new-tls.wallet --> eth");
+
         addr = resolution.getAddress("testing.crypto", "eth");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", addr, "testing.crypto --> eth");
 
@@ -151,11 +166,14 @@ public class ResolutionTest {
     @Test
     public void wrongDomainAddr() throws Exception {
         TestUtils.expectError(() -> resolution.getAddress("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unregistered.wallet", "eth"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unregistered.blockchain", "eth"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAddress("unregistered26572654326523456.zil", "eth"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void UnknownCurrency() throws Exception {
+        TestUtils.expectError(() -> resolution.getAddress("udtestdev-my-new-tls.wallet", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.expectError(() -> resolution.getAddress("testing.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.expectError(() -> resolution.getAddress("testing.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
@@ -181,6 +199,9 @@ public class ResolutionTest {
     public void ownerTest() throws NamingServiceException {
         String owner = resolution.getOwner("testing.crypto");
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", owner);
+
+        owner = resolution.getOwner("udtestdev-my-new-tls.wallet");
+        assertEquals("0x6ec0deed30605bcd19342f3c30201db263291589", owner);
 
         owner = resolution.getOwner("johnnyjumper.zil");
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", owner);
@@ -212,11 +233,13 @@ public class ResolutionTest {
     @Test
     public void ownerFailTest() throws Exception {
         TestUtils.expectError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getOwner("unregistered.wallet"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void noIpfsHash() throws Exception {
         TestUtils.expectError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev--awefawef.crypto"), NSExceptionCode.RecordNotFound);
 
     }
@@ -224,6 +247,7 @@ public class ResolutionTest {
     @Test
     public void noEmailRecord() throws Exception {
         TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
+        TestUtils.expectError(() -> resolution.getEmail("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);
     }
 
     @Test
@@ -258,7 +282,7 @@ public class ResolutionTest {
         };
         Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
         TestUtils.expectError(
-            () -> resolutionWithProvider.getAddress("brad.crypto", "eth"),
+            () -> resolutionWithProvider.getAddress("udtestdev-my-new-tls.wallet", "eth"),
             NSExceptionCode.BlockchainIsDown,
             cause
         );
@@ -323,16 +347,16 @@ public class ResolutionTest {
         String eos = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "eos");
         assertEquals("karaarishmen", eos);
 
-        
+
     }
 
-    // @Test
-    // public void testTokenURIUNS() throws Exception {
-    //     String tokenUri = resolution.tokenURI("brad.crypto");
-    //     assertEquals("https://metadata.unstoppabledomains.com/metadata/brad.crypto", tokenUri);
+    @Test
+    public void testTokenURIUNS() throws Exception {
+        String tokenUri = resolution.tokenURI("brad.crypto");
+        assertEquals("https://staging-dot-dot-crypto-metadata.appspot.com/metadata/brad.crypto", tokenUri);
 
-    //     TestUtils.expectError(() -> resolution.tokenURI("fake-domain-that-does-not-exist.crypto"), NSExceptionCode.UnregisteredDomain);
-    // }
+        TestUtils.expectError(() -> resolution.tokenURI("fake-domain-that-does-not-exist.crypto"), NSExceptionCode.UnregisteredDomain);
+    }
 
     @Test
     public void testTokenURIZNS() throws Exception {
@@ -355,12 +379,22 @@ public class ResolutionTest {
     }
 
     @Test
-    public void testUnhashUNS() throws Exception {
+    public void testUnhashCNS() throws Exception {
         String testHash = "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9";
-
         String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
+
         assertEquals("brad.crypto", tokenName);
+
     }
+
+    // @Test
+    // public void testUnhashUNS() throws Exception {
+    //     String testHash = "0x1586d090e1b5781399f988e4b4f5639f4c2775ef5ec093d1279bb95b9bceb1a0";
+    //     String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
+
+    //     assertEquals("udtestdev-my-new-tls.wallet", tokenName);
+    // }
+
 
     @Test
     public void testUnhashZNS() throws Exception {
