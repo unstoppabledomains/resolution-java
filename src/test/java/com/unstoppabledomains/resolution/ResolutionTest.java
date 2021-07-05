@@ -40,6 +40,7 @@ public class ResolutionTest {
     public void resolveRinkebyDomain() throws Exception {
         DomainResolution rinkebyResolution = Resolution.builder()
             .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(NamingServiceType.ENS, "https://goerli.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .build();
         String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
         assertEquals("0x1C8b9B78e3085866521FE206fa4c1a67F49f153A", ethAddress);
@@ -50,12 +51,15 @@ public class ResolutionTest {
     public void testDifferentNetworks() throws Exception {
         DomainResolution customCnsNetwork = Resolution.builder()
             .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .chainId(NamingServiceType.ENS, Network.GOERLI)
             .chainId(NamingServiceType.ZNS, Network.KOVAN)
             .build();
-            
+
         Network customCnsChainId = customCnsNetwork.getNetwork(NamingServiceType.CNS);
+        Network customEnsChainId = customCnsNetwork.getNetwork(NamingServiceType.ENS);
         Network customZnsChainId = customCnsNetwork.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.RINKEBY, customCnsChainId);
+        assertEquals(Network.GOERLI, customEnsChainId);
         assertEquals(Network.KOVAN, customZnsChainId);
     }
 
@@ -63,30 +67,36 @@ public class ResolutionTest {
     public void testDefaultNetworks() throws Exception {
         DomainResolution defaultSettings = new Resolution();
         Network defaultCnsChainId = defaultSettings.getNetwork(NamingServiceType.CNS);
+        Network defaultEnsChainId = defaultSettings.getNetwork(NamingServiceType.ENS);
         Network defaultZnsChainId = defaultSettings.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.MAINNET, defaultCnsChainId);
+        assertEquals(Network.MAINNET, defaultEnsChainId);
         assertEquals(Network.MAINNET, defaultZnsChainId);
     }
 
     @Test
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
-                .chainId(NamingServiceType.CNS, Network.ROPSTEN)
-                .providerUrl(NamingServiceType.CNS, TestUtils.TESTING_CNS_PROVIDER_URL)
-                .build();
+        .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+        .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+        .providerUrl(NamingServiceType.CNS, TestUtils.TESTING_CNS_PROVIDER_URL)
+        .build();
 
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilder.getOwner("brad.crypto"));
+        assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilder.getOwner("johnnyjumper.zil"));
     }
 
     @Test
     public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
         DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
-                .chainId(NamingServiceType.CNS, Network.ROPSTEN)
-                .infura(NamingServiceType.CNS, Network.MAINNET, TestUtils.TESTING_INFURA_CNS_PROJECT_ID)
-                .build();
+            .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+            .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
+            .infura(NamingServiceType.CNS, Network.MAINNET, TestUtils.TESTING_INFURA_CNS_PROJECT_ID)
+            .build();
 
         assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", resolutionFromBuilderWithInfura.getOwner("brad.crypto"));
+        assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilderWithInfura.getOwner("johnnyjumper.zil"));
     }
 

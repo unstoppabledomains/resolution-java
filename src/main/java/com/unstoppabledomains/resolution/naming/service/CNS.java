@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 public class CNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
-  
+
   public CNS(NSConfig config, IProvider provider) {
     super(config, provider);
     String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
@@ -38,8 +39,9 @@ public class CNS extends BaseNamingService {
   }
 
   public Boolean isSupported(String domain) {
+    String[] unsupportedTLDs = { "eth", "kred", "luxe", "xyz","zil" };
     String[] split = domain.split("\\.");
-    return (split.length != 0 && !split[split.length - 1].equals("zil"));
+    return (split.length != 0 && !Arrays.asList(unsupportedTLDs).contains(split[split.length - 1]));
   }
 
   @Override
