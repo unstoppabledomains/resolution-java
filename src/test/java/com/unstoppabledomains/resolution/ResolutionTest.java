@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -95,15 +96,15 @@ public class ResolutionTest {
     }
 
     @Test
-    public void isSupported() {
+    public void isSupported() throws NamingServiceException{
         boolean isValid = resolution.isSupported("example.test");
-        assertTrue(isValid);
+        assertFalse(isValid);
 
         isValid = resolution.isSupported("example.tqwdest");
-        assertTrue(isValid);
+        assertFalse(isValid);
 
         isValid = resolution.isSupported("example.qwdqwdq.wd.tqwdest");
-        assertTrue(isValid);
+        assertFalse(isValid);
 
         isValid = resolution.isSupported("udtestdev-my-new-tls.wallet");
         assertTrue(isValid);
@@ -111,7 +112,28 @@ public class ResolutionTest {
         isValid = resolution.isSupported("example.crypto");
         assertTrue(isValid);
 
-        isValid = resolution.isSupported("example.zil");
+        isValid = resolution.isSupported("example.coin");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.wallet");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.bitcoin");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.x");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.888");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.nft");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.dao");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.blockchain");
         assertTrue(isValid);
     }
 
@@ -301,7 +323,7 @@ public class ResolutionTest {
                         object.get("data").getAsString()
                             .equals("0x91015f6b0000000000000000000000000000000000000000000000000000000000000040756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc900000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001263727970746f2e4554482e616464726573730000000000000000000000000000")
                     ) {
-                        JsonObject answer = new JsonObject();                        
+                        JsonObject answer = new JsonObject();
                         answer.addProperty("jsonrpc", "2.0");
                         answer.addProperty("id", "1");
                         answer.addProperty("method", "eth_call");

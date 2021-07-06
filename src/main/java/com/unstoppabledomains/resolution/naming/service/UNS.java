@@ -37,9 +37,18 @@ public class UNS extends BaseNamingService {
     return NamingServiceType.UNS;
   }
 
-  public Boolean isSupported(String domain) {
+  public Boolean isSupported(String domain) throws NamingServiceException {
     String[] split = domain.split("\\.");
-    return (split.length != 0 && !split[split.length - 1].equals("zil"));
+    if (split.length == 0 || split[split.length - 1].equals("zil")) {
+      return false;
+    }
+    BigInteger tokenID;
+    try {
+      tokenID = getTokenID(split[split.length - 1]);
+    } catch (NamingServiceException e) {
+      return false;
+    }
+    return proxyReaderContract.getExists(tokenID);
   }
 
   @Override
@@ -58,10 +67,10 @@ public class UNS extends BaseNamingService {
 
   public  String getOwner(String domain) throws NamingServiceException {
     try {
-      BigInteger tokenID = tokenID(domain);
+      BigInteger tokenID = getTokenID(domain);
       String owner = owner(tokenID);
       if (Utilities.isEmptyResponse(owner)) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, 
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
           new NSExceptionParams("d|n", domain, "UNS"));
       }
       return owner;
@@ -147,7 +156,7 @@ public class UNS extends BaseNamingService {
   }
 
   private ProxyData resolveKeys(String[] keys, String domain) throws NamingServiceException {
-    BigInteger tokenID = tokenID(domain);
+    BigInteger tokenID = getTokenID(domain);
     ProxyData data =  proxyReaderContract.getProxyData(keys, tokenID);
     checkDomainOwnership(data, domain);
     return data;
@@ -158,7 +167,7 @@ public class UNS extends BaseNamingService {
     return proxyReaderContract.getOwner(tokenID);
   }
 
-  private BigInteger tokenID(String domain) throws NamingServiceException {
+  private BigInteger getTokenID(String domain) throws NamingServiceException {
     String hash = getNamehash(domain);
     return new BigInteger(hash.substring(2), 16);
   }

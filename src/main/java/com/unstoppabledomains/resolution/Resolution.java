@@ -69,8 +69,13 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public boolean isSupported(String domain) {
-        return services.values().stream().anyMatch(s -> s.isSupported(domain));
+    public boolean isSupported(String domain) throws NamingServiceException {
+        for (NamingService service: services.values()) {
+            if (service.isSupported(domain)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -220,10 +225,14 @@ public class Resolution implements DomainResolution {
     }
 
     private NamingService findService(String domain) throws NamingServiceException {
-        for (NamingService service : services.values()) {
-            if (Boolean.TRUE.equals(service.isSupported(domain))) return service;
+        String[] split = domain.split("\\.");
+        if (split.length == 0) {
+            throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
         }
-        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
+        if (split[split.length - 1].equals("zil")) {
+          return services.get(NamingServiceType.ZNS);
+        }
+        return services.get(NamingServiceType.UNS);
     }
 
     public static class Builder {
