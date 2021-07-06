@@ -109,7 +109,28 @@ public class ResolutionTest {
         isValid = resolution.isSupported("example.crypto");
         assertTrue(isValid);
 
-        isValid = resolution.isSupported("example.zil");
+        isValid = resolution.isSupported("example.coin");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.wallet");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.bitcoin");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.x");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.888");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.nft");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.dao");
+        assertTrue(isValid);
+
+        isValid = resolution.isSupported("example.blockchain");
         assertTrue(isValid);
     }
 
