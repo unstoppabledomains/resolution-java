@@ -35,15 +35,16 @@ public class ResolutionTest {
     @BeforeAll
     public static void init() {
         resolution = Resolution.builder()
-        .chainId(NamingServiceType.UNS, Network.RINKEBY)
         .chainId(NamingServiceType.ZNS, Network.MAINNET)
         .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
+        .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
         .build();
     }
 
     @Test
-    public void resolveRinkebyDomain() throws Exception {
+    public void resolveTestnetDomain() throws Exception {
         DomainResolution rinkebyResolution = Resolution.builder()
+            .providerUrl(NamingServiceType.ENS, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .build();
         String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
@@ -53,14 +54,17 @@ public class ResolutionTest {
 
     @Test
     public void testDifferentNetworks() throws Exception {
-        DomainResolution customUnsNetwork = Resolution.builder()
+        DomainResolution customNetworks = Resolution.builder()
             .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .chainId(NamingServiceType.ENS, Network.GOERLI)
             .chainId(NamingServiceType.ZNS, Network.KOVAN)
             .build();
 
-        Network customUnsChainId = customUnsNetwork.getNetwork(NamingServiceType.UNS);
-        Network customZnsChainId = customUnsNetwork.getNetwork(NamingServiceType.ZNS);
+        Network customUnsChainId = customNetworks.getNetwork(NamingServiceType.UNS);
+        Network customEnsChainId = customNetworks.getNetwork(NamingServiceType.ENS);
+        Network customZnsChainId = customNetworks.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.RINKEBY, customUnsChainId);
+        assertEquals(Network.GOERLI, customEnsChainId);
         assertEquals(Network.KOVAN, customZnsChainId);
     }
 
@@ -68,30 +72,39 @@ public class ResolutionTest {
     public void testDefaultNetworks() throws Exception {
         DomainResolution defaultSettings = new Resolution();
         Network defaultUnsChainId = defaultSettings.getNetwork(NamingServiceType.UNS);
+        Network defaultEnsChainId = defaultSettings.getNetwork(NamingServiceType.ENS);
         Network defaultZnsChainId = defaultSettings.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.MAINNET, defaultUnsChainId);
+        assertEquals(Network.MAINNET, defaultEnsChainId);
         assertEquals(Network.MAINNET, defaultZnsChainId);
     }
 
     @Test
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
-                .chainId(NamingServiceType.UNS, Network.RINKEBY)
-                .chainId(NamingServiceType.ZNS, Network.MAINNET)
-                .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
-                .build();
+        .chainId(NamingServiceType.UNS, Network.RINKEBY)
+        .chainId(NamingServiceType.ZNS, Network.MAINNET)
+        .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+        .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
+        .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+        .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilder.getOwner("testing.crypto"));
+        assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilder.getOwner("johnnyjumper.zil"));
     }
 
     @Test
     public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
         DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
-                .chainId(NamingServiceType.ZNS, Network.MAINNET)
-                .infura(NamingServiceType.UNS, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
-                .build();
+            .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+            .chainId(NamingServiceType.ZNS, Network.MAINNET)
+            .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
+            .infura(NamingServiceType.UNS, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
+            .build();
+
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilderWithInfura.getOwner("testing.crypto"));
+        assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
         assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilderWithInfura.getOwner("johnnyjumper.zil"));
     }
 
