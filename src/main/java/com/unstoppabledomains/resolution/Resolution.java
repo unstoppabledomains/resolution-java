@@ -12,22 +12,23 @@ import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
-import com.unstoppabledomains.resolution.naming.service.CNS;
 import com.unstoppabledomains.resolution.naming.service.ENS;
+import com.unstoppabledomains.resolution.naming.service.UNS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
 import com.unstoppabledomains.util.Utilities;
 
+import java.util.Arrays;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
-    private static final String CNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
+    private static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     private Map<NamingServiceType, NamingService> services;
@@ -45,12 +46,12 @@ public class Resolution implements DomainResolution {
 
     /**
      * Create resolution object with default config:
-     * <a href="https://infura.io">infura</a> blockchain provider for ENS and CNS and
+     * <a href="https://infura.io">infura</a> blockchain provider for ENS and UNS and
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
         IProvider provider = new DefaultProvider();
-        services = getServices(CNS_DEFAULT_URL, ENS_DEFAULT_URL, provider);
+        services = getServices(UNS_DEFAULT_URL, ENS_DEFAULT_URL, provider);
     }
 
     /**
@@ -71,8 +72,13 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public boolean isSupported(String domain) {
-        return services.values().stream().anyMatch(s -> s.isSupported(domain));
+    public boolean isSupported(String domain) throws NamingServiceException {
+        for (NamingService service: services.values()) {
+            if (service.isSupported(domain)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -222,20 +228,28 @@ public class Resolution implements DomainResolution {
         }
     }
 
-    private Map<NamingServiceType, NamingService> getServices(String CnsProviderUrl, String EnsProviderUrl, IProvider provider) {
+    private Map<NamingServiceType, NamingService> getServices(String UnsProviderUrl, String EnsProviderUrl, IProvider provider) {
         ENS w = new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl), provider);
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, CnsProviderUrl), provider));
+            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, UnsProviderUrl), provider));
             put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl), provider));
             put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL), provider));
         }};
     }
 
     private NamingService findService(String domain) throws NamingServiceException {
-        for (NamingService service : services.values()) {
-            if (Boolean.TRUE.equals(service.isSupported(domain))) return service;
+        String[] split = domain.split("\\.");
+        String[] ensTLDs = { "eth", "kred", "luxe", "xyz" };
+        if (split.length == 0) {
+            throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
         }
-        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
+        if (split[split.length - 1].equals("zil")) {
+            return services.get(NamingServiceType.ZNS);
+        }
+        if (Arrays.asList(ensTLDs).contains(split[split.length - 1])) {
+            return services.get(NamingServiceType.ENS);
+        }
+        return services.get(NamingServiceType.UNS);
     }
 
     public static class Builder {
@@ -246,9 +260,9 @@ public class Resolution implements DomainResolution {
 
         private Builder() {
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.CNS, new NSConfig(Network.MAINNET, CNS_DEFAULT_URL));
-                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL));
+                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL));
                 put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
+                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL));
             }};
             provider = new DefaultProvider();
         }
@@ -331,9 +345,9 @@ public class Resolution implements DomainResolution {
          */
         public Resolution build() {
             Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.CNS, new CNS(serviceConfigs.get(NamingServiceType.CNS), provider));
-                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
+                put(NamingServiceType.UNS, new UNS(serviceConfigs.get(NamingServiceType.UNS), provider));
                 put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
+                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
             }};
             return new Resolution(services);
         }

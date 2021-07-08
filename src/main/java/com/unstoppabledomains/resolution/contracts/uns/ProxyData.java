@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution.contracts.cns;
+package com.unstoppabledomains.resolution.contracts.uns;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

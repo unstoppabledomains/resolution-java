@@ -16,8 +16,9 @@ public interface DomainResolution {
      *
      * @param domain domain name to be checked
      * @return true if domain name is valid
+     * @throws NamingServiceException when it fails to make network call
      */
-    boolean isSupported(String domain);
+    boolean isSupported(String domain) throws NamingServiceException;
 
     /**
      * Returns configured network id
