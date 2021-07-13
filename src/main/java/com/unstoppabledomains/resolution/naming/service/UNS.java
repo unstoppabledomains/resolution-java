@@ -10,6 +10,7 @@ import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyReader;
+import com.unstoppabledomains.resolution.contracts.uns.Registry;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
@@ -104,6 +105,33 @@ public class UNS extends BaseNamingService {
       return tokenURI;
     } catch (Exception e) {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "UNS"), e);
+    }
+  }
+
+  @Override
+  public String getDomainName(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String registryAddress = this.getRegistryAddress(tokenID);
+      Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
+      String domainName = registryContract.getDomainName(tokenID);
+      if (domainName == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"));
+      }
+      return domainName;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"), e);
+    }
+  }
+
+  private String getRegistryAddress(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String tokenURI = proxyReaderContract.registryOf(tokenID);
+      if (tokenURI == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"));
+      }
+      return tokenURI;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"), e);
     }
   }
 

@@ -211,12 +211,11 @@ public class Resolution implements DomainResolution {
     public String unhash(String hash, NamingServiceType serviceType) throws NamingServiceException {
         NamingService service = services.get(serviceType);
         BigInteger tokenId = Utilities.namehashToTokenID(hash);
-        String tokenURI = service.getTokenUri(tokenId);
-        TokenUriMetadata metadata = getMetadataFromTokenURI(tokenURI);
-        if (!service.getNamehash(metadata.getName()).equals(hash)) {
+        String domainName = service.getDomainName(tokenId);
+        if (!service.getNamehash(domainName).equals(hash)) {
             throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "unhash"));
         }
-        return metadata.getName();
+        return domainName;
     }
 
     private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {

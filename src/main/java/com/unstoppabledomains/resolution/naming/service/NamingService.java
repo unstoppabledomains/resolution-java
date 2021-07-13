@@ -25,4 +25,6 @@ public interface NamingService {
     Network getNetwork();
 
     String getTokenUri(BigInteger tokenID) throws NamingServiceException;
+
+    String getDomainName(BigInteger tokenID) throws NamingServiceException;
 }
