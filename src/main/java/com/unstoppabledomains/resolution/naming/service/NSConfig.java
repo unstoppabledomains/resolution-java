@@ -9,4 +9,5 @@ import lombok.Data;
 public class NSConfig {
     private Network chainId;
     private String blockchainProviderUrl;
+    private String contractAddress;
 }

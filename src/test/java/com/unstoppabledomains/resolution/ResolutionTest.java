@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unstoppabledomains.TestUtils;
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -37,6 +38,7 @@ public class ResolutionTest {
         resolution = Resolution.builder()
         .chainId(NamingServiceType.ZNS, Network.MAINNET)
         .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
+        .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
         .build();
     }
@@ -46,6 +48,7 @@ public class ResolutionTest {
         DomainResolution rinkebyResolution = Resolution.builder()
             .providerUrl(NamingServiceType.ENS, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .build();
         String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
         assertEquals("0x1C8b9B78e3085866521FE206fa4c1a67F49f153A", ethAddress);
@@ -87,6 +90,7 @@ public class ResolutionTest {
         .chainId(NamingServiceType.ENS, Network.ROPSTEN)
         .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
         .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+        .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilder.getOwner("testing.crypto"));
@@ -101,6 +105,7 @@ public class ResolutionTest {
             .chainId(NamingServiceType.ZNS, Network.MAINNET)
             .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
             .infura(NamingServiceType.UNS, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
+            .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilderWithInfura.getOwner("testing.crypto"));

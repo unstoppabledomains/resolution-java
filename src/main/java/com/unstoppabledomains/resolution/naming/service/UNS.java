@@ -23,14 +23,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
   
   public UNS(NSConfig config, IProvider provider) {
     super(config, provider);
-    String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
+    String proxyReaderAddress = config.getContractAddress();
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
   }
 

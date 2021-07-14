@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
@@ -30,6 +31,9 @@ public class Resolution implements DomainResolution {
     private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     private static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
+
+    private static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+    private static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
     private Map<NamingServiceType, NamingService> services;
 
@@ -228,11 +232,11 @@ public class Resolution implements DomainResolution {
     }
 
     private Map<NamingServiceType, NamingService> getServices(String UnsProviderUrl, String EnsProviderUrl, IProvider provider) {
-        ENS w = new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl), provider);
+        String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, UnsProviderUrl), provider));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl), provider));
-            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL), provider));
+            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, UnsProviderUrl, unsProxyAddress), provider));
+            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         }};
     }
 
@@ -258,10 +262,11 @@ public class Resolution implements DomainResolution {
         private IProvider provider;
 
         private Builder() {
+            String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL));
-                put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
-                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL));
+                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
+                put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
+                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
             }};
             provider = new DefaultProvider();
         }
@@ -290,6 +295,17 @@ public class Resolution implements DomainResolution {
             }
             nsConfig.setBlockchainProviderUrl(providerUrl);
             nsConfig.setChainId(chainId);
+            return this;
+        }
+
+        /**
+         * @param nsType      the naming service for which config is applied
+         * @param providerUrl blockchain provider URL
+         * @return builder object to allow chaining
+         */
+        public Builder contractAddress(NamingServiceType nsType, String contractAddress) {
+            NSConfig nsConfig = serviceConfigs.get(nsType);
+            nsConfig.setContractAddress(contractAddress);
             return this;
         }
 

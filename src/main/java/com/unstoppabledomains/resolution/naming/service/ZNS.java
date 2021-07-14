@@ -23,12 +23,12 @@ import java.util.Optional;
 import java.math.BigInteger;
 
 public class ZNS extends BaseNamingService {
-    static final String REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793"; // eth style zil registry
-                                                                                         // address
     static final String RECORDS_KEY = "records";
+    private String contractAddress;
 
     public ZNS(NSConfig nsConfig, IProvider provider) {
         super(nsConfig, provider);
+        contractAddress = nsConfig.getContractAddress();
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ZNS extends BaseNamingService {
         String namehash = getNamehash(domain);
         String[] keys = { namehash };
         try {
-          JsonObject substate = fetchSubState(REGISTRY_ADDRESS, RECORDS_KEY, keys);
+          JsonObject substate = fetchSubState(contractAddress, RECORDS_KEY, keys);
           JsonObject records = substate.getAsJsonObject(RECORDS_KEY);
           JsonObject domainSpecific = records.getAsJsonObject(namehash);
           JsonArray arguments = domainSpecific.getAsJsonArray("arguments");
