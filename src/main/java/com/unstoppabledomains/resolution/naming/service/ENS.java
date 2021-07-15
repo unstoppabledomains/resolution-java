@@ -128,8 +128,7 @@ public class ENS extends BaseNamingService {
     return Namehash.nameHash(domain);
   }
 
-  @Override
-  public String getDomainName(BigInteger tokenId) throws NamingServiceException {
-    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName" ,"ENS"));
+  public String getDomainName(BigInteger tokenID) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", "ENS"));
   }
 }
