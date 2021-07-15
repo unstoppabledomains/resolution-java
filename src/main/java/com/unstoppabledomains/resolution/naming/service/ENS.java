@@ -21,13 +21,11 @@ import java.util.List;
 
 public class ENS extends BaseNamingService {
 
-  private static final String REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-
   private final Registry registryContract;
 
   public ENS(NSConfig config, IProvider provider) {
     super(config, provider);
-    this.registryContract = (Registry) buildContract(REGISTRY_ADDRESS, EnsContractType.Registry, provider);
+    this.registryContract = (Registry) buildContract(config.getContractAddress(), EnsContractType.Registry, provider);
   }
 
   @Override
@@ -130,7 +128,6 @@ public class ENS extends BaseNamingService {
     return Namehash.nameHash(domain);
   }
 
-  @Override
   public String getDomainName(BigInteger tokenID) throws NamingServiceException {
     throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", "ENS"));
   }

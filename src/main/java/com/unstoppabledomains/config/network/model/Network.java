@@ -10,7 +10,8 @@ public enum Network {
     ROPSTEN(3, "ropsten"),
     RINKEBY(4, "rinkeby"),
     GOERLI(5, "goerli"),
-    KOVAN(42, "kovan");
+    KOVAN(42, "kovan"),
+    ZIL_TESTNET(333, "testnet");
 
     private final int code;
     private final String name;
