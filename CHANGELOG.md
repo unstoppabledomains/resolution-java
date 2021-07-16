@@ -1,3 +1,10 @@
+## 3.0.0
+* Introduced DomainResolution#tokenURI - Retrieves the tokenURI from the registry smart contract.
+* Introduced DomainResolution#tokenURIMetadata - Retrieves the data from the endpoint provided by tokenURI from the registry smart contract.
+* Introduced DomainResolution#unhash - Retrieves the domain name from token metadata that is provided by tokenURI from the registry smart contract.
+* Returned ENS support
+* Rename CNS to UNS
+* Support new tld's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
 ## 2.0.0
 * remove ENS support
 
