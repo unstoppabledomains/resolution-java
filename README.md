@@ -164,7 +164,7 @@ public enum NSExceptionCode {
 
 ## Internal network config
 
-Internal [network config](src/main/resources/com/unstoppabledomains/config/network/network-config.json)
+Internal [network config](src/main/resources/com/unstoppabledomains/config/network/uns-config.json)
 can be updated by running the `gradle pullNetworkConfig` task and committing the updated file.
 
 ## Versioning & release process

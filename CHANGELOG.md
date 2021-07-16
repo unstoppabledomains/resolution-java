@@ -5,6 +5,7 @@
 * Returned ENS support
 * Rename CNS to UNS
 * Support new tld's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
+* Update the network config to uns-config
 ## 2.0.0
 * remove ENS support
 

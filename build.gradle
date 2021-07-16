@@ -120,6 +120,6 @@ task getVersion {
 }
 
 task pullNetworkConfig(type: Download) {
-    src 'https://raw.githubusercontent.com/unstoppabledomains/dot-crypto/master/src/network-config/network-config.json'
+    src 'https://raw.githubusercontent.com/unstoppabledomains/uns/main/uns-config.json'
     dest 'src/main/resources/com/unstoppabledomains/config/network'
 }
