@@ -115,9 +115,8 @@ public interface DomainResolution {
      * @throws NamingServiceException if domain is not found or invalid
      * @deprecated this method is deprecated since 3.0.0.
      * <p> Use {@link DomainResolution#getTokenURI(String)} instead.
-    @Deprecated
-
      */
+    @Deprecated
     String tokenURI(String domain) throws NamingServiceException;
     
     /**
@@ -137,8 +136,8 @@ public interface DomainResolution {
      * @throws NamingServiceException if domain is not found or invalid
      * @deprecated this method is deprecated since 3.0.0.
      * <p> Use {@link DomainResolution#getTokenURIMetadata(String)} instead.
-    @Deprecated
      */
+    @Deprecated
     TokenUriMetadata tokenURIMetadata(String domain) throws NamingServiceException;
 
     /**
