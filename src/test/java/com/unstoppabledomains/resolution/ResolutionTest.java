@@ -248,29 +248,6 @@ public class ResolutionTest {
     }
 
     @Test
-    public void usdtTest() throws Exception {
-        String domain = "testing.crypto";
-        String erc20 = resolution.getUsdt(domain, TickerVersion.ERC20);
-        assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", erc20);
-        String tron = resolution.getUsdt(domain, TickerVersion.TRON);
-        assertEquals("TRMJfXXbmwb3WFSRKbeRgKsYoD8o1a9xxV", tron);
-        String omni = resolution.getUsdt(domain, TickerVersion.OMNI);
-        assertEquals("1KvzMF2Vjy14d6JGY7dG7vjT5kfpmzSQXM", omni);
-        String eos = resolution.getUsdt(domain, TickerVersion.EOS);
-        assertEquals("karaarishmen", eos);
-
-        TestUtils.expectError(
-            () -> resolution.getUsdt("unregistered.crypto", TickerVersion.ERC20),
-            NSExceptionCode.UnregisteredDomain
-        );
-        
-        TestUtils.expectError(
-            () -> resolution.getUsdt("udtestdev--awefawef.crypto", TickerVersion.TRON),
-            NSExceptionCode.RecordNotFound
-        );
-    }
-
-    @Test
     public void ownerFailTest() throws Exception {
         TestUtils.expectError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getOwner("unregistered.wallet"), NSExceptionCode.UnregisteredDomain);

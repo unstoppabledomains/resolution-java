@@ -8,6 +8,14 @@
 * Constructor is changed. If you used cns configurations rename "cns" it to "uns" instead.
 * Support new tld's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
 * Update the network config to uns-config
+* Removed deprecated constructor, to build the instance use Resolution.builder() instead
+* Remove deprecated Resolution#getUsdt, use Resolution#getMultiChainAddress() instead
+* Remove deprecated Resolution#addr, use Resolution#getAddress() instead
+* Remove deprecated Resolution#namehash, use Resolution#getNamehash() instead
+* Remove deprecated Resolution#email, use Resolution#getEmail() instead
+* Remove deprecated Resolution#ipfsHash, use Resolution#getIpfsHash() instead
+* Remove deprecated Resolution#owner, use Resolution#getOwner() instead
+
 ## 2.0.0
 * remove ENS support
 

@@ -58,19 +58,6 @@ public class Resolution implements DomainResolution {
         services = getServices(UNS_DEFAULT_URL, ENS_DEFAULT_URL, provider);
     }
 
-    /**
-     * Resolution object
-     *
-     * @param blockchainProviderUrl url for the public Ethereum provider
-     * @deprecated since 1.8.0
-     * <p> Use {@link Resolution#builder()} instead
-     */
-    @Deprecated
-    public Resolution(String blockchainProviderUrl) {
-        IProvider provider = new DefaultProvider();
-        services = getServices(blockchainProviderUrl, blockchainProviderUrl, provider);
-    }
-
     private Resolution(Map<NamingServiceType, NamingService> services) {
         this.services = services;
     }
@@ -123,17 +110,6 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public String getUsdt(String domain, TickerVersion version) throws NamingServiceException {
-        NamingService service = findService(domain);
-        if (service.getType() == NamingServiceType.ENS) {
-            throw new NamingServiceException(NSExceptionCode.NotImplemented,
-                new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
-        }
-        String recordKey = "crypto.USDT.version." + version.toString() + ".address";
-        return service.getRecord(domain, recordKey);
-    }
-
-    @Override
     public String getNamehash(String domain) throws NamingServiceException {
         NamingService service = findService(domain);
         return service.getNamehash(domain);
@@ -165,31 +141,6 @@ public class Resolution implements DomainResolution {
         return service.getDns(domain, types);
     }
 
-    @Override
-    public String addr(String domain, String ticker) throws NamingServiceException {
-        return getAddress(domain, ticker);
-    }
-
-    @Override
-    public String namehash(String domain) throws NamingServiceException {
-        return getNamehash(domain);
-    }
-
-    @Override
-    public String ipfsHash(String domain) throws NamingServiceException {
-        return getIpfsHash(domain);
-    }
-
-    @Override
-    public String email(String domain) throws NamingServiceException {
-        return getEmail(domain);
-    }
-
-    @Override
-    public String owner(String domain) throws NamingServiceException {
-        return getOwner(domain);
-    }
-    
     @Override
     public String tokenURI(String domain) throws NamingServiceException {
         try {
