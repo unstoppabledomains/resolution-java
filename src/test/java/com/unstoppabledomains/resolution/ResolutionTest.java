@@ -189,7 +189,7 @@ public class ResolutionTest {
     }
 
     @Test
-    public void addr() throws Exception {
+    public void getAddress() throws Exception {
         String addr = resolution.getAddress("udtestdev--awefawef.crypto", "eth");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", addr);
 
@@ -221,7 +221,7 @@ public class ResolutionTest {
     }
 
     @Test
-    public void ipfsHash() throws NamingServiceException {
+    public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
         assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
 
@@ -230,13 +230,13 @@ public class ResolutionTest {
     }
 
     @Test
-    public void emailTest() throws NamingServiceException {
+    public void getEmailTest() throws NamingServiceException {
         String email = resolution.getEmail("testing.crypto");
         assertEquals("testing@example.com", email);
     }
 
     @Test
-    public void ownerTest() throws NamingServiceException {
+    public void getOwnerTest() throws NamingServiceException {
         String owner = resolution.getOwner("testing.crypto");
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", owner);
 
@@ -248,7 +248,7 @@ public class ResolutionTest {
     }
 
     @Test
-    public void ownerFailTest() throws Exception {
+    public void getOwnerFailTest() throws Exception {
         TestUtils.expectError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getOwner("unregistered.wallet"), NSExceptionCode.UnregisteredDomain);
     }
