@@ -5,9 +5,9 @@
 * Resolution#isSupportedDomain is now making an async call to the proxy reader contract for validation on UNS domains. ZNS and ENS are untouched
 * Returned ENS support
 * Removed hard-coded contracts, allowed setting custom contracts in Resolution.Builder
-* Constructor is changed. If you used cns configurations rename "cns" it to "uns" instead.
+* Removed CNS in favor of UNS. ( Everything stays the same, just any custom configurations should be pointed towards NamingServiceType.UNS instead of NamingServiceType.CNS )
 * Support new tld's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
-* Update the network config to uns-config
+* Update the default contracts addresses to the latest version
 * Removed deprecated constructor, to build the instance use Resolution.builder() instead
 * Remove deprecated Resolution#getUsdt, use Resolution#getMultiChainAddress() instead
 * Remove deprecated Resolution#addr, use Resolution#getAddress() instead
