@@ -143,6 +143,11 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String tokenURI(String domain) throws NamingServiceException {
+      return getTokenURI(domain);
+    }
+
+    @Override
+    public String getTokenURI(String domain) throws NamingServiceException {
         try {
             NamingService service = findService(domain);
             String namehash = service.getNamehash(domain);
@@ -158,6 +163,11 @@ public class Resolution implements DomainResolution {
 
     @Override
     public TokenUriMetadata tokenURIMetadata(String domain) throws NamingServiceException {
+        return getTokenURIMetadata(domain);
+    }
+
+    @Override
+    public TokenUriMetadata getTokenURIMetadata(String domain) throws NamingServiceException {
         String tokenURI = tokenURI(domain);
         return getMetadataFromTokenURI(tokenURI);
     }
