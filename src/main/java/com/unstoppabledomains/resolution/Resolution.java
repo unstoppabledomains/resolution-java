@@ -260,8 +260,8 @@ public class Resolution implements DomainResolution {
         }
 
         /**
-         * @param nsType      the naming service for which config is applied
-         * @param providerUrl blockchain provider URL
+         * @param nsType            the naming service for which config is applied
+         * @param contractAddress   contract Address
          * @return builder object to allow chaining
          */
         public Builder contractAddress(NamingServiceType nsType, String contractAddress) {
