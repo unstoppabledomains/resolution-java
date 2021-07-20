@@ -2,8 +2,10 @@
 * Introduced DomainResolution#tokenURI - Retrieves the tokenURI from the registry smart contract.
 * Introduced DomainResolution#tokenURIMetadata - Retrieves the data from the endpoint provided by tokenURI from the registry smart contract.
 * Introduced DomainResolution#unhash - Retrieves the domain name from token metadata that is provided by tokenURI from the registry smart contract.
+* Resolution#isSupportedDomain is now making an async call to the proxy reader contract for validation on UNS domains. ZNS and ENS are untouched
 * Returned ENS support
-* Rename CNS to UNS
+* Removed hard-coded contracts, allowed setting custom contracts in Resolution.Builder
+* Constructor is changed. If you used cns configurations rename "cns" it to "uns" instead.
 * Support new tld's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
 * Update the network config to uns-config
 ## 2.0.0
