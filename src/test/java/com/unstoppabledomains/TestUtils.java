@@ -10,8 +10,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestUtils {
 
-    public static final String TESTING_CNS_PROVIDER_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
-    public static final String TESTING_INFURA_CNS_PROJECT_ID = "e0c0cb9d12c440a29379df066de587e6";
+    public static final String TESTING_INFURA_UNS_PROJECT_ID = "e0c0cb9d12c440a29379df066de587e6";
+    public static final String TESTING_INFURA_ENS_PROJECT_ID = "d423cf2499584d7fbe171e33b42cfbee";
+    public static final String TESTING_UNS_PROVIDER_URL = "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+    public static final String TESTING_ENS_PROVIDER_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
 
     public static void expectError(Callable<String> f, NSExceptionCode code) throws Exception {
         try {

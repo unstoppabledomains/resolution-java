@@ -8,8 +8,9 @@ import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
-import com.unstoppabledomains.resolution.contracts.cns.ProxyData;
-import com.unstoppabledomains.resolution.contracts.cns.ProxyReader;
+import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
+import com.unstoppabledomains.resolution.contracts.uns.ProxyReader;
+import com.unstoppabledomains.resolution.contracts.uns.Registry;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
@@ -23,23 +24,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CNS extends BaseNamingService {
+public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
   
-  public CNS(NSConfig config, IProvider provider) {
+  public UNS(NSConfig config, IProvider provider) {
     super(config, provider);
-    String proxyReaderAddress = NetworkConfigLoader.getContractAddress(config.getChainId(), "ProxyReader");
+    String proxyReaderAddress = config.getContractAddress();
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
   }
 
   @Override
   public NamingServiceType getType() {
-    return NamingServiceType.CNS;
+    return NamingServiceType.UNS;
   }
 
-  public Boolean isSupported(String domain) {
+  public Boolean isSupported(String domain) throws NamingServiceException {
     String[] split = domain.split("\\.");
-    return (split.length != 0 && split[split.length - 1].equals("crypto"));
+    if (split.length == 0 || split[split.length - 1].equals("zil")) {
+      return false;
+    }
+    BigInteger tokenID;
+    try {
+      tokenID = getTokenID(split[split.length - 1]);
+    } catch (NamingServiceException e) {
+      return false;
+    }
+    return proxyReaderContract.getExists(tokenID);
   }
 
   @Override
@@ -58,16 +68,16 @@ public class CNS extends BaseNamingService {
 
   public  String getOwner(String domain) throws NamingServiceException {
     try {
-      BigInteger tokenID = tokenID(domain);
+      BigInteger tokenID = getTokenID(domain);
       String owner = owner(tokenID);
       if (Utilities.isEmptyResponse(owner)) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, 
-          new NSExceptionParams("d|n", domain, "CNS"));
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
+          new NSExceptionParams("d|n", domain, "UNS"));
       }
       return owner;
     } catch (Exception e) {
       throw configureNamingServiceException(e,
-          new NSExceptionParams("d|n", domain, "CNS"));
+          new NSExceptionParams("d|n", domain, "UNS"));
     }
   }
 
@@ -82,6 +92,46 @@ public class CNS extends BaseNamingService {
       rawData.put(keys.get(i), values.get(i));
     }
     return util.toList(rawData);
+  }
+
+  @Override
+  public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String tokenURI = proxyReaderContract.getTokenUri(tokenID);
+      if (tokenURI == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "UNS"));
+      }
+      return tokenURI;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "UNS"), e);
+    }
+  }
+
+  @Override
+  public String getDomainName(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String registryAddress = this.getRegistryAddress(tokenID);
+      Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
+      String domainName = registryContract.getDomainName(tokenID);
+      if (domainName == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"));
+      }
+      return domainName;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"), e);
+    }
+  }
+
+  private String getRegistryAddress(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String tokenURI = proxyReaderContract.registryOf(tokenID);
+      if (tokenURI == null) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"));
+      }
+      return tokenURI;
+    } catch (Exception e) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"), e);
+    }
   }
 
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
@@ -134,7 +184,7 @@ public class CNS extends BaseNamingService {
   }
 
   private ProxyData resolveKeys(String[] keys, String domain) throws NamingServiceException {
-    BigInteger tokenID = tokenID(domain);
+    BigInteger tokenID = getTokenID(domain);
     ProxyData data =  proxyReaderContract.getProxyData(keys, tokenID);
     checkDomainOwnership(data, domain);
     return data;
@@ -145,7 +195,7 @@ public class CNS extends BaseNamingService {
     return proxyReaderContract.getOwner(tokenID);
   }
 
-  private BigInteger tokenID(String domain) throws NamingServiceException {
+  private BigInteger getTokenID(String domain) throws NamingServiceException {
     String hash = getNamehash(domain);
     return new BigInteger(hash.substring(2), 16);
   }

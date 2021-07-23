@@ -1,5 +1,6 @@
 package com.unstoppabledomains.resolution.naming.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.unstoppabledomains.config.network.model.Network;
@@ -11,7 +12,7 @@ import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 public interface NamingService {
     NamingServiceType getType();
 
-    Boolean isSupported(String domain);
+    Boolean isSupported(String domain) throws NamingServiceException;
 
     String getRecord(String domain, String recordKey) throws NamingServiceException;
 
@@ -22,4 +23,8 @@ public interface NamingService {
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
     
     Network getNetwork();
+
+    String getTokenUri(BigInteger tokenID) throws NamingServiceException;
+
+    String getDomainName(BigInteger tokenID) throws NamingServiceException;
 }

@@ -20,14 +20,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.math.BigInteger;
 
 public class ZNS extends BaseNamingService {
-    static final String REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793"; // eth style zil registry
-                                                                                         // address
     static final String RECORDS_KEY = "records";
+    private String contractAddress;
 
     public ZNS(NSConfig nsConfig, IProvider provider) {
         super(nsConfig, provider);
+        contractAddress = nsConfig.getContractAddress();
     }
 
     @Override
@@ -49,11 +50,8 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
-    public Boolean isSupported(String domain) {
-        if (domain.equals("zil")) {
-            return true;
-        }
-        return StringUtils.endsWith(domain, ".zil");
+    public Boolean isSupported(String domain) throws NamingServiceException {
+        return (domain.equals("zil") || StringUtils.endsWith(domain, ".zil"));
     }
 
     @Override
@@ -81,6 +79,16 @@ public class ZNS extends BaseNamingService {
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }
+    }
+
+    @Override
+    public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", "ZNS"));
+    }
+
+    @Override
+    public String getDomainName(BigInteger tokenID) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", "ZNS"));
     }
 
     private String getIpfsHash(JsonObject records) {
@@ -121,7 +129,7 @@ public class ZNS extends BaseNamingService {
         String namehash = getNamehash(domain);
         String[] keys = { namehash };
         try {
-          JsonObject substate = fetchSubState(REGISTRY_ADDRESS, RECORDS_KEY, keys);
+          JsonObject substate = fetchSubState(contractAddress, RECORDS_KEY, keys);
           JsonObject records = substate.getAsJsonObject(RECORDS_KEY);
           JsonObject domainSpecific = records.getAsJsonObject(namehash);
           JsonArray arguments = domainSpecific.getAsJsonArray("arguments");

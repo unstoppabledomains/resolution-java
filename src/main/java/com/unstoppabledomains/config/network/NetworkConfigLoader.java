@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public abstract class NetworkConfigLoader {
 
-    private static final String CONFIG_FILE = "network-config.json";
+    private static final String CONFIG_FILE = "uns-config.json";
 
     private static final NetworkConfig NETWORK_CONFIG = initNetworkConfig();
 

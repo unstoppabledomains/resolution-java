@@ -2,28 +2,38 @@ package com.unstoppabledomains.resolution;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
+import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
-import com.unstoppabledomains.resolution.naming.service.CNS;
+import com.unstoppabledomains.resolution.naming.service.ENS;
+import com.unstoppabledomains.resolution.naming.service.UNS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
+import com.unstoppabledomains.util.Utilities;
 
+import java.util.Arrays;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
-    private static final String CNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+    private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
+    private static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
+
+    private static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
+    private static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
     private Map<NamingServiceType, NamingService> services;
 
@@ -40,25 +50,12 @@ public class Resolution implements DomainResolution {
 
     /**
      * Create resolution object with default config:
-     * <a href="https://infura.io">infura</a> blockchain provider for CNS and
+     * <a href="https://infura.io">infura</a> blockchain provider for ENS and UNS and
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
         IProvider provider = new DefaultProvider();
-        services = getServices(CNS_DEFAULT_URL, provider);
-    }
-
-    /**
-     * Resolution object
-     *
-     * @param blockchainProviderUrl url for the public Ethereum provider
-     * @deprecated since 1.8.0
-     * <p> Use {@link Resolution#builder()} instead
-     */
-    @Deprecated
-    public Resolution(String blockchainProviderUrl) {
-        IProvider provider = new DefaultProvider();
-        services = getServices(blockchainProviderUrl, provider);
+        services = getServices(provider);
     }
 
     private Resolution(Map<NamingServiceType, NamingService> services) {
@@ -66,8 +63,13 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public boolean isSupported(String domain) {
-        return services.values().stream().anyMatch(s -> s.isSupported(domain));
+    public boolean isSupported(String domain) throws NamingServiceException {
+        for (NamingService service: services.values()) {
+            if (service.isSupported(domain)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -99,14 +101,11 @@ public class Resolution implements DomainResolution {
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
         NamingService service = findService(domain);
+        if (service.getType() == NamingServiceType.ENS) {
+            throw new NamingServiceException(NSExceptionCode.NotImplemented,
+                new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
+        }
         String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
-        return service.getRecord(domain, recordKey);
-    }
-
-    @Override
-    public String getUsdt(String domain, TickerVersion version) throws NamingServiceException {
-        NamingService service = findService(domain);
-        String recordKey = "crypto.USDT.version." + version.toString() + ".address";
         return service.getRecord(domain, recordKey);
     }
 
@@ -143,42 +142,68 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public String addr(String domain, String ticker) throws NamingServiceException {
-        return getAddress(domain, ticker);
+    public String getTokenURI(String domain) throws NamingServiceException {
+        try {
+            NamingService service = findService(domain);
+            String namehash = service.getNamehash(domain);
+            BigInteger tokenId = Utilities.namehashToTokenID(namehash);
+            return service.getTokenUri(tokenId);
+        } catch (NamingServiceException e) {
+            if (e.getCode() == NSExceptionCode.UnregisteredDomain) {
+                throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|m", domain, "tokenURI"), e);
+            }
+            throw e;
+        }
     }
 
     @Override
-    public String namehash(String domain) throws NamingServiceException {
-        return getNamehash(domain);
+    public TokenUriMetadata getTokenURIMetadata(String domain) throws NamingServiceException {
+        String tokenURI = getTokenURI(domain);
+        return getMetadataFromTokenURI(tokenURI);
     }
 
     @Override
-    public String ipfsHash(String domain) throws NamingServiceException {
-        return getIpfsHash(domain);
+    public String unhash(String hash, NamingServiceType serviceType) throws NamingServiceException {
+        NamingService service = services.get(serviceType);
+        BigInteger tokenId = Utilities.namehashToTokenID(hash);
+        String domainName = service.getDomainName(tokenId);
+        if (!service.getNamehash(domainName).equals(hash)) {
+            throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "unhash"));
+        }
+        return domainName;
     }
 
-    @Override
-    public String email(String domain) throws NamingServiceException {
-        return getEmail(domain);
+    private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {
+        try {
+            JsonProvider provider = new JsonProvider();
+            return provider.request(tokenURI, TokenUriMetadata.class);
+        } catch (Exception e) {
+            throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "getMetadataFromTokenURI"), e);
+        }
     }
 
-    @Override
-    public String owner(String domain) throws NamingServiceException {
-        return getOwner(domain);
-    }
-
-    private Map<NamingServiceType, NamingService> getServices(String CnsProviderUrl, IProvider provider) {
+    private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
+        String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.CNS, new CNS(new NSConfig(Network.MAINNET, CnsProviderUrl), provider));
-            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL), provider));
+            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress), provider));
+            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         }};
     }
 
     private NamingService findService(String domain) throws NamingServiceException {
-        for (NamingService service : services.values()) {
-            if (Boolean.TRUE.equals(service.isSupported(domain))) return service;
+        String[] split = domain.split("\\.");
+        String[] ensTLDs = { "eth", "kred", "luxe", "xyz" };
+        if (split.length == 0) {
+            throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
         }
-        throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
+        if (split[split.length - 1].equals("zil")) {
+            return services.get(NamingServiceType.ZNS);
+        }
+        if (Arrays.asList(ensTLDs).contains(split[split.length - 1])) {
+            return services.get(NamingServiceType.ENS);
+        }
+        return services.get(NamingServiceType.UNS);
     }
 
     public static class Builder {
@@ -188,9 +213,11 @@ public class Resolution implements DomainResolution {
         private IProvider provider;
 
         private Builder() {
+            String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.CNS, new NSConfig(Network.MAINNET, CNS_DEFAULT_URL));
-                put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL));
+                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
+                put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
+                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
             }};
             provider = new DefaultProvider();
         }
@@ -219,6 +246,17 @@ public class Resolution implements DomainResolution {
             }
             nsConfig.setBlockchainProviderUrl(providerUrl);
             nsConfig.setChainId(chainId);
+            return this;
+        }
+
+        /**
+         * @param nsType            the naming service for which config is applied
+         * @param contractAddress   address of `ProxyReader` contract for UNS | address of `Registry` contract for ZNS or ENS
+         * @return builder object to allow chaining
+         */
+        public Builder contractAddress(NamingServiceType nsType, String contractAddress) {
+            NSConfig nsConfig = serviceConfigs.get(nsType);
+            nsConfig.setContractAddress(contractAddress);
             return this;
         }
 
@@ -273,8 +311,9 @@ public class Resolution implements DomainResolution {
          */
         public Resolution build() {
             Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.CNS, new CNS(serviceConfigs.get(NamingServiceType.CNS), provider));
+                put(NamingServiceType.UNS, new UNS(serviceConfigs.get(NamingServiceType.UNS), provider));
                 put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
+                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
             }};
             return new Resolution(services);
         }
@@ -285,7 +324,7 @@ public class Resolution implements DomainResolution {
 
         /**
          * Makes a call via provider to the blockchainProviderUrl and returns the networkId
-         * @param blockchainProviderUrl
+         * @param blockchainProviderUrl RPC endpoint url
          * @return Network object or null if couldn't retrive the network
          */
         private Network getNetworkId(String blockchainProviderUrl) {

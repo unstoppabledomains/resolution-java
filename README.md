@@ -12,10 +12,24 @@ Resolution-Java is primarily built and maintained by [Unstoppable Domains](https
 
 Resoultion-Java supports decentralized domains across three zones:
 
-- Crypto Name Service (CNS)
+- Unstoppable Name Service (UNS)
   - `.crypto`
+  - `.nft`
+  - `.blockchain`
+  - `.bitcoin`
+  - `.coin`
+  - `.wallet`
+  - `.888`
+  - `.dao`
+  - `.x`
+  - `...`
 - Zilliqa Name Service (ZNS)
   - `.zil`
+- Ethereum Name Service (ENS)
+  - `.eth`
+  - `.kred`
+  - `.xyz`
+  - `.luxe`
 
 # Releases
 
@@ -30,7 +44,7 @@ Java 8+ version is required to use this library.
 ### Default Ethereum Providers
 
 resolution-java library provides zero-configuration experience by using built-in production-ready Infura endpoint by default.
-Default Ethereum provider is free to use without restrictions and rate-limits for CNS (.crypto domains) resolution.
+Default Ethereum provider is free to use without restrictions and rate-limits for UNS resolution. To resolve ENS domains on production it's recommended to change Ethereum provider.
 
 ### Custom Ethereum provider configuration
 
@@ -43,15 +57,17 @@ DomainResolution resolution = new Resolution();
 // providerUrl overwrites chainId by making net_version JSON RPC call to the provider
 // in the following example blockchain would be set to the rinkeby testnet
 DomainResolution resolution = Resolution.builder()
-                .providerUrl(NamingServiceType.CNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+                .providerUrl(NamingServiceType.ENS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+                .build();
+                .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
                 .build();
 
 // Infura config:
 
 DomainResolution resolution = Resolution.builder()
-                .chainId(NamingServiceType.CNS, Network.ROPSTEN)
-                .infura(NamingServiceType.CNS, <ProjectId>)
-                .infura(NamingServiceType.CNS, Network.MAINNET, <ProjectId>)
+                .chainId(NamingServiceType.ENS, Network.ROPSTEN)
+                .infura(NamingServiceType.ENS, <ProjectId>)
+                .infura(NamingServiceType.UNS, Network.MAINNET, <ProjectId>)
                 .build();
 
 // Custom provider config:
@@ -157,7 +173,7 @@ public enum NSExceptionCode {
 
 ## Internal network config
 
-Internal [network config](src/main/resources/com/unstoppabledomains/config/network/network-config.json)
+Internal [network config](src/main/resources/com/unstoppabledomains/config/network/uns-config.json)
 can be updated by running the `gradle pullNetworkConfig` task and committing the updated file.
 
 ## Versioning & release process
