@@ -29,7 +29,7 @@ public class ENSTest {
     TestUtils.expectError(() -> resolution.getEmail("monkybrain.eth"), NSExceptionCode.RecordNotFound);
     TestUtils.expectError(() -> resolution.getAddress("brad.eth", "btc"), NSExceptionCode.UnsupportedCurrency);
     TestUtils.expectError(() -> resolution.getAddress("unregistered23.eth", "eth"), NSExceptionCode.UnregisteredDomain);
-    TestUtils.expectError(() -> resolution.tokenURI("brad.eth"), NSExceptionCode.NotImplemented);
+    TestUtils.expectError(() -> resolution.getTokenURI("brad.eth"), NSExceptionCode.NotImplemented);
     TestUtils.expectError(() -> resolution.unhash("0x062c59dccddeb7f5b0f32f3a0ded53b33f90b5ae8ddcc681f4ac5048ab5045da", NamingServiceType.ENS), NSExceptionCode.NotImplemented);
   }
 

@@ -295,7 +295,7 @@ public class ResolutionTest {
             public JsonObject request(String url, JsonObject body) throws IOException {
                 throw cause;
             }
-            
+
         };
         Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
         TestUtils.expectError(
@@ -369,23 +369,23 @@ public class ResolutionTest {
 
     @Test
     public void testTokenURIUNS() throws Exception {
-        String tokenUri = resolution.tokenURI("brad.crypto");
+        String tokenUri = resolution.getTokenURI("brad.crypto");
         assertEquals("https://staging-dot-dot-crypto-metadata.appspot.com/metadata/brad.crypto", tokenUri);
 
-        TestUtils.expectError(() -> resolution.tokenURI("fake-domain-that-does-not-exist.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getTokenURI("fake-domain-that-does-not-exist.crypto"), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test
     public void testTokenURIZNS() throws Exception {
         String testDomain = "brad.zil";
-        TestUtils.expectError(() -> resolution.tokenURI(testDomain), NSExceptionCode.NotImplemented);
+        TestUtils.expectError(() -> resolution.getTokenURI(testDomain), NSExceptionCode.NotImplemented);
     }
 
     @Test
     public void testTokenURIMetadata() throws Exception {
         String testDomain = "brad.crypto";
 
-        TokenUriMetadata metadata = resolution.tokenURIMetadata(testDomain);
+        TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
         assertNotNull(metadata);
         assertEquals(metadata.getName(), testDomain);
         assertEquals(metadata.getAttributes().size(), 8);
@@ -399,19 +399,16 @@ public class ResolutionTest {
     public void testUnhashCNS() throws Exception {
         String testHash = "0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9";
         String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
-
         assertEquals("brad.crypto", tokenName);
 
     }
 
-    // @Test
-    // public void testUnhashUNS() throws Exception {
-    //     String testHash = "0x1586d090e1b5781399f988e4b4f5639f4c2775ef5ec093d1279bb95b9bceb1a0";
-    //     String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
-
-    //     assertEquals("udtestdev-my-new-tls.wallet", tokenName);
-    // }
-
+    @Test
+    public void testUnhashUNS() throws Exception {
+        String testHash = "0x1586d090e1b5781399f988e4b4f5639f4c2775ef5ec093d1279bb95b9bceb1a0";
+        String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
+        assertEquals("udtestdev-my-new-tls.wallet", tokenName);
+    }
 
     @Test
     public void testUnhashZNS() throws Exception {

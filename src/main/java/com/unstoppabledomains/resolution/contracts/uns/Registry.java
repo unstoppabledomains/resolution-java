@@ -9,9 +9,8 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class Registry extends BaseContract {
-
-    private static final String ABI_FILE = "cns/registry_abi.json";
-    private static final String namingServiceName = "CNS";
+    private static final String ABI_FILE = "uns/registry_abi.json";
+    private static final String namingServiceName = "UNS";
 
     public Registry(String url, String address, IProvider provider) {
         super(namingServiceName, url, address, provider);

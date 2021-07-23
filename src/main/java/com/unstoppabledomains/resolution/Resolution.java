@@ -55,7 +55,7 @@ public class Resolution implements DomainResolution {
      */
     public Resolution() {
         IProvider provider = new DefaultProvider();
-        services = getServices(UNS_DEFAULT_URL, ENS_DEFAULT_URL, provider);
+        services = getServices(provider);
     }
 
     private Resolution(Map<NamingServiceType, NamingService> services) {
@@ -142,11 +142,6 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public String tokenURI(String domain) throws NamingServiceException {
-      return getTokenURI(domain);
-    }
-
-    @Override
     public String getTokenURI(String domain) throws NamingServiceException {
         try {
             NamingService service = findService(domain);
@@ -162,13 +157,8 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public TokenUriMetadata tokenURIMetadata(String domain) throws NamingServiceException {
-        return getTokenURIMetadata(domain);
-    }
-
-    @Override
     public TokenUriMetadata getTokenURIMetadata(String domain) throws NamingServiceException {
-        String tokenURI = tokenURI(domain);
+        String tokenURI = getTokenURI(domain);
         return getMetadataFromTokenURI(tokenURI);
     }
 
@@ -192,11 +182,11 @@ public class Resolution implements DomainResolution {
         }
     }
 
-    private Map<NamingServiceType, NamingService> getServices(String UnsProviderUrl, String EnsProviderUrl, IProvider provider) {
+    private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, UnsProviderUrl, unsProxyAddress), provider));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, EnsProviderUrl, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress), provider));
+            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
             put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         }};
     }
@@ -261,7 +251,7 @@ public class Resolution implements DomainResolution {
 
         /**
          * @param nsType            the naming service for which config is applied
-         * @param contractAddress   contract Address
+         * @param contractAddress   address of `ProxyReader` contract for UNS | address of `Registry` contract for ZNS or ENS
          * @return builder object to allow chaining
          */
         public Builder contractAddress(NamingServiceType nsType, String contractAddress) {
@@ -334,7 +324,7 @@ public class Resolution implements DomainResolution {
 
         /**
          * Makes a call via provider to the blockchainProviderUrl and returns the networkId
-         * @param blockchainProviderUrl
+         * @param blockchainProviderUrl RPC endpoint url
          * @return Network object or null if couldn't retrive the network
          */
         private Network getNetworkId(String blockchainProviderUrl) {

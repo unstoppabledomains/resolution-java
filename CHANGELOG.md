@@ -1,13 +1,8 @@
 ## 3.0.0
-* Introduced DomainResolution#tokenURI - Retrieves the tokenURI from the registry smart contract.
-* Introduced DomainResolution#tokenURIMetadata - Retrieves the data from the endpoint provided by tokenURI from the registry smart contract.
-* Introduced DomainResolution#unhash - Retrieves the domain name from token metadata that is provided by tokenURI from the registry smart contract.
-* Resolution#isSupportedDomain is now making an async call to the proxy reader contract for validation on UNS domains. ZNS and ENS are untouched
-* Returned ENS support
-* Removed hard-coded contracts, allowed setting custom contracts in Resolution.Builder
-* Removed CNS in favor of UNS. ( Everything stays the same, just any custom configurations should be pointed towards NamingServiceType.UNS instead of NamingServiceType.CNS )
-* Support new tld's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
-* Update the default contracts addresses to the latest version
+
+### Breaking changes
+* `Resolution#isSupported` is now making an async call and throws `NamingServiceException` 
+* `NamingServiceType.CNS` was replaced by `NamingServiceType.UNS`. 
 * Removed deprecated constructor, to build the instance use Resolution.builder() instead
 * Remove deprecated Resolution#getUsdt, use Resolution#getMultiChainAddress() instead
 * Remove deprecated Resolution#addr, use Resolution#getAddress() instead
@@ -16,6 +11,14 @@
 * Remove deprecated Resolution#ipfsHash, use Resolution#getIpfsHash() instead
 * Remove deprecated Resolution#owner, use Resolution#getOwner() instead
 * Remove deprecated TickerVersion enum
+
+### New methods and features
+* 🎉 🎉 🎉 Added support for new TLD's ( .888, .nft, .coin, .blockchain, .wallet, .x, .bitcoin, .dao )
+* Introduced `DomainResolution#getTokenURI` - Retrieves the tokenURI from the registry smart contract.
+* Introduced `DomainResolution#getTokenURIMetadata` - Retrieves the data from the endpoint provided by tokenURI from the registry smart contract.
+* Introduced `DomainResolution#unhash` - Retrieves the domain name from token metadata that is provided by tokenURI from the registry smart contract.
+* Return ENS support
+* Allow setting custom contract addresses in `Resolution.Builder` to support local testnet environment
 
 ## 2.0.0
 * remove ENS support
