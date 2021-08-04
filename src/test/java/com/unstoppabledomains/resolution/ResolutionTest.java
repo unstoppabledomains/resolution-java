@@ -36,18 +36,23 @@ public class ResolutionTest {
     @BeforeAll
     public static void init() {
         resolution = Resolution.builder()
-        .chainId(NamingServiceType.ZNS, Network.MAINNET)
+        .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
+        .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
         .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
-        .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+        .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
+        .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .build();
     }
 
     @Test
     public void resolveTestnetDomain() throws Exception {
         DomainResolution rinkebyResolution = Resolution.builder()
+            .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
+            .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
             .providerUrl(NamingServiceType.ENS, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
             .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .build();
         String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
@@ -60,7 +65,7 @@ public class ResolutionTest {
         DomainResolution customNetworks = Resolution.builder()
             .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .chainId(NamingServiceType.ENS, Network.GOERLI)
-            .chainId(NamingServiceType.ZNS, Network.KOVAN)
+            .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
             .build();
 
         Network customUnsChainId = customNetworks.getNetwork(NamingServiceType.UNS);
@@ -68,7 +73,7 @@ public class ResolutionTest {
         Network customZnsChainId = customNetworks.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.RINKEBY, customUnsChainId);
         assertEquals(Network.GOERLI, customEnsChainId);
-        assertEquals(Network.KOVAN, customZnsChainId);
+        assertEquals(Network.ZIL_TESTNET, customZnsChainId);
     }
 
     @Test
@@ -86,31 +91,34 @@ public class ResolutionTest {
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
         .chainId(NamingServiceType.UNS, Network.RINKEBY)
-        .chainId(NamingServiceType.ZNS, Network.MAINNET)
+        .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
         .chainId(NamingServiceType.ENS, Network.ROPSTEN)
         .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
         .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+        .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
+        .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
         .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilder.getOwner("testing.crypto"));
         assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
-        assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilder.getOwner("johnnyjumper.zil"));
+        assertEquals("0x5e398755d4e010e144e454fb5554bd68b28a8d9f", resolutionFromBuilder.getOwner("zero.zil"));
     }
 
     @Test
     public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
         DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
             .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-            .chainId(NamingServiceType.ZNS, Network.MAINNET)
+            .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
             .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
             .infura(NamingServiceType.UNS, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
+            .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
             .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilderWithInfura.getOwner("testing.crypto"));
         assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
-        assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", resolutionFromBuilderWithInfura.getOwner("johnnyjumper.zil"));
+        assertEquals("0x5e398755d4e010e144e454fb5554bd68b28a8d9f", resolutionFromBuilderWithInfura.getOwner("zero.zil"));
     }
 
     @Test
@@ -169,7 +177,7 @@ public class ResolutionTest {
 
         hash = resolution.getNamehash("zil");
         assertEquals("0x9915d0456b878862e822e2361da37232f626a2e47505c8795134a95d36138ed3", hash);
-        hash = resolution.getNamehash("johnnyjumper.zil");
+        hash = resolution.getNamehash("zero.zil");
         assertEquals("0x08ab2ffa92966738c881a37d0d97f168d2e076d24639921762d0985ebaa62e31", hash);
     }
 
@@ -199,8 +207,8 @@ public class ResolutionTest {
         addr = resolution.getAddress("testing.crypto", "eth");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", addr, "testing.crypto --> eth");
 
-        addr = resolution.getAddress("johnnyjumper.zil", "eth");
-        assertEquals("0xe7474D07fD2FA286e7e0aa23cd107F8379085037", addr, "johnnyjumper.zil --> eth");
+        addr = resolution.getAddress("zero.zil", "zil");
+        assertEquals("zil1tcucw4w5uqgwz38y2na4249adzeg4rvl94kwhm", addr, "zero.zil --> zil");
     }
 
     @Test
@@ -215,9 +223,9 @@ public class ResolutionTest {
     public void UnknownCurrency() throws Exception {
         TestUtils.expectError(() -> resolution.getAddress("udtestdev-my-new-tls.wallet", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.expectError(() -> resolution.getAddress("testing.crypto", "unknown"), NSExceptionCode.UnknownCurrency);
-        TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "unknown"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("zero.zil", "unknown"), NSExceptionCode.UnknownCurrency);
         TestUtils.expectError(() -> resolution.getAddress("testing.crypto", "dodge"), NSExceptionCode.UnknownCurrency);
-        TestUtils.expectError(() -> resolution.getAddress("johnnyjumper.zil", "dodge"), NSExceptionCode.UnknownCurrency);
+        TestUtils.expectError(() -> resolution.getAddress("zero.zil", "dodge"), NSExceptionCode.UnknownCurrency);
     }
 
     @Test
@@ -225,7 +233,7 @@ public class ResolutionTest {
         String ipfs = resolution.getIpfsHash("testing.crypto");
         assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
 
-        ipfs = resolution.getIpfsHash("johnnyjumper.zil");
+        ipfs = resolution.getIpfsHash("zero.zil");
         assertEquals("QmQ38zzQHVfqMoLWq2VeiMLHHYki9XktzXxLYTWXt8cydu", ipfs);
     }
 
@@ -243,8 +251,8 @@ public class ResolutionTest {
         owner = resolution.getOwner("udtestdev-my-new-tls.wallet");
         assertEquals("0x6ec0deed30605bcd19342f3c30201db263291589", owner);
 
-        owner = resolution.getOwner("johnnyjumper.zil");
-        assertEquals("0xcea21f5a6afc11b3a4ef82e986d63b8b050b6910", owner);
+        owner = resolution.getOwner("zero.zil");
+        assertEquals("0x5e398755d4e010e144e454fb5554bd68b28a8d9f", owner);
     }
 
     @Test
