@@ -337,7 +337,6 @@ public class Resolution implements DomainResolution {
                 JsonObject response = provider.request(blockchainProviderUrl, body);
                 return Network.getNetwork(response.get("result").getAsInt());
             } catch(Exception e) {
-                e.printStackTrace();
                 return null;
             }
         }

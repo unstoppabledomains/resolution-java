@@ -14,6 +14,7 @@ public class TestUtils {
     public static final String TESTING_INFURA_ENS_PROJECT_ID = "d423cf2499584d7fbe171e33b42cfbee";
     public static final String TESTING_UNS_PROVIDER_URL = "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     public static final String TESTING_ENS_PROVIDER_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
+    public static final String TESTING_ZNS_PROVIDER_URL = "https://dev-api.zilliqa.com";
 
     public static void expectError(Callable<String> f, NSExceptionCode code) throws Exception {
         try {
