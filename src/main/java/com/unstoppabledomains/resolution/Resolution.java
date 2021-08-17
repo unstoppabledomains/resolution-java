@@ -85,6 +85,7 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getAddress(String domain, String ticker) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         String recordKey = "crypto." + ticker.toUpperCase() + ".address";
         try {
@@ -100,6 +101,7 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         if (service.getType() == NamingServiceType.ENS) {
             throw new NamingServiceException(NSExceptionCode.NotImplemented,
@@ -111,12 +113,14 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getNamehash(String domain) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         return service.getNamehash(domain);
     }
 
     @Override
     public String getIpfsHash(String domain) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         String recordKey = "dweb.ipfs.hash";
         return service.getRecord(domain, recordKey);
@@ -124,6 +128,7 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getEmail(String domain) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         String recordKey = "whois.email.value";
         return service.getRecord(domain, recordKey);
@@ -131,18 +136,21 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getOwner(String domain) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         return service.getOwner(domain);
     }
 
     @Override
     public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
+        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         return service.getDns(domain, types);
     }
 
     @Override
     public String getTokenURI(String domain) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         try {
             NamingService service = findService(domain);
             String namehash = service.getNamehash(domain);
@@ -204,6 +212,10 @@ public class Resolution implements DomainResolution {
             return services.get(NamingServiceType.ENS);
         }
         return services.get(NamingServiceType.UNS);
+    }
+
+    private String normalizeDomain(String domain) {
+        return domain.trim().toLowerCase();
     }
 
     public static class Builder {
