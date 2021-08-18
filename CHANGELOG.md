@@ -1,7 +1,7 @@
 ## Unreleased
 * Introduced `Resolution#getBatchOwners` method to resolve owner addresses of many domains. 
   ** All domains provided should be from the same naming service (UNS or ZNS or ENS)
-  ** ZNS and ENS domains have a hard limit of 200 domains per call. 
+  ** ZNS and ENS domains have a hard limit of 255 domains per call. 
 ## 3.0.0
 
 ### Breaking changes
