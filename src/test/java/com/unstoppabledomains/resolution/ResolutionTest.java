@@ -281,6 +281,12 @@ public class ResolutionTest {
     }
 
     @Test
+    public void getBatchOwnersInconsistentArray() throws Exception {
+        String[] domains = { "brad.crypto", "domain.eth", "something.zil" };
+        TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.InconsistentDomainArray);
+    }
+
+    @Test
     public void getOwnerFailTest() throws Exception {
         TestUtils.expectError(() -> resolution.getOwner("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getOwner("unregistered.wallet"), NSExceptionCode.UnregisteredDomain);
