@@ -10,7 +10,7 @@
     `getAddress`
     `getMultiChainAddress`
   Method `getRecord` hasn't been changed
-
+* Domain names that are not accomply with this regex `^[.a-z\d-]+$` will throw a NSExceptionCode.InvalidDomain
 ## 3.0.0
 
 ### Breaking changes
