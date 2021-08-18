@@ -96,7 +96,7 @@ public class UNS extends BaseNamingService {
       return owners;
     } catch(Exception e) {
       throw configureNamingServiceException(e,
-        new NSExceptionParams("n", "UNS"));
+        new NSExceptionParams("d|n", String.join(", ", domains),"UNS"));
     }
   }
 
