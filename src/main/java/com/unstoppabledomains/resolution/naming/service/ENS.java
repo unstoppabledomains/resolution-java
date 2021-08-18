@@ -19,6 +19,8 @@ import com.unstoppabledomains.util.Utilities;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.event.SwingPropertyChangeSupport;
+
 public class ENS extends BaseNamingService {
 
   private final Registry registryContract;
@@ -73,6 +75,35 @@ public class ENS extends BaseNamingService {
       throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
     }
     return owner;
+  }
+
+  @Override
+  public String[] batchOwners(String[] domains) throws NamingServiceException {
+    if (domains.length > 255) {
+      throw new NamingServiceException(NSExceptionCode.MaxThreadLimit, new NSExceptionParams("m|l", "Ens#batchOwners", "200"));
+    }
+    String[] owners = new String[domains.length];
+    Thread[] threads = new Thread[domains.length];
+    for (int i = 0; i < domains.length; i++) {
+      final int index = i;
+      threads[i] = new Thread(() -> {
+        try {
+          String owner = getOwner(domains[index]);
+          owners[index] = Utilities.isEmptyResponse(owner) ? null : owner;
+        } catch(Exception e) {
+          owners[index] = null;
+        }
+      });
+      threads[i].start();
+    }
+    for (Thread thread: threads) {
+      try {
+        thread.join();
+      } catch (InterruptedException e) {
+        throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
+      }
+    }
+    return owners;
   }
 
   @Override

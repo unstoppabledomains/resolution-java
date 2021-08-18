@@ -9,6 +9,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import java.util.Arrays;
 
 public class ENSTest {
   private static DomainResolution resolution;
@@ -40,5 +43,20 @@ public class ENSTest {
 
     addr = resolution.getAddress("monkybrain.eth", "EtH");
     assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", addr);
+  }
+
+  @Test
+  public void batchOwnersTest() throws NamingServiceException {
+    String[] domains = { "brad.eth", "monkybrain.eth", "udtestdevnotexist.kred", "matthewgould.eth", "testthing.eth" };
+    String[] owners = resolution.getBatchOwners(domains);
+    String[] correctOwnerAddresses = { "0x1af001667bb945d1bdbb05145eea7c21d86737f7",  "0x842f373409191cff2988a6f19ab9f605308ee462", null, "0x714ef33943d925731fbb89c99af5780d888bd106", "0x904dac3347ea47d208f3fd67402d039a3b99859"};
+    assertArrayEquals(owners, correctOwnerAddresses);
+  }
+
+  @Test
+  public void batchOwnerOverflowTest() throws Exception {
+    String[] domains = new String[300];
+    Arrays.fill(domains, "somedomain.eth");
+    TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.MaxThreadLimit);
   }
 }

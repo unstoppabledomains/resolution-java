@@ -98,6 +98,15 @@ public interface DomainResolution {
     String getOwner(String domain) throws NamingServiceException;
     
     /**
+     * Resolves owner addresses for many domains
+     * @param domains string array of domain names you want to resolve
+     * @return String[] of owner addreses.
+     * @throws NamingServiceException
+     */
+    String[] getBatchOwners(String[] domains) throws NamingServiceException;
+
+
+    /**
      * Resolves dns records from a domain
      * 
      * @param domain domain name such as "brad.crypto"

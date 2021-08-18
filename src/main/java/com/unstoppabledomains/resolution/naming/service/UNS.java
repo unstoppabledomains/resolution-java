@@ -20,9 +20,11 @@ import com.unstoppabledomains.util.Utilities;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
@@ -66,6 +68,7 @@ public class UNS extends BaseNamingService {
     return result;
   }
 
+  @Override
   public  String getOwner(String domain) throws NamingServiceException {
     try {
       BigInteger tokenID = getTokenID(domain);
@@ -78,6 +81,25 @@ public class UNS extends BaseNamingService {
     } catch (Exception e) {
       throw configureNamingServiceException(e,
           new NSExceptionParams("d|n", domain, "UNS"));
+    }
+  }
+
+  @Override
+  public String[] batchOwners(String[] domains) throws NamingServiceException {
+    try {
+      BigInteger[] tokenIDs = new BigInteger[domains.length];
+      for (int i = 0; i < domains.length; i++) {
+        tokenIDs[i] = getTokenID(domains[i]);
+      }
+      String[] rawOwners = proxyReaderContract.batchOwners(tokenIDs);
+      String[] owners = new String[rawOwners.length];
+      for (int i = 0; i < rawOwners.length; i++) {
+        owners[i] = Utilities.isEmptyResponse(rawOwners[i]) ? null : rawOwners[i];
+      }
+      return owners;
+    } catch(Exception e) {
+      throw configureNamingServiceException(e,
+        new NSExceptionParams("n", "UNS"));
     }
   }
 

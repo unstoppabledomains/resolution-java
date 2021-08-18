@@ -11,5 +11,7 @@ public enum NSExceptionCode {
   IncorrectMethodName,
   UnspecifiedResolver,
   UnsupportedCurrency,
-  NotImplemented;
+  NotImplemented,
+  InconsistentDomainArray,
+  MaxThreadLimit;
 }

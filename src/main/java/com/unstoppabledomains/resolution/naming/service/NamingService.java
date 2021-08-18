@@ -17,6 +17,7 @@ public interface NamingService {
     String getRecord(String domain, String recordKey) throws NamingServiceException;
 
     String getOwner(String domain) throws NamingServiceException;
+    String[] batchOwners(String[] domain) throws NamingServiceException;
 
     String getNamehash(String domain) throws NamingServiceException;
 

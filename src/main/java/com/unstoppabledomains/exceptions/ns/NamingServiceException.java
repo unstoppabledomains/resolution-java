@@ -5,7 +5,7 @@ public class NamingServiceException extends Exception {
   private final NSExceptionCode code;
   
   public NamingServiceException(NSExceptionCode code) {
-    super(messageFromCode(code, new NSExceptionParams("", "")));
+    super(messageFromCode(code, NSExceptionParams.EMPTY_PARAMS));
     this.code = code;
   }
 
@@ -47,6 +47,12 @@ public class NamingServiceException extends Exception {
       }
       case NotImplemented: {
         return "Method " + params.methodName + "is not implemented for this naming service: " + params.namingService;
+      }
+      case InconsistentDomainArray: {
+        return "Domains needs to be from the same naming service";
+      }
+      case MaxThreadLimit: {
+        return "Method " + params.methodName + " attempted to create more threads than " + params.threadLimit;
       }
       case UnknownError:
       default: 
