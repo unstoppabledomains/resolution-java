@@ -1,7 +1,6 @@
 
 package com.unstoppabledomains.resolution.naming.service;
 
-import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
@@ -20,11 +19,9 @@ import com.unstoppabledomains.util.Utilities;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
@@ -109,7 +106,7 @@ public class UNS extends BaseNamingService {
     List<String> keys = constructDnsRecords(types);
     ProxyData data = resolveKeys(keys.toArray(new String[keys.size()]), domain);
     List<String> values = data.getValues();
-    Map<String, String> rawData = new HashMap();
+    Map<String, String> rawData = new HashMap<>();
     for (int i = 0; i < values.size(); i++) {
       rawData.put(keys.get(i), values.get(i));
     }
@@ -173,7 +170,7 @@ public class UNS extends BaseNamingService {
   }
 
   private List<String> constructDnsRecords(List<DnsRecordsType> types) {
-    List<String> records = new ArrayList();
+    List<String> records = new ArrayList<>();
     records.add("dns.ttl");
     for (DnsRecordsType type: types) {
       records.add("dns." + type.toString());
@@ -213,7 +210,7 @@ public class UNS extends BaseNamingService {
   }
 
 
-  private String owner(BigInteger tokenID) throws NamingServiceException {
+  private String owner(BigInteger tokenID) {
     return proxyReaderContract.getOwner(tokenID);
   }
 

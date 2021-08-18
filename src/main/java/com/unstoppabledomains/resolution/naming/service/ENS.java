@@ -19,8 +19,6 @@ import com.unstoppabledomains.util.Utilities;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.event.SwingPropertyChangeSupport;
-
 public class ENS extends BaseNamingService {
 
   private final Registry registryContract;
