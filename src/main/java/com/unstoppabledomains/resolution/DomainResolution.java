@@ -99,11 +99,11 @@ public interface DomainResolution {
     
     /**
      * Resolves owner addresses for many domains
-     * @param domains string array of domain names you want to resolve
-     * @return String[] of owner addreses.
+     * @param domains string list of domain names you want to resolve
+     * @return List<String> of owner addreses.
      * @throws NamingServiceException
      */
-    String[] getBatchOwners(String[] domains) throws NamingServiceException;
+    List<String> getBatchOwners(List<String> domains) throws NamingServiceException;
 
 
     /**

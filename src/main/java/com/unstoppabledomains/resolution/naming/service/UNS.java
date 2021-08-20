@@ -82,16 +82,18 @@ public class UNS extends BaseNamingService {
   }
 
   @Override
-  public String[] batchOwners(String[] domains) throws NamingServiceException {
+  public List<String> batchOwners(List<String> domains) throws NamingServiceException {
     try {
-      BigInteger[] tokenIDs = new BigInteger[domains.length];
-      for (int i = 0; i < domains.length; i++) {
-        tokenIDs[i] = getTokenID(domains[i]);
+      List<BigInteger> tokenIDs = new ArrayList<>();
+      for (String domain: domains) {
+        tokenIDs.add(getTokenID(domain));
       }
-      String[] rawOwners = proxyReaderContract.batchOwners(tokenIDs);
-      String[] owners = new String[rawOwners.length];
-      for (int i = 0; i < rawOwners.length; i++) {
-        owners[i] = Utilities.isEmptyResponse(rawOwners[i]) ? null : rawOwners[i];
+      
+      List<String> rawOwners = proxyReaderContract.batchOwners(tokenIDs.toArray(new BigInteger[tokenIDs.size()]) );
+      List<String> owners = new ArrayList<>();
+      
+      for (String rawOwner: rawOwners) {
+        owners.add( Utilities.isEmptyResponse(rawOwner) ? null : rawOwner);
       }
       return owners;
     } catch(Exception e) {

@@ -259,30 +259,30 @@ public class ResolutionTest {
 
     @Test
     public void getBatchOwnersTest() throws NamingServiceException {
-        String[] domains = { "testing.crypto", "unregistered.crypto", "udtestdev-my-new-tls.wallet", "brad.crypto"};
-        String[] owners = resolution.getBatchOwners(domains);
+        List<String> domains = Arrays.asList("testing.crypto", "unregistered.crypto", "udtestdev-my-new-tls.wallet", "brad.crypto");
+        List<String> owners = resolution.getBatchOwners(domains);
         String[] correctOwnerAddresses = { "0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", null, "0x6ec0deed30605bcd19342f3c30201db263291589", "0x499dd6d875787869670900a2130223d85d4f6aa7"};
-        assertArrayEquals(owners, correctOwnerAddresses);
+        assertArrayEquals(owners.toArray(), correctOwnerAddresses);
     }
     
     @Test
     public void getBatchOwnersZnsOverflow() throws Exception {
         String[] domains = new String[300];
         Arrays.fill(domains, "somedomain.zil");
-        TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.MaxThreadLimit);
+        TestUtils.expectError(() -> resolution.getBatchOwners(Arrays.asList(domains)), NSExceptionCode.MaxThreadLimit);
     }
 
     @Test
     public void getBatchOwnersZnsTest() throws Exception {
-        String[] domains = { "zero.zil", "fff.zil" };
-        String[] owners = resolution.getBatchOwners(domains);
+        List<String> domains = Arrays.asList("zero.zil", "fff.zil" );
+        List<String> owners = resolution.getBatchOwners(domains);
         String[] correctOwnerAddresses = { "0x5e398755d4e010e144e454fb5554bd68b28a8d9f", null};
-        assertArrayEquals(owners, correctOwnerAddresses);
+        assertArrayEquals(owners.toArray(), correctOwnerAddresses);
     }
 
     @Test
     public void getBatchOwnersInconsistentArray() throws Exception {
-        String[] domains = { "brad.crypto", "domain.eth", "something.zil" };
+        List<String> domains = Arrays.asList("brad.crypto", "domain.eth", "something.zil");
         TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.InconsistentDomainArray);
     }
 

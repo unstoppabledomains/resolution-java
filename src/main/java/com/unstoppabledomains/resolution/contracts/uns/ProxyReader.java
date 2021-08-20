@@ -3,10 +3,10 @@ package com.unstoppabledomains.resolution.contracts.uns;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
-import com.unstoppabledomains.util.Utilities;
-import com.unstoppabledomains.resolution.artifacts.Numeric;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProxyReader extends BaseContract {
 
@@ -26,15 +26,15 @@ public class ProxyReader extends BaseContract {
         }
     }
 
-    public String[] batchOwners(BigInteger[] tokenIDs) throws Exception {
-            Object[] args = { tokenIDs };
-            BigInteger[] owners = fetchOne("ownerOfForMany", args);
-            String[] convertedOwners = new String[owners.length];
-            for (int i =0; i < owners.length; i++) {
-                String hexRepresentation = owners[i].toString(16);
-                convertedOwners[i] = "0x" + hexRepresentation;
-            }
-            return convertedOwners;
+    public List<String> batchOwners(BigInteger[] tokenIDs) throws Exception {
+        Object[] args = { tokenIDs };
+        BigInteger[] owners = fetchOne("ownerOfForMany", args);
+        List<String> convertedOwners = new ArrayList<>();
+        for (BigInteger owner: owners) {
+            String hexRepresentation = owner.toString(16);
+            convertedOwners.add("0x" + hexRepresentation);
+        }
+        return convertedOwners;
     }
 
     public String getRecord(String recordKey, BigInteger tokenID) throws Exception {

@@ -16,6 +16,7 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,17 +77,18 @@ public class ENS extends BaseNamingService {
   }
 
   @Override
-  public String[] batchOwners(String[] domains) throws NamingServiceException {
-    if (domains.length > 255) {
-      throw new NamingServiceException(NSExceptionCode.MaxThreadLimit, new NSExceptionParams("m|l", "Ens#batchOwners", "200"));
+  public List<String> batchOwners(List<String> domains) throws NamingServiceException {
+    if (domains.size() > 255) {
+      throw new NamingServiceException(NSExceptionCode.MaxThreadLimit, new NSExceptionParams("m|l", "Ens#batchOwners", "255"));
     }
-    String[] owners = new String[domains.length];
-    Thread[] threads = new Thread[domains.length];
-    for (int i = 0; i < domains.length; i++) {
+    // We want String[] instead of List<String> to maintain the same order as domains
+    String[] owners = new String[domains.size()];
+    Thread[] threads = new Thread[domains.size()];
+    for (int i = 0; i < domains.size(); i++) {
       final int index = i;
       threads[i] = new Thread(() -> {
         try {
-          String owner = getOwner(domains[index]);
+          String owner = getOwner(domains.get(index));
           owners[index] = Utilities.isEmptyResponse(owner) ? null : owner;
         } catch(Exception e) {
           owners[index] = null;
@@ -94,6 +96,7 @@ public class ENS extends BaseNamingService {
       });
       threads[i].start();
     }
+
     for (Thread thread: threads) {
       try {
         thread.join();
@@ -101,7 +104,7 @@ public class ENS extends BaseNamingService {
         throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
       }
     }
-    return owners;
+    return Arrays.asList(owners);
   }
 
   @Override
