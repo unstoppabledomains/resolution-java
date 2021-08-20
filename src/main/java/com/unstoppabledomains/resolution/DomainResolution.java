@@ -100,7 +100,7 @@ public interface DomainResolution {
     /**
      * Resolves owner addresses for many domains
      * @param domains string list of domain names you want to resolve
-     * @return List<String> of owner addreses.
+     * @return String list of owner addreses.
      * @throws NamingServiceException
      */
     List<String> getBatchOwners(List<String> domains) throws NamingServiceException;
