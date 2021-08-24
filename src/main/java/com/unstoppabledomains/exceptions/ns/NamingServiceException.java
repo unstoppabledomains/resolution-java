@@ -48,6 +48,9 @@ public class NamingServiceException extends Exception {
       case NotImplemented: {
         return "Method " + params.methodName + "is not implemented for this naming service: " + params.namingService;
       }
+      case InvalidDomain: {
+        return "Domain: " + params.domain + " does not passes the following regex pattern ^[.a-z\\d-]+$ ";
+      }
       case UnknownError:
       default: 
         return "Unknown Error occurred";

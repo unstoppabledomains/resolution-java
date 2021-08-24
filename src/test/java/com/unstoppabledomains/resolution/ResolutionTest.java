@@ -290,6 +290,15 @@ public class ResolutionTest {
     }
 
     @Test
+    public void invalidDomains() throws Exception {
+        String[] invalidDomains = { "some#.crypto", "special!.zil", "character?.eth", "notAllowed%.nft"};
+        for (int i = 0; i < invalidDomains.length; i++) {
+            final int index = i;
+            TestUtils.expectError(() -> resolution.getOwner(invalidDomains[index]), NSExceptionCode.InvalidDomain);
+        }
+    }
+
+    @Test
     public void noEmailRecord() throws Exception {
         TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getEmail("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);

@@ -208,8 +208,12 @@ public class Resolution implements DomainResolution {
         return services.get(NamingServiceType.UNS);
     }
 
-    private String normalizeDomain(String domain) {
-        return domain.trim().toLowerCase();
+    private String normalizeDomain(String domain) throws NamingServiceException {
+        String normalizedDomain = domain.trim().toLowerCase();
+        if (!normalizedDomain.matches("^[.a-z\\d-]+$")) {
+            throw new NamingServiceException(NSExceptionCode.InvalidDomain, new NSExceptionParams("d", domain));
+        }
+        return normalizedDomain;
     }
 
     public static class Builder {
