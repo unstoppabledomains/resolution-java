@@ -1,16 +1,7 @@
 ## Unreleased
-* Domain name is now trimmed and lowercased before resolving for methods: 
-    `getOwner`
-    `getNamehash`
-    `getIpfsHash`
-    `getEmail`
-    `getDns`
-    `getTokenURI`
-    `getTokenURIMetadata`
-    `getAddress`
-    `getMultiChainAddress`
-  Method `getRecord` hasn't been changed
+* Domain name is now trimmed and lowercased before resolving
 * Domain names that are not accomply with this regex `^[.a-z\d-]+$` will throw a NSExceptionCode.InvalidDomain
+
 ## 3.0.0
 
 ### Breaking changes

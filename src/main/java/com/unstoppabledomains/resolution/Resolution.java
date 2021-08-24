@@ -80,16 +80,15 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
+        domain = normalizeDomain(domain);
         return findService(domain).getRecord(domain, recordKey);
     }
 
     @Override
     public String getAddress(String domain, String ticker) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        NamingService service = findService(domain);
         String recordKey = "crypto." + ticker.toUpperCase() + ".address";
         try {
-            return service.getRecord(domain, recordKey);
+            return getRecord(domain, recordKey);
         } catch(NamingServiceException exception) {
             if (exception.getCode() == NSExceptionCode.RecordNotFound) {
                 throw new NamingServiceException(NSExceptionCode.UnknownCurrency, 
@@ -101,14 +100,13 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
-        domain = normalizeDomain(domain);
         NamingService service = findService(domain);
         if (service.getType() == NamingServiceType.ENS) {
             throw new NamingServiceException(NSExceptionCode.NotImplemented,
                 new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
         }
         String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
-        return service.getRecord(domain, recordKey);
+        return getRecord(domain, recordKey);
     }
 
     @Override
@@ -120,18 +118,14 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getIpfsHash(String domain) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        NamingService service = findService(domain);
         String recordKey = "dweb.ipfs.hash";
-        return service.getRecord(domain, recordKey);
+        return getRecord(domain, recordKey);
     }
 
     @Override
     public String getEmail(String domain) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        NamingService service = findService(domain);
         String recordKey = "whois.email.value";
-        return service.getRecord(domain, recordKey);
+        return getRecord(domain, recordKey);
     }
 
     @Override
