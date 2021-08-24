@@ -18,7 +18,9 @@ import com.unstoppabledomains.util.Utilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ENS extends BaseNamingService {
 
@@ -77,21 +79,21 @@ public class ENS extends BaseNamingService {
   }
 
   @Override
-  public List<String> batchOwners(List<String> domains) throws NamingServiceException {
+  public Map<String, String> batchOwners(List<String> domains) throws NamingServiceException {
     if (domains.size() > 255) {
       throw new NamingServiceException(NSExceptionCode.MaxThreadLimit, new NSExceptionParams("m|l", "Ens#batchOwners", "255"));
     }
-    // We want String[] instead of List<String> to maintain the same order as domains
-    String[] owners = new String[domains.size()];
+
     Thread[] threads = new Thread[domains.size()];
+    Map<String, String> domainOwnerMap = new HashMap<>(domains.size());
     for (int i = 0; i < domains.size(); i++) {
       final int index = i;
       threads[i] = new Thread(() -> {
         try {
           String owner = getOwner(domains.get(index));
-          owners[index] = Utilities.isEmptyResponse(owner) ? null : owner;
+          domainOwnerMap.put(domains.get(index), Utilities.isEmptyResponse(owner) ? null : owner); 
         } catch(Exception e) {
-          owners[index] = null;
+          domainOwnerMap.put(domains.get(index), null); 
         }
       });
       threads[i].start();
@@ -104,7 +106,8 @@ public class ENS extends BaseNamingService {
         throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
       }
     }
-    return Arrays.asList(owners);
+
+    return domainOwnerMap;
   }
 
   @Override

@@ -20,8 +20,10 @@ import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
@@ -82,20 +84,21 @@ public class UNS extends BaseNamingService {
   }
 
   @Override
-  public List<String> batchOwners(List<String> domains) throws NamingServiceException {
+  public Map<String, String> batchOwners(List<String> domains) throws NamingServiceException {
+    Map<String, String> domainOwnerMap = new HashMap<>(domains.size());
     try {
       List<BigInteger> tokenIDs = new ArrayList<>();
       for (String domain: domains) {
         tokenIDs.add(getTokenID(domain));
       }
       
-      List<String> rawOwners = proxyReaderContract.batchOwners(tokenIDs.toArray(new BigInteger[tokenIDs.size()]) );
-      List<String> owners = new ArrayList<>();
+      List<String> rawOwners = proxyReaderContract.batchOwners(tokenIDs.toArray(new BigInteger[tokenIDs.size()]));
+      Utilities.iterateSimultaneously(domains, rawOwners, (domain, rawOwner) -> {
+        String owner = Utilities.isEmptyResponse(rawOwner) ? null : rawOwner;
+        domainOwnerMap.put(domain, owner);
+      });
       
-      for (String rawOwner: rawOwners) {
-        owners.add( Utilities.isEmptyResponse(rawOwner) ? null : rawOwner);
-      }
-      return owners;
+      return domainOwnerMap;
     } catch(Exception e) {
       throw configureNamingServiceException(e,
         new NSExceptionParams("d|n", String.join(", ", domains),"UNS"));

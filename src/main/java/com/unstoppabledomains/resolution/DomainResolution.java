@@ -1,6 +1,7 @@
 package com.unstoppabledomains.resolution;
 
 import java.util.List;
+import java.util.Map;
 
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -100,10 +101,10 @@ public interface DomainResolution {
     /**
      * Resolves owner addresses for many domains
      * @param domains string list of domain names you want to resolve
-     * @return String list of owner addreses.
+     * @return map of domain to owner addreses.
      * @throws NamingServiceException
      */
-    List<String> getBatchOwners(List<String> domains) throws NamingServiceException;
+    Map<String, String> getBatchOwners(List<String> domains) throws NamingServiceException;
 
 
     /**

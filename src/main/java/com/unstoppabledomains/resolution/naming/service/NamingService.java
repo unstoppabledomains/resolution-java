@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution.naming.service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -17,7 +18,7 @@ public interface NamingService {
     String getRecord(String domain, String recordKey) throws NamingServiceException;
 
     String getOwner(String domain) throws NamingServiceException;
-    List<String> batchOwners(List<String> domain) throws NamingServiceException;
+    Map<String, String> batchOwners(List<String> domain) throws NamingServiceException;
 
     String getNamehash(String domain) throws NamingServiceException;
 

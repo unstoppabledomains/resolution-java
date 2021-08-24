@@ -136,7 +136,7 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public List<String> getBatchOwners(List<String> domains) throws NamingServiceException {
+    public Map<String, String> getBatchOwners(List<String> domains) throws NamingServiceException {
         NamingService service = findService(domains.get(0));
         boolean inconsistentDomainArray = domains.stream().allMatch(d-> {
             try {
