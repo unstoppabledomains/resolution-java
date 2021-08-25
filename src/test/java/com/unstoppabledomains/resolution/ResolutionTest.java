@@ -235,7 +235,7 @@ public class ResolutionTest {
     @Test
     public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
-        assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
@@ -272,24 +272,6 @@ public class ResolutionTest {
         assertEquals(true, domainForTest.equals(owners));
     }
     
-    @Test
-    public void getBatchOwnersZnsOverflow() throws Exception {
-        String[] domains = new String[300];
-        Arrays.fill(domains, "somedomain.zil");
-        TestUtils.expectError(() -> resolution.getBatchOwners(Arrays.asList(domains)), NSExceptionCode.MaxThreadLimit);
-    }
-
-    @Test
-    public void getBatchOwnersZnsTest() throws Exception {
-        Map<String,String> domainForTest = new HashMap<String, String>() {{
-            put("zero.zil", "0x5e398755d4e010e144e454fb5554bd68b28a8d9f");
-            put("fff.zil", null);
-        }};
-        List<String> domains = domainForTest.keySet().stream().collect(Collectors.toList());
-        Map<String, String> owners = resolution.getBatchOwners(domains);
-        assertEquals(true, domainForTest.equals(owners));
-    }
-
     @Test
     public void getBatchOwnersInconsistentArray() throws Exception {
         List<String> domains = Arrays.asList("brad.crypto", "domain.eth", "something.zil");

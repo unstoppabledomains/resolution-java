@@ -80,34 +80,7 @@ public class ENS extends BaseNamingService {
 
   @Override
   public Map<String, String> batchOwners(List<String> domains) throws NamingServiceException {
-    if (domains.size() > 255) {
-      throw new NamingServiceException(NSExceptionCode.MaxThreadLimit, new NSExceptionParams("m|l", "Ens#batchOwners", "255"));
-    }
-
-    Thread[] threads = new Thread[domains.size()];
-    Map<String, String> domainOwnerMap = new HashMap<>(domains.size());
-    for (int i = 0; i < domains.size(); i++) {
-      final int index = i;
-      threads[i] = new Thread(() -> {
-        try {
-          String owner = getOwner(domains.get(index));
-          domainOwnerMap.put(domains.get(index), Utilities.isEmptyResponse(owner) ? null : owner); 
-        } catch(Exception e) {
-          domainOwnerMap.put(domains.get(index), null); 
-        }
-      });
-      threads[i].start();
-    }
-
-    for (Thread thread: threads) {
-      try {
-        thread.join();
-      } catch (InterruptedException e) {
-        throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
-      }
-    }
-
-    return domainOwnerMap;
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "batchOwners", getType().toString()));
   }
 
   @Override
