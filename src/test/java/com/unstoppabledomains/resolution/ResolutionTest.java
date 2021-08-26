@@ -254,7 +254,7 @@ public class ResolutionTest {
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
         
         ipfs = resolution.getIpfsHash(" TESTING.crYpto ");
-        assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
     }
 
     @Test
