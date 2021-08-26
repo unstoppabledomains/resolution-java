@@ -1,7 +1,8 @@
 package com.unstoppabledomains.util;
 
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.util.Iterator;
+import java.util.function.BiConsumer;
 
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 
@@ -62,5 +63,13 @@ public class Utilities {
       return hexPrefix + zeros + cleanAddress;
     } 
     return hexPrefix + cleanAddress;
+  }
+  
+  public static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
+    Iterator<T1> i1 = c1.iterator();
+    Iterator<T2> i2 = c2.iterator();
+    while (i1.hasNext() && i2.hasNext()) {
+        consumer.accept(i1.next(), i2.next());
+    }
   }
 }

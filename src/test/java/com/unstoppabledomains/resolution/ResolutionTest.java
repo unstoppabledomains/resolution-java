@@ -27,8 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ResolutionTest {
 
@@ -233,7 +235,7 @@ public class ResolutionTest {
     @Test
     public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
-        assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
@@ -259,30 +261,20 @@ public class ResolutionTest {
 
     @Test
     public void getBatchOwnersTest() throws NamingServiceException {
-        String[] domains = { "testing.crypto", "unregistered.crypto", "udtestdev-my-new-tls.wallet", "brad.crypto"};
-        String[] owners = resolution.getBatchOwners(domains);
-        String[] correctOwnerAddresses = { "0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", null, "0x6ec0deed30605bcd19342f3c30201db263291589", "0x499dd6d875787869670900a2130223d85d4f6aa7"};
-        assertArrayEquals(owners, correctOwnerAddresses);
+        Map<String,String> domainForTest = new HashMap<String, String>() {{
+            put("testing.crypto", "0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2");
+            put("unregistered.crypto", null);
+            put("udtestdev-my-new-tls.wallet", "0x6ec0deed30605bcd19342f3c30201db263291589");
+            put("brad.crypto", "0x499dd6d875787869670900a2130223d85d4f6aa7");
+        }};
+        List<String> domains = domainForTest.keySet().stream().collect(Collectors.toList());
+        Map<String, String> owners = resolution.getBatchOwners(domains);
+        assertEquals(true, domainForTest.equals(owners));
     }
     
     @Test
-    public void getBatchOwnersZnsOverflow() throws Exception {
-        String[] domains = new String[300];
-        Arrays.fill(domains, "somedomain.zil");
-        TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.MaxThreadLimit);
-    }
-
-    @Test
-    public void getBatchOwnersZnsTest() throws Exception {
-        String[] domains = { "zero.zil", "fff.zil" };
-        String[] owners = resolution.getBatchOwners(domains);
-        String[] correctOwnerAddresses = { "0x5e398755d4e010e144e454fb5554bd68b28a8d9f", null};
-        assertArrayEquals(owners, correctOwnerAddresses);
-    }
-
-    @Test
     public void getBatchOwnersInconsistentArray() throws Exception {
-        String[] domains = { "brad.crypto", "domain.eth", "something.zil" };
+        List<String> domains = Arrays.asList("brad.crypto", "domain.eth", "something.zil");
         TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.InconsistentDomainArray);
     }
 

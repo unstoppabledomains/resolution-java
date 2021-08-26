@@ -137,13 +137,20 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public String[] getBatchOwners(String[] domains) throws NamingServiceException {
-        for (int i = 0; i + 2 < domains.length; i++) {
-            if (findService(domains[i+1]) != findService(domains[i])) {
-                throw new NamingServiceException(NSExceptionCode.InconsistentDomainArray);
+    public Map<String, String> getBatchOwners(List<String> domains) throws NamingServiceException {
+        NamingService service = findService(domains.get(0));
+        boolean inconsistentDomainArray = domains.stream().allMatch(d-> {
+            try {
+                return (findService(d) == service);
+            } catch (NamingServiceException e) {
+                return false;
             }
+        });
+        if (!inconsistentDomainArray) {
+            throw new NamingServiceException(NSExceptionCode.InconsistentDomainArray);
         }
-        return findService(domains[0]).batchOwners(domains);
+
+        return service.batchOwners(domains);
     }
 
     @Override

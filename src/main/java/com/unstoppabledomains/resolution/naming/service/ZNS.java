@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.math.BigInteger;
 
@@ -69,32 +71,8 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
-    public String[] batchOwners(String[] domains) throws NamingServiceException {
-        if (domains.length > 255) {
-            throw new NamingServiceException(NSExceptionCode.MaxThreadLimit, new NSExceptionParams("m|l", "Zns#batchOwners", "200"));
-          }
-          String[] owners = new String[domains.length];
-          Thread[] threads = new Thread[domains.length];
-          for (int i = 0; i < domains.length; i++) {
-            final int index = i;
-            threads[i] = new Thread(() -> {
-              try {
-                String owner = getOwner(domains[index]);
-                owners[index] = Utilities.isEmptyResponse(owner) ? null : owner;
-              } catch(Exception e) {
-                owners[index] = null;
-              }
-            });
-            threads[i].start();
-          }
-          for (Thread thread: threads) {
-            try {
-              thread.join();
-            } catch (InterruptedException e) {
-              throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
-            }
-          }
-          return owners;
+    public Map<String, String> batchOwners(List<String> domains) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "batchOwners", getType().toString()));
     }
 
     @Override
