@@ -25,7 +25,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class UNS extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
@@ -149,8 +153,13 @@ public class UNS extends BaseNamingService {
       Thread.currentThread().interrupt();
       throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
     }
-    
-    return domains;
+
+     return batchOwners(domains)
+      .entrySet()
+      .stream()
+      .filter(entry -> entry.getValue().equals(address))
+      .map(Entry<String, String>::getKey)
+      .collect(Collectors.toList());      
   }
 
   @Override

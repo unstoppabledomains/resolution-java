@@ -215,7 +215,7 @@ public class Resolution implements DomainResolution {
         namingServices.put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
         namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
 
-        return services;
+        return namingServices;
     }
 
     private NamingService findService(String domain) throws NamingServiceException {
