@@ -121,6 +121,7 @@ public interface DomainResolution {
     /**
      * Resolves all UD tokens owned by an address
      * @param address an ethereum address of an owner
+     * @param service a value from NamingServiceType enum ("UNS" | "ENS" | "ZNS" )
      * @return a list of ud domains this owner owns
      * @throws NamingServiceException
      */
