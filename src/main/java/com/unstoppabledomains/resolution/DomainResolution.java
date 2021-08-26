@@ -115,7 +115,16 @@ public interface DomainResolution {
      * @throws NamingServiceException
      */
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
-    
+
+
+    /**
+     * Resolves all UD tokens owned by an address
+     * @param address an ethereum address of an owner
+     * @return a list of ud domains this owner owns
+     * @throws NamingServiceException
+     */
+    List<String> getTokensOwnedBy(String address, NamingServiceType service) throws NamingServiceException;
+
     /**
      * Retrieves the tokenURI from the registry smart contract.
      *

@@ -21,6 +21,7 @@ import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
 import com.unstoppabledomains.util.Utilities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -152,6 +153,14 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public List<String> getTokensOwnedBy(String address, NamingServiceType service) throws NamingServiceException {
+        if (service != NamingServiceType.UNS) {
+            throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", service.toString()));
+        }
+        return services.get(service).getTokensOwnedBy(address);
+    }
+
+    @Override
     public String getTokenURI(String domain) throws NamingServiceException {
         try {
             NamingService service = findService(domain);
@@ -194,11 +203,12 @@ public class Resolution implements DomainResolution {
 
     private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-        return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress), provider));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
-            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
-        }};
+        Map<NamingServiceType, NamingService> namingServices = new HashMap<>();
+        namingServices.put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress), provider));
+        namingServices.put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+        namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
+
+        return services;
     }
 
     private NamingService findService(String domain) throws NamingServiceException {
@@ -224,11 +234,12 @@ public class Resolution implements DomainResolution {
 
         private Builder() {
             String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-            serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-                put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
-                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
-            }};
+        
+            serviceConfigs = new HashMap<>(); 
+            serviceConfigs.put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
+            serviceConfigs.put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
+            serviceConfigs.put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
+            
             provider = new DefaultProvider();
         }
 
@@ -320,11 +331,11 @@ public class Resolution implements DomainResolution {
          * @return resolution object
          */
         public Resolution build() {
-            Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.UNS, new UNS(serviceConfigs.get(NamingServiceType.UNS), provider));
-                put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
-                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
-            }};
+            Map<NamingServiceType, NamingService> services = new HashMap<>();
+            services.put(NamingServiceType.UNS, new UNS(serviceConfigs.get(NamingServiceType.UNS), provider));
+            services.put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
+            services.put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
+            
             return new Resolution(services);
         }
 

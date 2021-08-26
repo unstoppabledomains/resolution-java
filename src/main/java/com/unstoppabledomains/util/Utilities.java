@@ -1,6 +1,7 @@
 package com.unstoppabledomains.util;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import com.unstoppabledomains.resolution.artifacts.Numeric;
 
@@ -50,5 +51,16 @@ public class Utilities {
    */
   public static BigInteger namehashToTokenID(String namehash) {
     return new BigInteger(namehash.substring(2), 16);
+  }
+
+  public static String normalizeAddress(String address) {
+    String hexPrefix = "0x";
+    String cleanAddress = address.startsWith(hexPrefix) ? address.substring(2) : address;
+    if (cleanAddress.length() < 64) {
+      int amountOfZeroes = 64 - cleanAddress.length();
+      String zeros = new String(new char[amountOfZeroes]).replace('\0', '0');
+      return hexPrefix + zeros + cleanAddress;
+    } 
+    return hexPrefix + cleanAddress;
   }
 }

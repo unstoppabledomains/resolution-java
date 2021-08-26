@@ -301,6 +301,12 @@ public class ResolutionTest {
     }
 
     @Test
+    public void getTokensOwnedBy() throws Exception {
+        List<String> domains = resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.UNS);
+        System.out.println(domains);
+    }
+
+    @Test
     public void noEmailRecord() throws Exception {
         TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getEmail("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);
