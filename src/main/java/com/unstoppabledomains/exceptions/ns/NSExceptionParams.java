@@ -11,7 +11,6 @@ public class NSExceptionParams {
   public String contractAddress;
   public String methodName;
   public String record;
-  public String threadLimit;
 
   public NSExceptionParams(String format, String ...args) {
     Pattern pattern = Pattern.compile("\\|");
@@ -46,10 +45,6 @@ public class NSExceptionParams {
       }
       case "r": {
         record = value;
-        break ;
-      }
-      case "l": {
-        threadLimit = value;
         break ;
       }
       default: {
