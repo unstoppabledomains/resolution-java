@@ -51,13 +51,12 @@ public class NamingServiceException extends Exception {
       case InconsistentDomainArray: {
         return "Domains needs to be from the same naming service";
       }
-      case MaxThreadLimit: {
-        return "Method " + params.methodName + " attempted to create more threads than " + params.threadLimit;
+      case InvalidDomain: {
+        return "Domain: " + params.domain + " does not passes the following regex pattern ^[.a-z\\d-]+$ ";
       }
       case UnknownError:
       default: 
         return "Unknown Error occurred";
     }
   }
-
 }

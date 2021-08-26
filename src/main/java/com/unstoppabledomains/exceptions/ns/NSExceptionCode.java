@@ -13,5 +13,5 @@ public enum NSExceptionCode {
   UnsupportedCurrency,
   NotImplemented,
   InconsistentDomainArray,
-  MaxThreadLimit;
+  InvalidDomain;
 }
