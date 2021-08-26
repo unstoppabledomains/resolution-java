@@ -30,7 +30,7 @@ public interface DomainResolution {
     /**
      * Resolves domain for a specific record
      *
-     * @param domain domain name such as "brad.crypto"
+     * @param domain trimed and lowercased domain name such as "brad.crypto"
      * @param recordKey key of the record
      * @return address in hex-string format
      * @throws NamingServiceException when domain has no record of key
@@ -49,7 +49,7 @@ public interface DomainResolution {
 
     /**
      * Resolves domain for a cross chain address
-     * @param domain domain name usch as "brad.crypto"
+     * @param domain domain name such as "brad.crypto"
      * @param ticker coin ticker such as usdt, ftm and etc.
      * @param chain chain to look for, usually means blockcahin ( erc20,  omni, tron, etc. )
      * @return address for specific chain
