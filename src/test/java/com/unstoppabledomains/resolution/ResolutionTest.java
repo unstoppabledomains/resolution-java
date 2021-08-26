@@ -173,6 +173,8 @@ public class ResolutionTest {
         assertEquals("0x0f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f", hash);
         hash = resolution.getNamehash("brad.crypto");
         assertEquals("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9", hash);
+        hash = resolution.getNamehash("    manyspace.crypto     ");
+        assertEquals("0x09d8df1b31fdca2df375ae7f345a001b498733fce6f476eaaac20c9c9eeb639c", hash);
 
         hash = resolution.getNamehash("wallet");
         assertEquals("0x1e3f482b3363eb4710dae2cb2183128e272eafbe137f686851c1caea32502230", hash);
@@ -216,6 +218,17 @@ public class ResolutionTest {
     }
 
     @Test
+    public void NormalizeDomainTest() throws Exception {
+        String addr = resolution.getAddress("   testing.crypto    ", "ETH");
+        assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", addr, "|   testing.crypto    | --> eth");
+
+        String uppercaseDomainTestResult = resolution.getAddress("  TESTING.CRYPTO", "ETH");
+        assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", uppercaseDomainTestResult, "|  TESTING.CRYPTO| --> eth");
+
+        
+    }
+
+    @Test
     public void wrongDomainAddr() throws Exception {
         TestUtils.expectError(() -> resolution.getAddress("unregistered.crypto", "eth"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAddress("unregistered.wallet", "eth"), NSExceptionCode.UnregisteredDomain);
@@ -239,12 +252,18 @@ public class ResolutionTest {
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
+        
+        ipfs = resolution.getIpfsHash(" TESTING.crYpto ");
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
     }
 
     @Test
     public void getEmailTest() throws NamingServiceException {
         String email = resolution.getEmail("testing.crypto");
         assertEquals("testing@example.com", email);
+        
+        String nonNormalizedTest = resolution.getEmail("    tesTING.crypto     ");
+        assertEquals("testing@example.com", nonNormalizedTest);
     }
 
     @Test
@@ -252,7 +271,7 @@ public class ResolutionTest {
         String owner = resolution.getOwner("testing.crypto");
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", owner);
 
-        owner = resolution.getOwner("udtestdev-my-new-tls.wallet");
+        owner = resolution.getOwner("  UDTESTDEV-my-NEW-TLS.wallet    ");
         assertEquals("0x6ec0deed30605bcd19342f3c30201db263291589", owner);
 
         owner = resolution.getOwner("testing.zil");
@@ -316,6 +335,14 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ZNS), NSExceptionCode.NotImplemented);
     }
 
+    public void invalidDomains() throws Exception {
+        String[] invalidDomains = { "some#.crypto", "special!.zil", "character?.eth", "notAllowed%.nft"};
+        for (int i = 0; i < invalidDomains.length; i++) {
+            final int index = i;
+            TestUtils.expectError(() -> resolution.getOwner(invalidDomains[index]), NSExceptionCode.InvalidDomain);
+        }
+    }
+
     @Test
     public void noEmailRecord() throws Exception {
         TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
@@ -325,6 +352,16 @@ public class ResolutionTest {
     @Test
     public void dnsRecords() throws Exception {
         String domain = "testing.crypto";
+        List<DnsRecordsType> types = Arrays.asList(DnsRecordsType.A, DnsRecordsType.AAAA);
+        List<DnsRecord> dnsRecords = resolution.getDns(domain, types);
+        assertEquals(2, dnsRecords.size());
+        List<DnsRecord> correctResult = Arrays.asList(new DnsRecord(DnsRecordsType.A, 98, "10.0.0.1"), new DnsRecord(DnsRecordsType.A, 98, "10.0.0.3"));
+        assertEquals(dnsRecords, correctResult);
+    }
+
+    @Test
+    public void normalizeDomainDnsRecords() throws Exception {
+        String domain = "    TEstING.CRYPTO    ";
         List<DnsRecordsType> types = Arrays.asList(DnsRecordsType.A, DnsRecordsType.AAAA);
         List<DnsRecord> dnsRecords = resolution.getDns(domain, types);
         assertEquals(2, dnsRecords.size());
@@ -409,6 +446,7 @@ public class ResolutionTest {
     @Test
     public void testGetMultiChainAddress() throws Exception {
         String domainWithMultiChainRecords = "testing.crypto";
+        String notNormalizedDomainWithMultiChainRecords = "   Testing.crypto ";
 
         String erc20 = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "erc20");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", erc20);
@@ -416,7 +454,7 @@ public class ResolutionTest {
         assertEquals("TRMJfXXbmwb3WFSRKbeRgKsYoD8o1a9xxV", tron);
         String omni = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "omni");
         assertEquals("1KvzMF2Vjy14d6JGY7dG7vjT5kfpmzSQXM", omni);
-        String eos = resolution.getMultiChainAddress(domainWithMultiChainRecords, "usdt", "eos");
+        String eos = resolution.getMultiChainAddress(notNormalizedDomainWithMultiChainRecords, "usdt", "eos");
         assertEquals("karaarishmen", eos);
 
 
