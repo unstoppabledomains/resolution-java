@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.math.BigInteger;
 
@@ -66,6 +68,11 @@ public class ZNS extends BaseNamingService {
             throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
         }
         return addresses[0];
+    }
+
+    @Override
+    public Map<String, String> batchOwners(List<String> domains) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "batchOwners", getType().toString()));
     }
 
     @Override

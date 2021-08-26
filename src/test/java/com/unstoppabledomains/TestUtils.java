@@ -16,7 +16,7 @@ public class TestUtils {
     public static final String TESTING_ENS_PROVIDER_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     public static final String TESTING_ZNS_PROVIDER_URL = "https://dev-api.zilliqa.com";
 
-    public static void expectError(Callable<String> f, NSExceptionCode code) throws Exception {
+    public static <T> void expectError(Callable<T> f, NSExceptionCode code) throws Exception {
         try {
             f.call();
             System.out.println("Didn't throw an " + code + " exception");
@@ -29,7 +29,7 @@ public class TestUtils {
         }
     }
 
-    public static void expectError(Callable<String> f, NSExceptionCode code, Throwable cause) throws Exception {
+    public static <T> void expectError(Callable<T> f, NSExceptionCode code, Throwable cause) throws Exception {
         try {
             f.call();
             System.out.println("Didn't throw an " + code + " exception");

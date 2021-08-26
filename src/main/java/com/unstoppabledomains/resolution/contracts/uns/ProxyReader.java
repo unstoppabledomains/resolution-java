@@ -5,6 +5,8 @@ import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProxyReader extends BaseContract {
 
@@ -22,6 +24,17 @@ public class ProxyReader extends BaseContract {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public List<String> batchOwners(BigInteger[] tokenIDs) throws Exception {
+        Object[] args = { tokenIDs };
+        BigInteger[] owners = fetchOne("ownerOfForMany", args);
+        List<String> convertedOwners = new ArrayList<>();
+        for (BigInteger owner: owners) {
+            String hexRepresentation = owner.toString(16);
+            convertedOwners.add("0x" + hexRepresentation);
+        }
+        return convertedOwners;
     }
 
     public String getRecord(String recordKey, BigInteger tokenID) throws Exception {

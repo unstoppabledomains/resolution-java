@@ -1,4 +1,5 @@
 ## Unreleased
+* Introduced `Resolution#getBatchOwners` method to resolve owner addresses of many domains only for UNS. 
 * Domain name is now trimmed and lowercased before resolving
 * Domain names that are not accomply with this regex `^[.a-z\d-]+$` will throw a NSExceptionCode.InvalidDomain
 

@@ -3,12 +3,15 @@ package com.unstoppabledomains.exceptions.ns;
 import java.util.regex.Pattern;
 
 public class NSExceptionParams {
+  public static final NSExceptionParams EMPTY_PARAMS = new NSExceptionParams(" ", " ");
+
   public String domain;
   public String namingService;
   public String coinTicker;
   public String contractAddress;
   public String methodName;
   public String record;
+  public String threadLimit;
 
   public NSExceptionParams(String format, String ...args) {
     Pattern pattern = Pattern.compile("\\|");
@@ -43,6 +46,10 @@ public class NSExceptionParams {
       }
       case "r": {
         record = value;
+        break ;
+      }
+      case "l": {
+        threadLimit = value;
         break ;
       }
       default: {

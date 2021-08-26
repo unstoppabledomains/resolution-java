@@ -5,7 +5,7 @@ public class NamingServiceException extends Exception {
   private final NSExceptionCode code;
   
   public NamingServiceException(NSExceptionCode code) {
-    super(messageFromCode(code, new NSExceptionParams("", "")));
+    super(messageFromCode(code, NSExceptionParams.EMPTY_PARAMS));
     this.code = code;
   }
 
@@ -48,6 +48,9 @@ public class NamingServiceException extends Exception {
       case NotImplemented: {
         return "Method " + params.methodName + "is not implemented for this naming service: " + params.namingService;
       }
+      case InconsistentDomainArray: {
+        return "Domains needs to be from the same naming service";
+      }
       case InvalidDomain: {
         return "Domain: " + params.domain + " does not passes the following regex pattern ^[.a-z\\d-]+$ ";
       }
@@ -56,5 +59,4 @@ public class NamingServiceException extends Exception {
         return "Unknown Error occurred";
     }
   }
-
 }

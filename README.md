@@ -125,6 +125,13 @@ String owner = resolution.getOwner("brad.crypto");
 assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
 ```
 
+You can also get the result in a batch format for UNS:
+```java
+List<String> domains = Arrays.asList("brad.crypto", "homecakes.crypto");
+Map<String, String> owners = mainnetResolution.getBatchOwners(domains);
+assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owners.get("brad.crypto"));
+assertEquals("0xe7474d07fd2fa286e7e0aa23cd107f8379085037", owners.get("homecakes.crypto"));
+```
 ### Getting a domain's IPFS hash
 
 Decentralized websites host their content on decentralized file storage systems such as [IPFS](http://ipfs.io/).

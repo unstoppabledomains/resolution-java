@@ -23,11 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ResolutionTest {
 
@@ -245,13 +248,13 @@ public class ResolutionTest {
     @Test
     public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
-        assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
         
         ipfs = resolution.getIpfsHash(" TESTING.crYpto ");
-        assertEquals("QmRi3PBpUGFnYrCKUoWhntRLfA9PeRhepfFu4Lz21mGd3X", ipfs);
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
     }
 
     @Test
@@ -273,6 +276,25 @@ public class ResolutionTest {
 
         owner = resolution.getOwner("testing.zil");
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", owner);
+    }
+
+    @Test
+    public void getBatchOwnersTest() throws NamingServiceException {
+        Map<String,String> domainForTest = new HashMap<String, String>() {{
+            put("testing.crypto", "0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2");
+            put("unregistered.crypto", null);
+            put("udtestdev-my-new-tls.wallet", "0x6ec0deed30605bcd19342f3c30201db263291589");
+            put("brad.crypto", "0x499dd6d875787869670900a2130223d85d4f6aa7");
+        }};
+        List<String> domains = domainForTest.keySet().stream().collect(Collectors.toList());
+        Map<String, String> owners = resolution.getBatchOwners(domains);
+        assertEquals(true, domainForTest.equals(owners));
+    }
+    
+    @Test
+    public void getBatchOwnersInconsistentArray() throws Exception {
+        List<String> domains = Arrays.asList("brad.crypto", "domain.eth", "something.zil");
+        TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.InconsistentDomainArray);
     }
 
     @Test
