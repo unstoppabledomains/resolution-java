@@ -8,8 +8,6 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.util.Utilities;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,12 +40,12 @@ public class Registry extends BaseContract {
     public List<String> getTokensOwnedBy(String address, String since) throws NamingServiceException {
         String[] args = { null, Utilities.normalizeAddress(address) };
         List<ContractLogs> logs = fetchContractLogs(since, "Transfer", args);
-        List<String> domains = logs.stream()
+        return logs.stream()
             .map(log -> Utilities.normalizeAddress(log.getTopics().get(3)))
             .map(topic -> getNewUri(topic, since))
             .filter(Objects::nonNull)
+            .distinct()
             .collect(Collectors.toList());            
-        return new ArrayList<>(new HashSet<>(domains));
     }
 
     @Override
