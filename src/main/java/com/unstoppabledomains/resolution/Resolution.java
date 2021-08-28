@@ -14,7 +14,8 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.ENS;
-import com.unstoppabledomains.resolution.naming.service.UNS;
+import com.unstoppabledomains.resolution.naming.service.UNSL2;
+import com.unstoppabledomains.resolution.naming.service.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
@@ -30,6 +31,7 @@ import java.util.Map;
 public class Resolution implements DomainResolution {
     private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     private static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+    private static final String UNS_L2_DEFAULT_URL = "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78 ";
     private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     private static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
@@ -203,8 +205,12 @@ public class Resolution implements DomainResolution {
 
     private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
+        String unsl2ProxyAddress = "0x8F4870e8aD6F0307CD3AAE3ED1d66FffCB873F3A";
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNS(new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress), provider));
+            put(NamingServiceType.UNS, new UNSL2(new UNSConfig(
+                new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress),
+                new NSConfig(Network.MUMBAI_TESTNET, Resolution.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
+                , provider));
             put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
             put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         }};
@@ -241,8 +247,10 @@ public class Resolution implements DomainResolution {
 
         private Builder() {
             String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
+            String unsl2ProxyAddress = "0x8F4870e8aD6F0307CD3AAE3ED1d66FffCB873F3A";
             serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
                 put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
+                put(NamingServiceType.UNSL2, new NSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
                 put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
                 put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
             }};
@@ -338,7 +346,8 @@ public class Resolution implements DomainResolution {
          */
         public Resolution build() {
             Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.UNS, new UNS(serviceConfigs.get(NamingServiceType.UNS), provider));
+                put(NamingServiceType.UNS, new UNSL2(new UNSConfig(serviceConfigs.get(NamingServiceType.UNS),
+                                                                   serviceConfigs.get(NamingServiceType.UNSL2)), provider));
                 put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
                 put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
             }};

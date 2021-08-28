@@ -20,15 +20,13 @@ import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
-public class UNS extends BaseNamingService {
+public class UNSInternal extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
   
-  public UNS(NSConfig config, IProvider provider) {
+  public UNSInternal(NSConfig config, IProvider provider) {
     super(config, provider);
     String proxyReaderAddress = config.getContractAddress();
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
