@@ -14,8 +14,9 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.ENS;
-import com.unstoppabledomains.resolution.naming.service.UNSL2;
+import com.unstoppabledomains.resolution.naming.service.UNS;
 import com.unstoppabledomains.resolution.naming.service.UNSConfig;
+import com.unstoppabledomains.resolution.naming.service.UNSLocation;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
@@ -29,25 +30,17 @@ import java.util.List;
 import java.util.Map;
 
 public class Resolution implements DomainResolution {
-    private static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
-    private static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
-    private static final String UNS_L2_DEFAULT_URL = "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78 ";
-    private static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
-
-    private static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
-    private static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
-
     private Map<NamingServiceType, NamingService> services;
 
     /**
-     * Use {@link Builder} methods to override default configs
+     * Use {@link ResolutionBuilder} methods to override default configs
      * or get Resolution object with default settings
-     * by calling {@link Builder#build()}
+     * by calling {@link ResolutionBuilder#build()}
      *
      * @return builder object
      */
-    public static Builder builder() {
-        return new Builder();
+    public static ResolutionBuilder builder() {
+        return new ResolutionBuilder(new ResolutionBuilderConnector());
     }
 
     /**
@@ -205,14 +198,14 @@ public class Resolution implements DomainResolution {
 
     private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-        String unsl2ProxyAddress = "0x8F4870e8aD6F0307CD3AAE3ED1d66FffCB873F3A";
+        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
         return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNSL2(new UNSConfig(
-                new NSConfig(Network.MAINNET, Resolution.UNS_DEFAULT_URL, unsProxyAddress),
-                new NSConfig(Network.MUMBAI_TESTNET, Resolution.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
+            put(NamingServiceType.UNS, new UNS(new UNSConfig(
+                new NSConfig(Network.MAINNET, ResolutionBuilder.UNS_DEFAULT_URL, unsProxyAddress),
+                new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
                 , provider));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, Resolution.ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS), provider));
-            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
+            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, ResolutionBuilder.ENS_DEFAULT_URL, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         }};
     }
 
@@ -239,142 +232,11 @@ public class Resolution implements DomainResolution {
         return normalizedDomain;
     }
 
-    public static class Builder {
-        private static final String INFURA_URL = "https://%s.infura.io/v3/%s";
+    public static final class ResolutionBuilderConnector {
+        private ResolutionBuilderConnector() {}
 
-        private final Map<NamingServiceType, NSConfig> serviceConfigs;
-        private IProvider provider;
-
-        private Builder() {
-            String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-            String unsl2ProxyAddress = "0x8F4870e8aD6F0307CD3AAE3ED1d66FffCB873F3A";
-            serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-                put(NamingServiceType.UNS, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-                put(NamingServiceType.UNSL2, new NSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
-                put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
-                put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
-            }};
-            provider = new DefaultProvider();
-        }
-
-        /**
-         * @param nsType  the naming service for which config is applied
-         * @param chainId blockchain network ID
-         * @return builder object to allow chaining
-         */
-        public Builder chainId(NamingServiceType nsType, Network chainId) {
-            NSConfig nsConfig = serviceConfigs.get(nsType);
-            nsConfig.setChainId(chainId);
-            return this;
-        }
-
-        /**
-         * @param nsType      the naming service for which config is applied
-         * @param providerUrl blockchain provider URL
-         * @return builder object to allow chaining
-         */
-        public Builder providerUrl(NamingServiceType nsType, String providerUrl) {
-            NSConfig nsConfig = serviceConfigs.get(nsType);
-            Network chainId = getNetworkId(providerUrl);
-            if (chainId == null) {
-                chainId = nsConfig.getChainId();
-            }
-            nsConfig.setBlockchainProviderUrl(providerUrl);
-            nsConfig.setChainId(chainId);
-            return this;
-        }
-
-        /**
-         * @param nsType            the naming service for which config is applied
-         * @param contractAddress   address of `ProxyReader` contract for UNS | address of `Registry` contract for ZNS or ENS
-         * @return builder object to allow chaining
-         */
-        public Builder contractAddress(NamingServiceType nsType, String contractAddress) {
-            NSConfig nsConfig = serviceConfigs.get(nsType);
-            nsConfig.setContractAddress(contractAddress);
-            return this;
-        }
-
-        /**
-         * Configuration for <a href="https://infura.io">infura.io</a>
-         * blockchain provider with previously set network ID using
-         * {@link Builder#chainId(NamingServiceType, Network)} or default one
-         * ({@link Network#MAINNET})
-         *
-         * @param nsType    the naming service for which config is applied
-         * @param projectId Infura project ID
-         * @return builder object to allow chaining
-         */
-        public Builder infura(NamingServiceType nsType, String projectId) {
-            NSConfig nsConfig = serviceConfigs.get(nsType);
-            final Network network = nsConfig.getChainId();
-            return infura(nsType, network, projectId);
-        }
-
-        /**
-         * Configuration for <a href="https://infura.io">infura</a> blockchain provider
-         *
-         * @param nsType    the naming service for which config is applied
-         * @param chainId   blockchain network ID
-         * @param projectId Infura project ID
-         * @return builder object to allow chaining
-         */
-        public Builder infura(NamingServiceType nsType, Network chainId, String projectId) {
-            NSConfig nsConfig = serviceConfigs.get(nsType);
-            nsConfig.setChainId(chainId);
-
-            String infuraUrl = String.format(INFURA_URL, chainId.getName(), projectId);
-            nsConfig.setBlockchainProviderUrl(infuraUrl);
-
-            return this;
-        }
-
-        /**
-         * Configuration for provider interface, use if needed to take control over network calls
-         * @param provider must implement IProvider interface
-         * @return builder object to allow chaining
-         */
-        public Builder provider(IProvider provider) {
-            setProvider(provider);
-            return this;
-        } 
-
-        /**
-         * Call directly to get default configs or override them with {@link Builder} methods
-         *
-         * @return resolution object
-         */
-        public Resolution build() {
-            Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-                put(NamingServiceType.UNS, new UNSL2(new UNSConfig(serviceConfigs.get(NamingServiceType.UNS),
-                                                                   serviceConfigs.get(NamingServiceType.UNSL2)), provider));
-                put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
-                put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
-            }};
+        public Resolution buildResolution(Map<NamingServiceType, NamingService> services) {
             return new Resolution(services);
-        }
-
-        private void setProvider(IProvider provider) {
-            this.provider = provider;
-        }
-
-        /**
-         * Makes a call via provider to the blockchainProviderUrl and returns the networkId
-         * @param blockchainProviderUrl RPC endpoint url
-         * @return Network object or null if couldn't retrive the network
-         */
-        private Network getNetworkId(String blockchainProviderUrl) {
-            JsonObject body = new JsonObject();
-            body.addProperty("jsonrpc", "2.0");
-            body.addProperty("method", "net_version");
-            body.add("params", new JsonArray());
-            body.addProperty("id", 67);
-            try {
-                JsonObject response = provider.request(blockchainProviderUrl, body);
-                return Network.getNetwork(response.get("result").getAsInt());
-            } catch(Exception e) {
-                return null;
-            }
         }
     }
 }
