@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UNSInternal extends BaseNamingService {
+class UNSInternal extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
   
   public UNSInternal(NSConfig config, IProvider provider) {

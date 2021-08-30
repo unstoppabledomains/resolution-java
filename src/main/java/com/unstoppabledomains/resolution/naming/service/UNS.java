@@ -18,12 +18,12 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 
-public class UNSL2 extends BaseNamingService {
+public class UNS extends BaseNamingService {
   private ExecutorService executor = Executors.newFixedThreadPool(2);
   private UNSInternal unsl1;
   private UNSInternal unsl2;
 
-  public UNSL2(UNSConfig config, IProvider provider) {
+  public UNS(UNSConfig config, IProvider provider) {
     super(config.getLayer1(), provider);
     unsl1 = new UNSInternal(config.getLayer1(), provider);
     unsl2 = new UNSInternal(config.getLayer2(), provider);

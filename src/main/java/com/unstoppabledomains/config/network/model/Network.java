@@ -11,9 +11,9 @@ public enum Network {
     RINKEBY(4, "rinkeby"),
     GOERLI(5, "goerli"),
     KOVAN(42, "kovan"),
-    MATIC_MAINNET(137, "matic"),
+    MATIC_MAINNET(137, "polygon-mainnet"),
     ZIL_TESTNET(333, "testnet"),
-    MUMBAI_TESTNET(80001, "mumbai");
+    MUMBAI_TESTNET(80001, "polygon-mumbai");
 
     private final int code;
     private final String name;
