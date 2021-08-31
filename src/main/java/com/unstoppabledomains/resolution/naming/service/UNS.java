@@ -13,18 +13,18 @@ import java.util.concurrent.Future;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 
-public class UNS extends BaseNamingService {
+public class UNS implements NamingService {
   private ExecutorService executor = Executors.newFixedThreadPool(2);
   private UNSInternal unsl1;
   private UNSInternal unsl2;
 
   public UNS(UNSConfig config, IProvider provider) {
-    super(config.getLayer1(), provider);
     unsl1 = new UNSInternal(config.getLayer1(), provider);
     unsl2 = new UNSInternal(config.getLayer2(), provider);
   }
@@ -121,31 +121,26 @@ public class UNS extends BaseNamingService {
     } catch (ExecutionException e) {
       if (e.getCause() instanceof NamingServiceException) {
         NamingServiceException nsException = (NamingServiceException) e.getCause();
-        switch (nsException.getCode()) {
-          case UnregisteredDomain:
-          case UnspecifiedResolver:
-            return null;
-          default:
-            throw nsException;
-        }
+        throw nsException;
+      } else {
+        throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e.getCause());
       }
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnknownError);
+      throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
     }
-    return null;
   }
 
   private <T> T resolveOnBothLayers(Callable<T> l1Func, Callable<T> l2Func) throws NamingServiceException{
     Future<T> l1result = executor.submit(l1Func);
     Future<T> l2result = executor.submit(l2Func);
 
-    T result = processFutureResult(l2result);
-    if (result == null) {
-      result = processFutureResult(l1result);
+    try {
+      return processFutureResult(l2result);
+    } catch (NamingServiceException e) {
+      if (e.getCode() != NSExceptionCode.UnregisteredDomain && e.getCode() != NSExceptionCode.UnspecifiedResolver) {
+        throw e;
+      }
     }
-    if (result == null) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain);
-    }
-    return result;
+    return processFutureResult(l1result);
   }
 }

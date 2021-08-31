@@ -15,6 +15,7 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.dns.DnsUtils;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
+import com.unstoppabledomains.resolution.naming.service.UNSLocation;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,10 +41,12 @@ public class ResolutionTest {
         resolution = Resolution.builder()
         .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
         .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
-        .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
+        .providerUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
         .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
+        .providerUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
         .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-        .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+        .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+        .contractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
         .build();
     }
 
@@ -54,19 +56,21 @@ public class ResolutionTest {
             .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
             .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
             .providerUrl(NamingServiceType.ENS, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
-            .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(UNSLocation.Layer1, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
             .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-            .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+            .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+            .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
             .build();
         String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
         assertEquals("0x1C8b9B78e3085866521FE206fa4c1a67F49f153A", ethAddress);
-
     }
 
     @Test
     public void testDifferentNetworks() throws Exception {
         DomainResolution customNetworks = Resolution.builder()
-            .providerUrl(NamingServiceType.UNS, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(UNSLocation.Layer1, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
             .chainId(NamingServiceType.ENS, Network.GOERLI)
             .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
             .build();
@@ -93,19 +97,22 @@ public class ResolutionTest {
     @Test
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
-        .chainId(NamingServiceType.UNS, Network.RINKEBY)
+        .chainId(UNSLocation.Layer1, Network.RINKEBY)
         .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
         .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-        .providerUrl(NamingServiceType.UNS, TestUtils.TESTING_UNS_PROVIDER_URL)
+        .providerUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
+        .providerUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
         .providerUrl(NamingServiceType.ENS, TestUtils.TESTING_ENS_PROVIDER_URL)
         .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
         .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-        .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+        .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+        .contractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
         .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilder.getOwner("testing.crypto"));
         assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", resolutionFromBuilder.getOwner("testing.zil"));
+        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", resolutionFromBuilder.getOwner("udtestdev-test-l2-domain-784391.wallet"));
     }
 
     @Test
@@ -114,15 +121,18 @@ public class ResolutionTest {
             .chainId(NamingServiceType.ENS, Network.ROPSTEN)
             .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
             .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
-            .infura(NamingServiceType.UNS, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
+            .infura(UNSLocation.Layer1, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
+            .infura(UNSLocation.Layer2, Network.MUMBAI_TESTNET, TestUtils.TESTING_INFURA_UNS_L2_PROJECT_ID)
             .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
             .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-            .contractAddress(NamingServiceType.UNS, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+            .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
+            .contractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
             .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilderWithInfura.getOwner("testing.crypto"));
         assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", resolutionFromBuilderWithInfura.getOwner("testing.zil"));
+        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", resolutionFromBuilderWithInfura.getOwner("udtestdev-test-l2-domain-784391.wallet"));
     }
 
     @Test
@@ -195,6 +205,8 @@ public class ResolutionTest {
         recordValue = resolution.getRecord("udtestdev-my-new-tls.wallet", "crypto.BTC.address");
         assertEquals("bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", recordValue);
 
+        recordValue = resolution.getRecord("udtestdev-test-l2-domain-784391.wallet", "crypto.LINK.address");
+        assertEquals("0x6A1fd9a073256f14659fe59613bbf169Ed27CdcC", recordValue);
     }
 
     @Test
@@ -215,6 +227,9 @@ public class ResolutionTest {
 
         addr = resolution.getAddress("testing.zil", "zil");
         assertEquals("zil1yu5u4hegy9v3xgluweg4en54zm8f8auwxu0xxj", addr, "testing.zil --> zil");
+
+        addr = resolution.getAddress("udtestdev-test-l2-domain-784391.wallet", "link");
+        assertEquals("0x6A1fd9a073256f14659fe59613bbf169Ed27CdcC", addr, "udtestdev-test-l2-domain-784391.wallet --> link");
     }
 
     @Test
@@ -255,6 +270,9 @@ public class ResolutionTest {
         
         ipfs = resolution.getIpfsHash(" TESTING.crYpto ");
         assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
+
+        ipfs = resolution.getIpfsHash("udtestdev-test-l2-domain-784391.wallet");
+        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
     }
 
     @Test
@@ -264,6 +282,9 @@ public class ResolutionTest {
         
         String nonNormalizedTest = resolution.getEmail("    tesTING.crypto     ");
         assertEquals("testing@example.com", nonNormalizedTest);
+
+        email = resolution.getEmail("udtestdev-test-l2-domain-784391.wallet");
+        assertEquals("l2email@l2mail.mail", email);
     }
 
     @Test
@@ -276,6 +297,9 @@ public class ResolutionTest {
 
         owner = resolution.getOwner("testing.zil");
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", owner);
+
+        owner = resolution.getOwner("udtestdev-test-l2-domain-784391.wallet");
+        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", owner);
     }
 
     @Test
@@ -285,6 +309,7 @@ public class ResolutionTest {
             put("unregistered.crypto", null);
             put("udtestdev-my-new-tls.wallet", "0x6ec0deed30605bcd19342f3c30201db263291589");
             put("brad.crypto", "0x499dd6d875787869670900a2130223d85d4f6aa7");
+            put("udtestdev-test-l2-domain-784391.wallet", "0x499dd6d875787869670900a2130223d85d4f6aa7");
         }};
         List<String> domains = domainForTest.keySet().stream().collect(Collectors.toList());
         Map<String, String> owners = resolution.getBatchOwners(domains);
@@ -308,7 +333,7 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getIpfsHash("unregstered.crypto"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev--awefawef.crypto"), NSExceptionCode.RecordNotFound);
-
+        TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev-test-l2-domain-empty.wallet"), NSExceptionCode.RecordNotFound);
     }
 
     @Test
@@ -324,6 +349,7 @@ public class ResolutionTest {
     public void noEmailRecord() throws Exception {
         TestUtils.expectError(() -> resolution.getEmail("brad.crypto"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getEmail("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);
+        TestUtils.expectError(() -> resolution.getEmail("udtestdev-test-l2-domain-empty.wallet"), NSExceptionCode.RecordNotFound);
     }
 
     @Test

@@ -18,7 +18,7 @@ import com.unstoppabledomains.resolution.naming.service.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.UNSLocation;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
 
-class ResolutionBuilder {
+public class ResolutionBuilder {
     private static final String INFURA_URL = "https://%s.infura.io/v3/%s";
     static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
@@ -41,10 +41,10 @@ class ResolutionBuilder {
         }};
 
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
+        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader");
         unsConfigs = new HashMap<UNSLocation, NSConfig>() {{
             put(UNSLocation.Layer1, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-            put(UNSLocation.Layer2, new NSConfig(Network.MATIC_MAINNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
+            put(UNSLocation.Layer2, new NSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
         }};
 
         provider = new DefaultProvider();

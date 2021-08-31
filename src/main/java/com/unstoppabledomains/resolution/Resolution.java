@@ -1,7 +1,11 @@
 package com.unstoppabledomains.resolution;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -14,20 +18,13 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.ENS;
-import com.unstoppabledomains.resolution.naming.service.UNS;
-import com.unstoppabledomains.resolution.naming.service.UNSConfig;
-import com.unstoppabledomains.resolution.naming.service.UNSLocation;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
+import com.unstoppabledomains.resolution.naming.service.UNS;
+import com.unstoppabledomains.resolution.naming.service.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
 import com.unstoppabledomains.util.Utilities;
-
-import java.util.Arrays;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Resolution implements DomainResolution {
     private Map<NamingServiceType, NamingService> services;
