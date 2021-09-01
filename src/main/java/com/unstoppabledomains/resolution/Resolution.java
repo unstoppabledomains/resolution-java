@@ -203,11 +203,11 @@ public class Resolution implements DomainResolution {
 
     private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
+        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader");
         Map<NamingServiceType, NamingService> namingServices = new HashMap<>();
         namingServices.put(NamingServiceType.UNS, new UNS(new UNSConfig(
                 new NSConfig(Network.MAINNET, ResolutionBuilder.UNS_DEFAULT_URL, unsProxyAddress),
-                new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
+                new NSConfig(Network.MUMBAI_TESTNET, ResolutionBuilder.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
                 , provider));
         namingServices.put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, ResolutionBuilder.ENS_DEFAULT_URL, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS), provider));
         namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
