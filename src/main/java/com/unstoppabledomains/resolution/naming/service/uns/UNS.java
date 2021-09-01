@@ -1,37 +1,32 @@
-package com.unstoppabledomains.resolution.naming.service;
-
+package com.unstoppabledomains.resolution.naming.service.uns;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
-import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
-import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
+import com.unstoppabledomains.resolution.naming.service.NamingService;
+import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 
 public class UNS implements NamingService {
-  private ExecutorService executor = Executors.newFixedThreadPool(2);
+  private L2Resolver resolver;
   private UNSInternal unsl1;
   private UNSInternal unsl2;
 
   public UNS(UNSConfig config, IProvider provider) {
-    unsl1 = new UNSInternal(config.getLayer1(), provider);
-    unsl2 = new UNSInternal(config.getLayer2(), provider);
+    resolver = new L2Resolver();
+    unsl1 = new UNSInternal(UNSLocation.Layer1, config.getLayer1(), provider);
+    unsl2 = new UNSInternal(UNSLocation.Layer2, config.getLayer2(), provider);
   }
 
   @Override
   public Network getNetwork() {
-    return unsl1.chainId;
+    return unsl1.getNetwork();
   }
 
   @Override
@@ -51,7 +46,7 @@ public class UNS implements NamingService {
 
   @Override
   public String getRecord(String domain, String recordKey) throws NamingServiceException {
-    return resolveOnBothLayers(
+    return resolver.resolveOnBothLayers(
       () -> {
         return unsl1.getRecord(domain, recordKey);
       },
@@ -62,7 +57,7 @@ public class UNS implements NamingService {
 
   @Override
   public String getOwner(String domain) throws NamingServiceException {
-    return resolveOnBothLayers(
+    return resolver.resolveOnBothLayers(
       () -> {
         return unsl1.getOwner(domain);
       },
@@ -73,7 +68,7 @@ public class UNS implements NamingService {
 
   @Override
   public Map<String, String> batchOwners(List<String> domain) throws NamingServiceException {
-    return resolveOnBothLayers(
+    return resolver.resolveOnBothLayers(
       () -> {
         return unsl1.batchOwners(domain);
       },
@@ -84,7 +79,7 @@ public class UNS implements NamingService {
 
   @Override
   public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
-    return resolveOnBothLayers(
+    return resolver.resolveOnBothLayers(
       () -> {
         return unsl1.getDns(domain, types);
       },
@@ -95,7 +90,7 @@ public class UNS implements NamingService {
 
   @Override
   public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
-    return resolveOnBothLayers(
+    return resolver.resolveOnBothLayers(
       () -> {
         return unsl1.getTokenUri(tokenID);
       },
@@ -106,41 +101,12 @@ public class UNS implements NamingService {
 
   @Override
   public String getDomainName(BigInteger tokenID) throws NamingServiceException {
-    return resolveOnBothLayers(
+    return resolver.resolveOnBothLayers(
       () -> {
         return unsl1.getDomainName(tokenID);
       },
       () -> {
         return unsl2.getDomainName(tokenID);
       });
-  }
-
-  private <T> T processFutureResult(Future<T> result) throws NamingServiceException {
-    try {
-      return result.get();
-    } catch (ExecutionException e) {
-      if (e.getCause() instanceof NamingServiceException) {
-        NamingServiceException nsException = (NamingServiceException) e.getCause();
-        throw nsException;
-      } else {
-        throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e.getCause());
-      }
-    } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
-    }
-  }
-
-  private <T> T resolveOnBothLayers(Callable<T> l1Func, Callable<T> l2Func) throws NamingServiceException{
-    Future<T> l1result = executor.submit(l1Func);
-    Future<T> l2result = executor.submit(l2Func);
-
-    try {
-      return processFutureResult(l2result);
-    } catch (NamingServiceException e) {
-      if (e.getCode() != NSExceptionCode.UnregisteredDomain && e.getCode() != NSExceptionCode.UnspecifiedResolver) {
-        throw e;
-      }
-    }
-    return processFutureResult(l1result);
   }
 }

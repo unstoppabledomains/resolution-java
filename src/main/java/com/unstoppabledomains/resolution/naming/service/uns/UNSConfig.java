@@ -1,4 +1,6 @@
-package com.unstoppabledomains.resolution.naming.service;
+package com.unstoppabledomains.resolution.naming.service.uns;
+import com.unstoppabledomains.resolution.naming.service.NSConfig;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

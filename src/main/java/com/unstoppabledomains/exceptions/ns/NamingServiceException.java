@@ -31,7 +31,7 @@ public class NamingServiceException extends Exception {
         return params.domain + " doesn't have such " + params.coinTicker + " configured";
       }
       case RecordNotFound: {
-        return params.domain + " doesn't have " + params.record + "record";
+        return params.domain + " doesn't have " + params.record + "record on layer " + params.layer;
       }
       case BlockchainIsDown: {
         return params.namingService + " blockchain network is down";
@@ -40,7 +40,7 @@ public class NamingServiceException extends Exception {
         return "used incorrect contract Address " + params.contractAddress;
       }
       case UnspecifiedResolver: {
-        return "resolver was not set for " + params.domain;
+        return "resolver was not set for " + params.domain + " on layer " + params.layer;
       }
       case UnsupportedCurrency: {
         return "Currency " + params.coinTicker + " is not supported";

@@ -1,5 +1,5 @@
 
-package com.unstoppabledomains.resolution.naming.service;
+package com.unstoppabledomains.resolution.naming.service.uns;
 
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -14,6 +14,9 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.dns.DnsUtils;
+import com.unstoppabledomains.resolution.naming.service.BaseNamingService;
+import com.unstoppabledomains.resolution.naming.service.NSConfig;
+import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.math.BigInteger;
@@ -25,9 +28,11 @@ import java.util.Map;
 
 class UNSInternal extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
+  private UNSLocation location;
   
-  public UNSInternal(NSConfig config, IProvider provider) {
+  UNSInternal(UNSLocation location, NSConfig config, IProvider provider) {
     super(config, provider);
+    this.location = location;
     String proxyReaderAddress = config.getContractAddress();
     this.proxyReaderContract = new ProxyReader(config.getBlockchainProviderUrl(), proxyReaderAddress, provider);
   }
@@ -60,7 +65,7 @@ class UNSInternal extends BaseNamingService {
     checkDomainOwnership(data, domain);
     String result = data.getValues().get(0);
     if (Utilities.isEmptyResponse(result)) {
-      throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, recordKey));
+      throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r|l", domain, recordKey, location.getName()));
     }
     return result;
   }
@@ -72,12 +77,12 @@ class UNSInternal extends BaseNamingService {
       String owner = owner(tokenID);
       if (Utilities.isEmptyResponse(owner)) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
-          new NSExceptionParams("d|n", domain, "UNS"));
+          new NSExceptionParams("d|n|l", domain, "UNS", location.getName()));
       }
       return owner;
     } catch (Exception e) {
       throw configureNamingServiceException(e,
-          new NSExceptionParams("d|n", domain, "UNS"));
+          new NSExceptionParams("d|n|l", domain, "UNS", location.getName()));
     }
   }
 
@@ -99,7 +104,7 @@ class UNSInternal extends BaseNamingService {
       return domainOwnerMap;
     } catch(Exception e) {
       throw configureNamingServiceException(e,
-        new NSExceptionParams("d|n", String.join(", ", domains),"UNS"));
+        new NSExceptionParams("d|n|l", String.join(", ", domains),"UNS", location.getName()));
     }
   }
 
@@ -121,11 +126,11 @@ class UNSInternal extends BaseNamingService {
     try {
       String tokenURI = proxyReaderContract.getTokenUri(tokenID);
       if (tokenURI == null) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "UNS"));
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getTokenUri", "UNS", location.getName()));
       }
       return tokenURI;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getTokenUri", "UNS"), e);
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getTokenUri", "UNS", location.getName()), e);
     }
   }
 
@@ -136,11 +141,11 @@ class UNSInternal extends BaseNamingService {
       Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
       String domainName = registryContract.getDomainName(tokenID);
       if (domainName == null) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"));
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()));
       }
       return domainName;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getDomainName", "UNS"), e);
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()), e);
     }
   }
 
@@ -148,11 +153,11 @@ class UNSInternal extends BaseNamingService {
     try {
       String tokenURI = proxyReaderContract.registryOf(tokenID);
       if (tokenURI == null) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"));
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getRegistryAddress", "UNS", location.getName()));
       }
       return tokenURI;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n", "getRegistryAddress", "UNS"), e);
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getRegistryAddress", "UNS", location.getName()), e);
     }
   }
 
@@ -167,7 +172,7 @@ class UNSInternal extends BaseNamingService {
     List<String> values = data.getValues();
     if (values.get(0).isEmpty() && values.get(1).isEmpty()) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound,
-              new NSExceptionParams("d|r", domain, keys[0]));
+              new NSExceptionParams("d|r|l", domain, keys[0], location.getName()));
     }
     return values.get(0).isEmpty() ? values.get(1) : values.get(0);
   }
@@ -186,10 +191,10 @@ class UNSInternal extends BaseNamingService {
     if (data.getResolver().isEmpty()) {
       if (data.getOwner().isEmpty()) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, 
-          new NSExceptionParams("d", domain));
+          new NSExceptionParams("d|l", domain, location.getName()));
       }
       throw new NamingServiceException(NSExceptionCode.UnspecifiedResolver,
-      new NSExceptionParams("d", domain));
+      new NSExceptionParams("d|l", domain, location.getName()));
     }
   }
 
