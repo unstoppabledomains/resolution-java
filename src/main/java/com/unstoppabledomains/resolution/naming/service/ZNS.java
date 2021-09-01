@@ -57,7 +57,7 @@ public class ZNS extends BaseNamingService {
 
     @Override
     public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", "ZNS"));
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", getType().toString()));
     }
 
     @Override
@@ -89,12 +89,17 @@ public class ZNS extends BaseNamingService {
 
     @Override
     public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", "ZNS"));
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", getType().toString()));
     }
 
     @Override
     public String getDomainName(BigInteger tokenID) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", "ZNS"));
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", getType().toString()));
+    }
+
+    @Override
+    public List<String> getTokensOwnedBy(String address) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", getType().toString()));
     }
 
     private String getIpfsHash(JsonObject records) {
@@ -145,7 +150,7 @@ public class ZNS extends BaseNamingService {
           }
           return list.toArray(new String[list.size()]);
         } catch (IOException error) {
-            throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", "ZNS"), error);
+            throw new NamingServiceException(NSExceptionCode.BlockchainIsDown, new NSExceptionParams("n", getType().toString()), error);
         } catch (IllegalStateException exception) {
             return null;
         }

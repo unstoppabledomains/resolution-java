@@ -152,6 +152,14 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public List<String> getTokensOwnedBy(String address, NamingServiceType service) throws NamingServiceException {
+        if (service != NamingServiceType.UNS) {
+            throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", service.toString()));
+        }
+        return services.get(service).getTokensOwnedBy(address);
+    }
+
+    @Override
     public String getTokenURI(String domain) throws NamingServiceException {
         domain = normalizeDomain(domain);
         try {
@@ -196,14 +204,15 @@ public class Resolution implements DomainResolution {
     private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
-        return new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNS(new UNSConfig(
+        Map<NamingServiceType, NamingService> namingServices = new HashMap<>();
+        namingServices.put(NamingServiceType.UNS, new UNS(new UNSConfig(
                 new NSConfig(Network.MAINNET, ResolutionBuilder.UNS_DEFAULT_URL, unsProxyAddress),
                 new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
                 , provider));
-            put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, ResolutionBuilder.ENS_DEFAULT_URL, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS), provider));
-            put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
-        }};
+        namingServices.put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, ResolutionBuilder.ENS_DEFAULT_URL, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+        namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
+        
+        return namingServices;
     }
 
     private NamingService findService(String domain) throws NamingServiceException {

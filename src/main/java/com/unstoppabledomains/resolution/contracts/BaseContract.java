@@ -108,20 +108,29 @@ public abstract class BaseContract {
 
   protected List<Tuple> fetchLogs(String fromBlock, String eventName, String[] topics) throws NamingServiceException {
     Event event = Event.fromJsonObject(getEventDescription(eventName));
+    List<ContractLogs> logData = fetchContractLogs(fromBlock, eventName, topics);
+    List<Tuple> logs = new ArrayList<>();  
+    for (ContractLogs logElement: logData) {
+      final String hexData = logElement.getData().replace("0x", "");
+      Tuple decodedParams = event.getNonIndexedParams().decode(FastHex.decode(hexData));
+      logs.add(decodedParams);
+    }
+    return logs;
+  }
+
+  protected List<ContractLogs> fetchContractLogs(String fromBlock, String eventName, String[] topics) throws NamingServiceException {
+    Event event = Event.fromJsonObject(getEventDescription(eventName));
     JsonArray params = prepareParamsForLogs(fromBlock, Hash.sha3String(event.signature()), topics);
     JsonObject body = HTTPUtil.prepareBody("eth_getLogs", params);
     try {
-      List<Tuple> logs = new ArrayList<>();
+      List<ContractLogs> logs = new ArrayList<>();
       JsonObject response = provider.request(url, body);
       if (isUnknownError(response)) {
         return logs;
       }
       JsonArray answerArray = response.get("result").getAsJsonArray();
       for (JsonElement jsonElement : answerArray) {
-        ContractLogs logElement = gson.fromJson(jsonElement.toString(), ContractLogs.class);
-        final String hexData = logElement.getData().replace("0x", "");
-        Tuple decodedParams = event.getNonIndexedParams().decode(FastHex.decode(hexData));
-        logs.add(decodedParams);
+        logs.add(gson.fromJson(jsonElement.toString(), ContractLogs.class));
       }
       return logs;
     } catch(IOException exception) {

@@ -35,18 +35,17 @@ public class ResolutionBuilder {
 
     public ResolutionBuilder(Resolution.ResolutionBuilderConnector connector) {
         this.connector = connector;
-        serviceConfigs = new HashMap<NamingServiceType, NSConfig>() {{
-            put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
-            put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
-        }};
+        serviceConfigs = new HashMap<>();
+        serviceConfigs.put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
+        serviceConfigs.put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
+        
 
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader");
-        unsConfigs = new HashMap<UNSLocation, NSConfig>() {{
-            put(UNSLocation.Layer1, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-            put(UNSLocation.Layer2, new NSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
-        }};
-
+        unsConfigs = new HashMap<>();
+        unsConfigs.put(UNSLocation.Layer1, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
+        unsConfigs.put(UNSLocation.Layer2, new NSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
+        
         provider = new DefaultProvider();
     }
 
@@ -210,12 +209,11 @@ public class ResolutionBuilder {
      * @return resolution object
      */
     public Resolution build() {
-        Map<NamingServiceType, NamingService> services = new HashMap<NamingServiceType, NamingService>() {{
-            put(NamingServiceType.UNS, new UNS(new UNSConfig(unsConfigs.get(UNSLocation.Layer1),
+        Map<NamingServiceType, NamingService> services = new HashMap<>();
+        services.put(NamingServiceType.UNS, new UNS(new UNSConfig(unsConfigs.get(UNSLocation.Layer1),
                                                               unsConfigs.get(UNSLocation.Layer2)), provider));
-            put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
-            put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
-        }};
+        services.put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
+        services.put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
         return connector.buildResolution(services);
     }
 

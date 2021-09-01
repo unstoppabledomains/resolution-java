@@ -22,15 +22,24 @@ public abstract class NetworkConfigLoader {
     }
 
     public static String getContractAddress(Network chainId, String contractName) {
+      final Contract contract = getContract(chainId, contractName);
+      return contract.getAddress();
+    }
+
+    public static String getDeploymentBlock(Network chainId, String contractName) {
+        final Contract contract = getContract(chainId, contractName);
+        String deploymentBlock = contract.getDeploymentBlock();
+        return deploymentBlock.equals("0x0") ? "earliest" : deploymentBlock; 
+    }
+
+    public static Contract getContract(Network chainId, String contractName) {
         final Map<Integer, Contracts> networks = NETWORK_CONFIG.getNetworks();
 
         final Contracts contracts = Optional.ofNullable(networks.get(chainId.getCode()))
                 .orElseThrow(() -> new IllegalArgumentException("No contracts found for network: " + chainId));
 
-        final Contract contract = Optional.ofNullable(contracts.getContracts().get(contractName))
+        return Optional.ofNullable(contracts.getContracts().get(contractName))
                 .orElseThrow(() -> new IllegalArgumentException("No contract found with name: " + contractName));
-
-        return contract.getAddress();
     }
 
     private static NetworkConfig initNetworkConfig() {

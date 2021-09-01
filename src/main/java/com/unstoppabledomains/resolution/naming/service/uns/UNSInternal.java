@@ -1,6 +1,7 @@
 
 package com.unstoppabledomains.resolution.naming.service.uns;
 
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
@@ -22,9 +23,12 @@ import com.unstoppabledomains.util.Utilities;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 class UNSInternal extends BaseNamingService {
   private final ProxyReader proxyReaderContract;
@@ -119,6 +123,44 @@ class UNSInternal extends BaseNamingService {
       rawData.put(keys.get(i), values.get(i));
     }
     return util.toList(rawData);
+  }
+
+  private Thread parseRegistryThread(String contractName, String address, List<String> toPopulateList) {
+    return new Thread(() -> {
+      String registryAddress = NetworkConfigLoader.getContractAddress(chainId, contractName);
+      String deploymentBlock = NetworkConfigLoader.getDeploymentBlock(chainId, contractName);
+      Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
+       try {
+        List<String> tokensFromRegistry = registryContract.getTokensOwnedBy(address, deploymentBlock);
+        toPopulateList.addAll(tokensFromRegistry);
+      } catch (NamingServiceException e) {
+        e.printStackTrace();
+      } 
+    });
+  }
+
+  @Override
+  public List<String> getTokensOwnedBy(String address) throws NamingServiceException {
+    List<String> domains = new ArrayList<>();
+    List<Thread> threads = Arrays.asList(
+      parseRegistryThread("UNSRegistry", address, domains),
+      parseRegistryThread("CNSRegistry", address, domains)
+    );
+    try {
+      threads.forEach(Thread::start);
+      threads.get(0).join();
+      threads.get(1).join();
+    } catch(InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new NamingServiceException(NSExceptionCode.UnknownError, NSExceptionParams.EMPTY_PARAMS, e);
+    }
+
+     return batchOwners(domains)
+      .entrySet()
+      .stream()
+      .filter(entry -> entry.getValue().equals(address))
+      .map(Entry<String, String>::getKey)
+      .collect(Collectors.toList());      
   }
 
   @Override

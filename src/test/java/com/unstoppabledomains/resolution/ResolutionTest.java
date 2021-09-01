@@ -337,6 +337,29 @@ public class ResolutionTest {
     }
 
     @Test
+    public void getTokensOwnedBy() throws Exception {
+        List<String> domains = resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.UNS);
+        List<String> ownedDomains = Arrays.asList(
+            "udtestdev--awefawef.crypto",
+            "asdfasdf.nft", 
+            "udtestdev--c38898.crypto",
+            "udtestdev--9362ee.crypto",
+            "testing.crypto",
+            "testing.nft",
+            "udtestdev--27d625.crypto",
+            "udtestdev-test.crypto",
+            "udtestdev-e58337.crypto",
+            "udtestdev-d0137c.crypto"
+        );
+        assertEquals(ownedDomains, domains);
+    }
+
+    @Test
+    public void getTokensOwnedByEnsZns() throws Exception {
+        TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ENS), NSExceptionCode.NotImplemented);
+        TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ZNS), NSExceptionCode.NotImplemented);
+    }
+
     public void invalidDomains() throws Exception {
         String[] invalidDomains = { "some#.crypto", "special!.zil", "character?.eth", "notAllowed%.nft"};
         for (int i = 0; i < invalidDomains.length; i++) {
