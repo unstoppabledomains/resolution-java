@@ -56,11 +56,11 @@ public class ResolutionTest {
             .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
             .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
             .providerUrl(NamingServiceType.ENS, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
-            .providerUrl(UNSLocation.Layer1, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .providerUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
             .providerUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
             .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
             .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
-            .contractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
+            .contractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
             .build();
         String ethAddress = rinkebyResolution.getAddress("udtestdev-creek.crypto", "eth");
         assertEquals("0x1C8b9B78e3085866521FE206fa4c1a67F49f153A", ethAddress);
@@ -112,7 +112,7 @@ public class ResolutionTest {
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilder.getOwner("testing.crypto"));
         assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", resolutionFromBuilder.getOwner("testing.zil"));
-        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", resolutionFromBuilder.getOwner("udtestdev-test-l2-domain-784391.wallet"));
+        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", resolutionFromBuilder.getOwner("udtestdev-test-l2-domain-784391.wallet"));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ResolutionTest {
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilderWithInfura.getOwner("testing.crypto"));
         assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", resolutionFromBuilderWithInfura.getOwner("testing.zil"));
-        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", resolutionFromBuilderWithInfura.getOwner("udtestdev-test-l2-domain-784391.wallet"));
+        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", resolutionFromBuilderWithInfura.getOwner("udtestdev-test-l2-domain-784391.wallet"));
     }
 
     @Test
@@ -299,7 +299,7 @@ public class ResolutionTest {
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", owner);
 
         owner = resolution.getOwner("udtestdev-test-l2-domain-784391.wallet");
-        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", owner);
+        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", owner);
     }
 
     @Test
@@ -349,7 +349,8 @@ public class ResolutionTest {
             "udtestdev--27d625.crypto",
             "udtestdev-test.crypto",
             "udtestdev-e58337.crypto",
-            "udtestdev-d0137c.crypto"
+            "udtestdev-d0137c.crypto",
+            "udtestdev-test-l2-domain-owner-2.wallet"
         );
         assertEquals(ownedDomains, domains);
     }

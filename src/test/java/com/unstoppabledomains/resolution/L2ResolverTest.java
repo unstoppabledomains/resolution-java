@@ -2,16 +2,14 @@ package com.unstoppabledomains.resolution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -22,29 +20,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 @SuppressWarnings("unchecked") // For mocking generic types
 @ExtendWith(MockitoExtension.class)
 public class L2ResolverTest {
   private L2Resolver resolver = new L2Resolver();
   
-  protected <T> void mockExecutor(ExecutorService executor) {
-    doAnswer(new Answer<T>() {
-        public T answer(InvocationOnMock invocation) throws Exception {
-            return ((Callable<T>) invocation.getArguments()[0]).call();
-        }
-    }).when(executor).submit(any(Callable.class));
-  }
-  
   @Test
   public void callsBothMethods() throws Exception {
     Callable<Object> mockCallable = mock(Callable.class);
     Callable<Object> mockCallable2 = mock(Callable.class);
 
-    resolver.resolveOnBothLayers(mockCallable, mockCallable2);
+    resolver.resolve(mockCallable, mockCallable2);
 
     verify(mockCallable).call();
     verify(mockCallable2).call();
@@ -58,7 +46,7 @@ public class L2ResolverTest {
     when(mockCallable2.call()).thenReturn("test return value 2");
     when(mockCallable.call()).thenReturn("test return value 1");
 
-    String result = resolver.resolveOnBothLayers(mockCallable, mockCallable2);
+    String result = resolver.resolve(mockCallable, mockCallable2);
 
     verify(mockCallable).call();
     verify(mockCallable2).call();
@@ -85,7 +73,7 @@ public class L2ResolverTest {
         when(mockCallable.call()).thenReturn("test return value 1");
         when(mockCallable2.call()).thenThrow(ex);
     
-        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolveOnBothLayers(mockCallable, mockCallable2));
+        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(mockCallable, mockCallable2));
     
         verify(mockCallable).call();
         verify(mockCallable2).call();
@@ -114,7 +102,7 @@ public class L2ResolverTest {
     when(mockCallable2.call()).thenThrow(new NamingServiceException(NSExceptionCode.UnregisteredDomain));
     when(mockCallable.call()).thenReturn("test return value 1");
 
-    String result = resolver.resolveOnBothLayers(mockCallable, mockCallable2);
+    String result = resolver.resolve(mockCallable, mockCallable2);
 
     verify(mockCallable).call();
     verify(mockCallable2).call();
@@ -141,7 +129,7 @@ public class L2ResolverTest {
         when(mockCallable.call()).thenThrow(ex);
         when(mockCallable2.call()).thenThrow(new NamingServiceException(NSExceptionCode.UnregisteredDomain));
     
-        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolveOnBothLayers(mockCallable, mockCallable2));
+        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(mockCallable, mockCallable2));
     
         verify(mockCallable).call();
         verify(mockCallable2).call();
@@ -160,5 +148,23 @@ public class L2ResolverTest {
     }
 
     return dynamicTests;
+  }
+
+  @Test
+  public void resolveOnBothLayersCombinesResults() throws Exception {
+    Callable<String> mockCallable = mock(Callable.class);
+    Callable<String> mockCallable2 = mock(Callable.class);
+    List<String> expected = new ArrayList<>();
+    expected.add("value 1");
+    expected.add("value 2");
+
+    when(mockCallable.call()).thenReturn("value 1");
+    when(mockCallable2.call()).thenReturn("value 2");
+
+    List<String> result = resolver.resolveOnBothLayers(mockCallable, mockCallable2);
+
+    verify(mockCallable).call();
+    verify(mockCallable2).call();
+    assertEquals(expected, result);
   }
 }

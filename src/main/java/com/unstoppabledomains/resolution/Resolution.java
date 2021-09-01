@@ -238,6 +238,7 @@ public class Resolution implements DomainResolution {
         return normalizedDomain;
     }
 
+    // Allows to create a class instance with a private constructor
     public static final class ResolutionBuilderConnector {
         private ResolutionBuilderConnector() {}
 
