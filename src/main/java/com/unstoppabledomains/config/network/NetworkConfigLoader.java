@@ -7,11 +7,9 @@ import com.unstoppabledomains.config.network.model.Contracts;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.config.network.model.NetworkConfig;
 
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public abstract class NetworkConfigLoader {
 
