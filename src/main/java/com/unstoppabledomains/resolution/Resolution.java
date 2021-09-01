@@ -21,9 +21,9 @@ import com.unstoppabledomains.resolution.naming.service.ENS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
-import com.unstoppabledomains.resolution.naming.service.UNS;
-import com.unstoppabledomains.resolution.naming.service.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
+import com.unstoppabledomains.resolution.naming.service.uns.UNS;
+import com.unstoppabledomains.resolution.naming.service.uns.UNSConfig;
 import com.unstoppabledomains.util.Utilities;
 
 public class Resolution implements DomainResolution {

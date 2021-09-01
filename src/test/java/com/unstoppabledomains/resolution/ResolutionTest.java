@@ -15,7 +15,7 @@ import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.dns.DnsUtils;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
-import com.unstoppabledomains.resolution.naming.service.UNSLocation;
+import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
