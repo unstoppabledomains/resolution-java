@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,7 +76,7 @@ public class L2ResolverTest {
     
         Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(mockCallable, mockCallable2));
     
-        verify(mockCallable).call();
+        verify(mockCallable, atMostOnce()).call(); // L1 may not be called if L2 throws a network error
         verify(mockCallable2).call();
         
         if (((NamingServiceException)thrown).getCode() != NSExceptionCode.UnknownError) {
