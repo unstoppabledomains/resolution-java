@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -350,8 +351,13 @@ public class ResolutionTest {
             "udtestdev-test.crypto",
             "udtestdev-e58337.crypto",
             "udtestdev-d0137c.crypto",
+            "udtestdev-ryan2.wallet",
+            "udtestdev-ryan.wallet",
+            "udtestdev-test-l2-domain-owner.wallet",
             "udtestdev-test-l2-domain-owner-2.wallet"
         );
+        ownedDomains.sort(Comparator.naturalOrder());
+        domains.sort(Comparator.naturalOrder());
         assertEquals(ownedDomains, domains);
     }
 

@@ -22,7 +22,7 @@ public class ResolutionBuilder {
     private static final String INFURA_URL = "https://%s.infura.io/v3/%s";
     static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
-    static final String UNS_L2_DEFAULT_URL = "https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78";
+    static final String UNS_L2_DEFAULT_URL = "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";

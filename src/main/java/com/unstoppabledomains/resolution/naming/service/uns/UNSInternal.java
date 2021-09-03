@@ -128,10 +128,9 @@ class UNSInternal extends BaseNamingService {
   private Thread parseRegistryThread(String contractName, String address, List<String> toPopulateList) {
     return new Thread(() -> {
       String registryAddress = NetworkConfigLoader.getContractAddress(chainId, contractName);
-      String deploymentBlock = NetworkConfigLoader.getDeploymentBlock(chainId, contractName);
       Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
        try {
-        List<String> tokensFromRegistry = registryContract.getTokensOwnedBy(address, deploymentBlock);
+        List<String> tokensFromRegistry = registryContract.getTokensOwnedBy(address, "earliest");
         toPopulateList.addAll(tokensFromRegistry);
       } catch (NamingServiceException e) {
         e.printStackTrace();
