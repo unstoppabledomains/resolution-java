@@ -2,7 +2,6 @@ package com.unstoppabledomains.resolution.naming.service.uns;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,18 +17,18 @@ import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 public class L2Resolver {
   private ExecutorService executor = Executors.newFixedThreadPool(2);
 
-  public <T> List<T> resolveOnBothLayers(Callable<T> l1Func, Callable<T> l2Func) throws NamingServiceException{
-    Future<T> l1result = executor.submit(l1Func);
-    Future<T> l2result = executor.submit(l2Func);
+  public <T> List<T> resolveOnBothLayers(ResolutionMethods<T> methods) throws NamingServiceException{
+    Future<T> l1result = executor.submit(methods.getL1Func());
+    Future<T> l2result = executor.submit(methods.getL2Func());
     ArrayList<T> results = new ArrayList<>();
     results.add(processFutureResult(l1result));
     results.add(processFutureResult(l2result));
     return results;
   }
   
-  public <T> T resolve(Callable<T> l1Func, Callable<T> l2Func) throws NamingServiceException{
-    Future<T> l1result = executor.submit(l1Func);
-    Future<T> l2result = executor.submit(l2Func);
+  public <T> T resolve(ResolutionMethods<T> methods) throws NamingServiceException{
+    Future<T> l1result = executor.submit(methods.getL1Func());
+    Future<T> l2result = executor.submit(methods.getL2Func());
 
     try {
       return processFutureResult(l2result);

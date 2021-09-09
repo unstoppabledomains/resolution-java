@@ -2,8 +2,10 @@ package com.unstoppabledomains.resolution.naming.service.uns;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -47,33 +49,41 @@ public class UNS implements NamingService {
 
     @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
-        return resolver.resolve(() -> {
-            return unsl1.getRecord(domain, recordKey);
-        }, () -> {
-            return unsl2.getRecord(domain, recordKey);
-        });
+        return resolver.resolve(ResolutionMethods.<String>builder()
+            .l1Func(() -> {
+                return unsl1.getRecord(domain, recordKey);
+            })
+            .l2Func(() -> {
+                return unsl2.getRecord(domain, recordKey);
+            }).build()
+        );
     }
 
     @Override
     public String getOwner(String domain) throws NamingServiceException {
-        return resolver.resolve(() -> {
-            return unsl1.getOwner(domain);
-        }, () -> {
-            return unsl2.getOwner(domain);
-        });
+        return resolver.resolve(ResolutionMethods.<String>builder()
+            .l1Func(() -> {
+                return unsl1.getOwner(domain);
+            })
+            .l2Func(() -> {
+                return unsl2.getOwner(domain);
+            }).build()
+        );
     }
 
     @Override
     public Map<String, String> batchOwners(List<String> domain) throws NamingServiceException {
-        List<Map<String, String>> results = resolver.resolveOnBothLayers(() -> {
-            return unsl1.batchOwners(domain);
-        }, () -> {
-            return unsl2.batchOwners(domain);
-        });
+        List<Map<String, String>> results = resolver.resolveOnBothLayers(ResolutionMethods.<Map<String, String>>builder()
+            .l1Func(() -> {
+                return unsl1.batchOwners(domain);
+            })
+            .l2Func(() -> {
+                return unsl2.batchOwners(domain);
+            }).build());
         Map<String, String> result = results.get(0);
         results.get(1).forEach((k, v) -> {
             if (v != null) {
-                result.merge(k, v, (v1, v2) -> v1);
+                result.merge(k, v, (v1, v2) -> v2);
             }
         });
         return result;
@@ -82,41 +92,53 @@ public class UNS implements NamingService {
     @Override
     public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types)
             throws NamingServiceException, DnsException {
-        return resolver.resolve(() -> {
-            return unsl1.getDns(domain, types);
-        }, () -> {
-            return unsl2.getDns(domain, types);
-        });
+        return resolver.resolve(ResolutionMethods.<List<DnsRecord>>builder()
+            .l1Func(() -> {
+                return unsl1.getDns(domain, types);
+            })
+            .l2Func(() -> {
+                return unsl2.getDns(domain, types);
+            }).build()
+        );
     }
 
     @Override
     public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
-        return resolver.resolve(() -> {
-            return unsl1.getTokenUri(tokenID);
-        }, () -> {
-            return unsl2.getTokenUri(tokenID);
-        });
+        return resolver.resolve(ResolutionMethods.<String>builder()
+            .l1Func(() -> {
+                return unsl1.getTokenUri(tokenID);
+            })
+            .l2Func(() -> {
+                return unsl2.getTokenUri(tokenID);
+            }).build()
+        );
     }
 
     @Override
     public String getDomainName(BigInteger tokenID) throws NamingServiceException {
-        return resolver.resolve(() -> {
-            return unsl1.getDomainName(tokenID);
-        }, () -> {
-            return unsl2.getDomainName(tokenID);
-        });
+        return resolver.resolve(ResolutionMethods.<String>builder()
+            .l1Func(() -> {
+                return unsl1.getDomainName(tokenID);
+            })
+            .l2Func(() -> {
+                return unsl2.getDomainName(tokenID);
+            }).build()
+        );
     }
 
     @Override
     public List<String> getTokensOwnedBy(String owner) throws NamingServiceException {
-        List<List<String>> results = resolver.resolveOnBothLayers(() -> {
-            return unsl1.getTokensOwnedBy(owner);
-        }, () -> {
-            return unsl2.getTokensOwnedBy(owner);
-        });
+        List<List<String>> results = resolver.resolveOnBothLayers(ResolutionMethods.<List<String>>builder()
+            .l1Func(() -> {
+                return unsl1.getTokensOwnedBy(owner);
+            })
+            .l2Func(() -> {
+                return unsl2.getTokensOwnedBy(owner);
+            }).build()
+        );
 
-        List<String> result = new ArrayList<>();
+        Set<String> result = new HashSet<>();
         results.forEach(list -> result.addAll(list));
-        return result;
+        return new ArrayList<String>(result);
     }
 }

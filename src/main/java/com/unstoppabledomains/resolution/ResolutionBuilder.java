@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,6 +18,7 @@ import com.unstoppabledomains.resolution.naming.service.ZNS;
 import com.unstoppabledomains.resolution.naming.service.uns.UNS;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
+import com.unstoppabledomains.util.BuilderNSConfig;
 
 public class ResolutionBuilder {
     private static final String INFURA_URL = "https://%s.infura.io/v3/%s";
@@ -28,23 +30,22 @@ public class ResolutionBuilder {
     static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
     static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
-    private final Map<NamingServiceType, NSConfig> serviceConfigs;
-    private final Map<UNSLocation, NSConfig> unsConfigs;
+    private final Map<NamingServiceType, BuilderNSConfig> serviceConfigs;
+    private final Map<UNSLocation, BuilderNSConfig> unsConfigs;
     private IProvider provider;
     private Resolution.ResolutionBuilderConnector connector;
 
     public ResolutionBuilder(Resolution.ResolutionBuilderConnector connector) {
         this.connector = connector;
         serviceConfigs = new HashMap<>();
-        serviceConfigs.put(NamingServiceType.ZNS, new NSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
-        serviceConfigs.put(NamingServiceType.ENS, new NSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
+        serviceConfigs.put(NamingServiceType.ZNS, new BuilderNSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
+        serviceConfigs.put(NamingServiceType.ENS, new BuilderNSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
         
-
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader");
         unsConfigs = new HashMap<>();
-        unsConfigs.put(UNSLocation.Layer1, new NSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-        unsConfigs.put(UNSLocation.Layer2, new NSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
+        unsConfigs.put(UNSLocation.Layer1, new BuilderNSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
+        unsConfigs.put(UNSLocation.Layer2, new BuilderNSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
         
         provider = new DefaultProvider();
     }
@@ -203,12 +204,26 @@ public class ResolutionBuilder {
         return this;
     } 
 
+
+    private <T extends Enum<T>> void checkConfigs(Map<T, BuilderNSConfig> configs, String messagePrefix) {
+        for (Entry<T, BuilderNSConfig> config : configs.entrySet()) {
+            if (!config.getValue().isConfigured()) {
+                throw new IllegalArgumentException(messagePrefix + " " + config.getKey().name() + ": " + config.getValue().getMisconfiguredMessage());
+            }
+        }
+        configs.forEach((l, c) -> {
+        });
+    }
+
     /**
      * Call directly to get default configs or override them with {@link ResolutionBuilder} methods
      *
      * @return resolution object
      */
     public Resolution build() {
+        checkConfigs(unsConfigs, "Invalid configuration for UNS layer");
+        checkConfigs(serviceConfigs, "Invalid configuration for service");
+
         Map<NamingServiceType, NamingService> services = new HashMap<>();
         services.put(NamingServiceType.UNS, new UNS(new UNSConfig(unsConfigs.get(UNSLocation.Layer1),
                                                               unsConfigs.get(UNSLocation.Layer2)), provider));
