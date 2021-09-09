@@ -1,4 +1,4 @@
-package com.unstoppabledomains.resolution;
+package com.unstoppabledomains.resolution.naming.service.uns;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.naming.service.uns.L2Resolver;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ public class L2ResolverTest {
     Callable<Object> mockCallable = mock(Callable.class);
     Callable<Object> mockCallable2 = mock(Callable.class);
 
-    resolver.resolve(mockCallable, mockCallable2);
+    resolver.resolve(ResolutionMethods.<Object>builder().l1Func(mockCallable).l2Func(mockCallable2).build());
 
     verify(mockCallable).call();
     verify(mockCallable2).call();
@@ -47,7 +46,7 @@ public class L2ResolverTest {
     when(mockCallable2.call()).thenReturn("test return value 2");
     when(mockCallable.call()).thenReturn("test return value 1");
 
-    String result = resolver.resolve(mockCallable, mockCallable2);
+    String result = resolver.resolve(ResolutionMethods.<String>builder().l1Func(mockCallable).l2Func(mockCallable2).build());
 
     verify(mockCallable).call();
     verify(mockCallable2).call();
@@ -74,8 +73,8 @@ public class L2ResolverTest {
         when(mockCallable.call()).thenReturn("test return value 1");
         when(mockCallable2.call()).thenThrow(ex);
     
-        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(mockCallable, mockCallable2));
-    
+        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(ResolutionMethods.<String>builder().l1Func(mockCallable).l2Func(mockCallable2).build()));
+
         verify(mockCallable, atMostOnce()).call(); // L1 may not be called if L2 throws a network error
         verify(mockCallable2).call();
         
@@ -103,7 +102,7 @@ public class L2ResolverTest {
     when(mockCallable2.call()).thenThrow(new NamingServiceException(NSExceptionCode.UnregisteredDomain));
     when(mockCallable.call()).thenReturn("test return value 1");
 
-    String result = resolver.resolve(mockCallable, mockCallable2);
+    String result = resolver.resolve(ResolutionMethods.<String>builder().l1Func(mockCallable).l2Func(mockCallable2).build());
 
     verify(mockCallable).call();
     verify(mockCallable2).call();
@@ -130,7 +129,7 @@ public class L2ResolverTest {
         when(mockCallable.call()).thenThrow(ex);
         when(mockCallable2.call()).thenThrow(new NamingServiceException(NSExceptionCode.UnregisteredDomain));
     
-        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(mockCallable, mockCallable2));
+        Exception thrown = assertThrows(NamingServiceException.class, () -> resolver.resolve(ResolutionMethods.<String>builder().l1Func(mockCallable).l2Func(mockCallable2).build()));
     
         verify(mockCallable).call();
         verify(mockCallable2).call();
@@ -161,8 +160,8 @@ public class L2ResolverTest {
 
     when(mockCallable.call()).thenReturn("value 1");
     when(mockCallable2.call()).thenReturn("value 2");
-
-    List<String> result = resolver.resolveOnBothLayers(mockCallable, mockCallable2);
+    
+    List<String> result = resolver.resolveOnBothLayers(ResolutionMethods.<String>builder().l1Func(mockCallable).l2Func(mockCallable2).build());
 
     verify(mockCallable).call();
     verify(mockCallable2).call();

@@ -264,7 +264,7 @@ public class ResolutionTest {
     @Test
     public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
-        assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
+        assertEquals("QmZ13Z6wRdtDm5c1vee9J5q7gWg6Mnq6SXiqau7Fa4CNrc", ipfs);
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);

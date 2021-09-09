@@ -22,7 +22,11 @@ public class UNS implements NamingService {
     private UNSInternal unsl2;
 
     public UNS(UNSConfig config, IProvider provider) {
-        resolver = new L2Resolver();
+        this(config, provider, new L2Resolver());
+    }
+
+    protected UNS(UNSConfig config, IProvider provider, L2Resolver resolver) {
+        this.resolver = resolver;
         unsl1 = new UNSInternal(UNSLocation.Layer1, config.getLayer1(), provider);
         unsl2 = new UNSInternal(UNSLocation.Layer2, config.getLayer2(), provider);
     }
