@@ -37,6 +37,38 @@ public class UNS implements NamingService {
     }
 
     @Override
+    public String getProviderUrl() {
+        return unsl1.getProviderUrl();
+    }
+
+    @Override
+    public String getContractAddress() {
+        return unsl1.getContractAddress();
+    }
+
+    public Network getNetwork(UNSLocation layer) {
+        return getNSForLayer(layer).getNetwork();
+    }
+
+    public String getProviderUrl(UNSLocation layer) {
+        return getNSForLayer(layer).getProviderUrl();
+    }
+
+    public String getContractAddress(UNSLocation layer) {
+        return getNSForLayer(layer).getContractAddress();
+    }
+
+    private NamingService getNSForLayer(UNSLocation layer) {
+        switch (layer) {
+            case Layer1:
+                return unsl1;
+            case Layer2:
+                return unsl2;
+        }
+        return unsl1;
+    }
+
+    @Override
     public NamingServiceType getType() {
         return NamingServiceType.UNS;
     }

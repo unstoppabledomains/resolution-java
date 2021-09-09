@@ -67,7 +67,7 @@ public class ResolutionBuilder {
      * @param chainId blockchain network ID
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder chainId(UNSLocation location, Network chainId) {
+    public ResolutionBuilder unsChainId(UNSLocation location, Network chainId) {
         NSConfig nsConfig = unsConfigs.get(location);
         nsConfig.setChainId(chainId);
         return this;
@@ -89,7 +89,7 @@ public class ResolutionBuilder {
      * @param providerUrl blockchain provider URL
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder providerUrl(UNSLocation location, String providerUrl) {
+    public ResolutionBuilder unsProviderUrl(UNSLocation location, String providerUrl) {
         NSConfig nsConfig = unsConfigs.get(location);
         return this.providerUrl(nsConfig, providerUrl);
     }
@@ -121,7 +121,7 @@ public class ResolutionBuilder {
      * @param contractAddress   address of `ProxyReader` contract for UNS
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder contractAddress(UNSLocation location, String contractAddress) {
+    public ResolutionBuilder unsContractAddress(UNSLocation location, String contractAddress) {
         NSConfig nsConfig = unsConfigs.get(location);
         nsConfig.setContractAddress(contractAddress);
         return this;
@@ -153,7 +153,7 @@ public class ResolutionBuilder {
      * @param projectId Infura project ID
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder infura(UNSLocation location, String projectId) {
+    public ResolutionBuilder unsInfura(UNSLocation location, String projectId) {
         NSConfig nsConfig = unsConfigs.get(location);
         final Network network = nsConfig.getChainId();
         return this.infura(nsConfig, network, projectId);
@@ -180,7 +180,7 @@ public class ResolutionBuilder {
      * @param projectId Infura project ID
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder infura(UNSLocation location, Network chainId, String projectId) {
+    public ResolutionBuilder unsInfura(UNSLocation location, Network chainId, String projectId) {
         NSConfig nsConfig = unsConfigs.get(location);
         return this.infura(nsConfig, chainId, projectId);
     }
@@ -205,14 +205,12 @@ public class ResolutionBuilder {
     } 
 
 
-    private <T extends Enum<T>> void checkConfigs(Map<T, BuilderNSConfig> configs, String messagePrefix) {
+    private <T extends Enum<T>> void checkConfigs(Map<T, BuilderNSConfig> configs, String messagePrefix) throws IllegalArgumentException{
         for (Entry<T, BuilderNSConfig> config : configs.entrySet()) {
             if (!config.getValue().isConfigured()) {
                 throw new IllegalArgumentException(messagePrefix + " " + config.getKey().name() + ": " + config.getValue().getMisconfiguredMessage());
             }
         }
-        configs.forEach((l, c) -> {
-        });
     }
 
     /**
@@ -220,7 +218,10 @@ public class ResolutionBuilder {
      *
      * @return resolution object
      */
-    public Resolution build() {
+    public Resolution build() throws IllegalArgumentException {
+        if (unsConfigs.get(UNSLocation.Layer1).isDefault() ^ unsConfigs.get(UNSLocation.Layer2).isDefault()) {
+            throw new IllegalArgumentException("Configuration provided only for one UNS layer");
+        }
         checkConfigs(unsConfigs, "Invalid configuration for UNS layer");
         checkConfigs(serviceConfigs, "Invalid configuration for service");
 
