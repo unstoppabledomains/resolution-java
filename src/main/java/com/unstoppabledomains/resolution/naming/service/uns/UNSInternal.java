@@ -157,7 +157,7 @@ class UNSInternal extends BaseNamingService {
      return batchOwners(domains)
       .entrySet()
       .stream()
-      .filter(entry -> entry.getValue().equals(address))
+      .filter(entry -> entry.getValue().equalsIgnoreCase(address))
       .map(Entry<String, String>::getKey)
       .collect(Collectors.toList());      
   }

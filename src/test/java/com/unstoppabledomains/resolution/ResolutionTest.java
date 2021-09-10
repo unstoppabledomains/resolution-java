@@ -1,5 +1,18 @@
 package com.unstoppabledomains.resolution;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,20 +32,6 @@ import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ResolutionTest {
     private static DomainResolution resolution;
@@ -321,30 +320,27 @@ public class ResolutionTest {
 
     @Test
     public void getTokensOwnedBy() throws Exception {
-        List<String> domains = resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.UNS);
+        List<String> domains = resolution.getTokensOwnedBy("0xd1aD435c5Cdaf73dD2820A7eF04BcC6E22c0c843", NamingServiceType.UNS);
         List<String> ownedDomains = Arrays.asList(
-            "udtestdev--awefawef.crypto",
-            "asdfasdf.nft", 
-            "udtestdev--c38898.crypto",
-            "udtestdev--9362ee.crypto",
-            "testing.crypto",
-            "testing.nft",
-            "udtestdev--27d625.crypto",
-            "udtestdev-test.crypto",
-            "udtestdev-e58337.crypto",
-            "udtestdev-d0137c.crypto",
-            "udtestdev-ryan2.wallet",
-            "udtestdev-ryan.wallet",
-            "udtestdev-test-l2-domain-owner.wallet",
-            "udtestdev-test-l2-domain-owner-2.wallet"
+            "udtestdev-udtestdev-test-l1-ownership.crypto",
+            "udtestdev-test-l1-ownership.dao",
+            "udtestdev-test-l1-ownership.wallet",
+            "udtestdev-test-l1-ownership-l2.wallet",
+            "udtestdev-l1-and-l2-ownership.wallet",
+            "udtestdev-test-l1-and-l2-ownership.wallet",
+            "udtestdev-test-l2-ownership.wallet",
+            "udtestdev-test-l2-ownership.nft",
+            "udtestdev-test-l1-and-l2-ownership.crypto",
+            "udtestdev-test-l1-and-l2-ownership.wallet"
         );
-        ownedDomains.sort(Comparator.naturalOrder());
-        domains.sort(Comparator.naturalOrder());
-        assertEquals(ownedDomains, domains);
+        domains.forEach((domain) -> {
+            assertTrue(ownedDomains.contains(domain), "Expected ownedDomains to contain " + domain);
+        });
     }
 
     @Test
     public void getTokensOwnedByEnsZns() throws Exception {
+
         TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ENS), NSExceptionCode.NotImplemented);
         TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ZNS), NSExceptionCode.NotImplemented);
     }
@@ -522,5 +518,14 @@ public class ResolutionTest {
     public void testUnhashZNS() throws Exception {
         String testHash = "0x5fc604da00f502da70bfbc618088c0ce468ec9d18d05540935ae4118e8f50787";
         TestUtils.expectError(() -> resolution.unhash(testHash, NamingServiceType.ZNS), NSExceptionCode.NotImplemented);
+    }
+
+    @Test
+    public void testReturnsDataFromL2() throws Exception {
+        String record = resolution.getRecord("udtestdev-test-l1-and-l2-ownership.wallet", "crypto.ETH.address");
+        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", record);
+
+        String address = resolution.getOwner("udtestdev-test-l1-and-l2-ownership.wallet");
+        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", address);
     }
 }
