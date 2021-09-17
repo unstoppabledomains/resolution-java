@@ -171,7 +171,8 @@ class UNSInternal extends BaseNamingService {
       }
       return tokenURI;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getTokenUri", "UNS", location.getName()), e);
+      throw configureNamingServiceException(e,
+          new NSExceptionParams("m|n|l", "getTokenUri", "UNS", location.getName()));
     }
   }
 
@@ -186,7 +187,8 @@ class UNSInternal extends BaseNamingService {
       }
       return domainName;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()), e);
+      throw configureNamingServiceException(e,
+          new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()));
     }
   }
 
@@ -198,7 +200,8 @@ class UNSInternal extends BaseNamingService {
       }
       return tokenURI;
     } catch (Exception e) {
-      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getRegistryAddress", "UNS", location.getName()), e);
+      throw configureNamingServiceException(e,
+          new NSExceptionParams("m|n|l", "getRegistryAddress", "UNS", location.getName()));
     }
   }
 

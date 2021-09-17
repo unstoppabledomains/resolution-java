@@ -192,6 +192,7 @@ public class ResolutionTest {
 
     @Test
     public void noRecord() throws Exception {
+        TestUtils.expectError(() -> resolution.getRecord("unregistered.crypto", "crypto.ETH.address"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getRecord("testing.crypto", "invalid.record.value"), NSExceptionCode.RecordNotFound);
     }
 
@@ -220,8 +221,6 @@ public class ResolutionTest {
 
         String uppercaseDomainTestResult = resolution.getAddress("  TESTING.CRYPTO", "ETH");
         assertEquals("0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2", uppercaseDomainTestResult, "|  TESTING.CRYPTO| --> eth");
-
-        
     }
 
     @Test
@@ -479,6 +478,11 @@ public class ResolutionTest {
     }
 
     @Test
+    public void testTokenURIUnregistered() throws Exception {
+        TestUtils.expectError(() -> resolution.getTokenURI("fake-domain-that-does-not-exist.crypto"), NSExceptionCode.UnregisteredDomain);
+    }
+
+    @Test
     public void testTokenURIZNS() throws Exception {
         String testDomain = "brad.zil";
         TestUtils.expectError(() -> resolution.getTokenURI(testDomain), NSExceptionCode.NotImplemented);
@@ -507,6 +511,11 @@ public class ResolutionTest {
     }
 
     @Test
+    public void testUnhashUnregistered() throws Exception {
+        TestUtils.expectError(() -> resolution.unhash("0x0a1e7db0adb5b2b4d7de50f8091def73070759aec2a463006cbcd31932cca14b", NamingServiceType.UNS), NSExceptionCode.UnregisteredDomain);
+    }
+
+    @Test
     public void testUnhashUNS() throws Exception {
         String testHash = "0x1586d090e1b5781399f988e4b4f5639f4c2775ef5ec093d1279bb95b9bceb1a0";
         String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
@@ -522,7 +531,7 @@ public class ResolutionTest {
     @Test
     public void testReturnsDataFromL2() throws Exception {
         String record = resolution.getRecord("udtestdev-test-l1-and-l2-ownership.wallet", "crypto.ETH.address");
-        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", record);
+        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", record);
 
         String address = resolution.getOwner("udtestdev-test-l1-and-l2-ownership.wallet");
         assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", address);

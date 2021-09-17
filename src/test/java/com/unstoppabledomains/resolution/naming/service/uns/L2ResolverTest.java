@@ -57,6 +57,7 @@ public class L2ResolverTest {
     @TestFactory
     public Collection<DynamicTest> throwsNSErrorsFromL2() throws Exception {
         Exception[] exceptions = { new NamingServiceException(NSExceptionCode.BlockchainIsDown),
+                new NamingServiceException(NSExceptionCode.UnspecifiedResolver),
                 new NamingServiceException(NSExceptionCode.InvalidDomain),
                 new NamingServiceException(NSExceptionCode.IncorrectMethodName), new NullPointerException(),
                 new ArithmeticException(), };

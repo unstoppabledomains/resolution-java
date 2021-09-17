@@ -33,7 +33,7 @@ public class L2Resolver {
     try {
       return processFutureResult(l2result);
     } catch (NamingServiceException e) {
-      if (e.getCode() != NSExceptionCode.UnregisteredDomain && e.getCode() != NSExceptionCode.UnspecifiedResolver) {
+      if (e.getCode() != NSExceptionCode.UnregisteredDomain) {
         throw e;
       }
     }
