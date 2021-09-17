@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +38,11 @@ public class ResolutionTest {
     @BeforeAll
     public static void init() {
         resolution = Resolution.builder()
-        .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
-        .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
+        .znsChainId(Network.ZIL_TESTNET)
+        .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
         .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
         .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
-        .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
+        .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
         .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
         .build();
@@ -52,13 +51,13 @@ public class ResolutionTest {
     @Test
     public void resolveTestnetDomain() throws Exception {
         DomainResolution rinkebyResolution = Resolution.builder()
-            .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
-            .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
-            .providerUrl(NamingServiceType.ENS, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+            .znsChainId(Network.ZIL_TESTNET)
+            .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
+            .ensProviderUrl("https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
             .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
-            .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-            .contractAddress(NamingServiceType.ENS, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS)
+            .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
+            .ensContractAddress(ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS)
             .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
             .build();
@@ -81,11 +80,11 @@ public class ResolutionTest {
     public void shouldResolveFromResolutionCreatedByBuilder() throws Exception {
         DomainResolution resolutionFromBuilder = Resolution.builder()
         .unsChainId(UNSLocation.Layer1, Network.RINKEBY)
-        .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
+        .znsChainId(Network.ZIL_TESTNET)
         .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
         .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
-        .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
-        .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
+        .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
+        .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
         .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
         .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
         .build();
@@ -99,14 +98,14 @@ public class ResolutionTest {
     @Test
     public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
         DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
-            .chainId(NamingServiceType.ENS, Network.ROPSTEN)
-            .chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET)
+            .ensChainId(Network.ROPSTEN)
+            .znsChainId(Network.ZIL_TESTNET)
             .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
             .unsInfura(UNSLocation.Layer1, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
             .unsInfura(UNSLocation.Layer2, Network.MUMBAI_TESTNET, TestUtils.TESTING_INFURA_UNS_L2_PROJECT_ID)
-            .providerUrl(NamingServiceType.ZNS, TestUtils.TESTING_ZNS_PROVIDER_URL)
-            .contractAddress(NamingServiceType.ZNS, "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-            .contractAddress(NamingServiceType.ENS, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS)
+            .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
+            .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
+            .ensContractAddress(ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS)
             .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
             .build();

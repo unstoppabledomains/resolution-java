@@ -72,16 +72,16 @@ public class ResolutionBuilderTest {
         builder
             .unsChainId(UNSLocation.Layer1, expectedUNSL1Config.getChainId())
             .unsChainId(UNSLocation.Layer2, expectedUNSL2Config.getChainId())
-            .chainId(NamingServiceType.ENS, expectedENSConfig.getChainId())
-            .chainId(NamingServiceType.ZNS, expectedZNSConfig.getChainId())
+            .ensChainId(expectedENSConfig.getChainId())
+            .znsChainId(expectedZNSConfig.getChainId())
             .unsProviderUrl(UNSLocation.Layer1, expectedUNSL1Config.getBlockchainProviderUrl())
             .unsProviderUrl(UNSLocation.Layer2, expectedUNSL2Config.getBlockchainProviderUrl())
-            .providerUrl(NamingServiceType.ENS, expectedENSConfig.getBlockchainProviderUrl())
-            .providerUrl(NamingServiceType.ZNS, expectedZNSConfig.getBlockchainProviderUrl())
+            .ensProviderUrl(expectedENSConfig.getBlockchainProviderUrl())
+            .znsProviderUrl(expectedZNSConfig.getBlockchainProviderUrl())
             .unsContractAddress(UNSLocation.Layer1, expectedUNSL1Config.getContractAddress())
             .unsContractAddress(UNSLocation.Layer2, expectedUNSL2Config.getContractAddress())
-            .contractAddress(NamingServiceType.ENS, expectedENSConfig.getContractAddress())
-            .contractAddress(NamingServiceType.ZNS, expectedZNSConfig.getContractAddress())
+            .ensContractAddress(expectedENSConfig.getContractAddress())
+            .znsContractAddress(expectedZNSConfig.getContractAddress())
             .build();
 
         verify(mockConnector).buildResolution(servicesCaptor.capture());
@@ -103,9 +103,9 @@ public class ResolutionBuilderTest {
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
         builder
-            .chainId(NamingServiceType.ZNS, expectedZNSConfig.getChainId())
-            .providerUrl(NamingServiceType.ZNS, expectedZNSConfig.getBlockchainProviderUrl())
-            .contractAddress(NamingServiceType.ZNS, expectedZNSConfig.getContractAddress())
+            .znsChainId(expectedZNSConfig.getChainId())
+            .znsProviderUrl(expectedZNSConfig.getBlockchainProviderUrl())
+            .znsContractAddress(expectedZNSConfig.getContractAddress())
             .build();
 
         verify(mockConnector).buildResolution(servicesCaptor.capture());
@@ -123,18 +123,18 @@ public class ResolutionBuilderTest {
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
         builder.unsChainId(UNSLocation.Layer1, Network.RINKEBY);
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> builder.build());
-        assertEquals("Configuration provided only for one UNS layer", ex.getMessage());
+        assertEquals("Configuration should be provided for UNS Layer1 and UNS Layer2", ex.getMessage());
     }
 
     @Test
     public void checksIfAllConfigsAreSetForOneService() throws Exception {
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
 
-        builder.chainId(NamingServiceType.ZNS, Network.ZIL_TESTNET);
+        builder.znsChainId(Network.ZIL_TESTNET);
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> builder.build());
         assertEquals("Invalid configuration for service ZNS: Provider URL is not set; Contract address is not set", ex.getMessage());
 
-        builder.providerUrl(NamingServiceType.ZNS, "https://dev-api.zilliqa.com");
+        builder.znsProviderUrl("https://dev-api.zilliqa.com");
         ex = assertThrows(IllegalArgumentException.class, () -> builder.build());
         assertEquals("Invalid configuration for service ZNS: Contract address is not set", ex.getMessage());
     }

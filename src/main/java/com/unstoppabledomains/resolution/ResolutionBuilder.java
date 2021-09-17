@@ -51,12 +51,21 @@ public class ResolutionBuilder {
     }
 
     /**
-     * @param nsType  the naming service for which config is applied
-     * @param chainId blockchain network ID
+     * @param chainId blockchain network ID for ZNS
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder chainId(NamingServiceType nsType, Network chainId) {
-        NSConfig nsConfig = serviceConfigs.get(nsType);
+    public ResolutionBuilder znsChainId(Network chainId) {
+        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
+        nsConfig.setChainId(chainId);
+        return this;
+    }
+
+    /**
+     * @param chainId blockchain network ID for ENS
+     * @return builder object to allow chaining
+     */
+    public ResolutionBuilder ensChainId(Network chainId) {
+        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ENS);
         nsConfig.setChainId(chainId);
         return this;
     }
@@ -74,12 +83,20 @@ public class ResolutionBuilder {
     }
 
     /**
-     * @param nsType      the naming service for which config is applied
-     * @param providerUrl blockchain provider URL
+     * @param providerUrl blockchain provider URL for ZNS
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder providerUrl(NamingServiceType nsType, String providerUrl) {
-        NSConfig nsConfig = serviceConfigs.get(nsType);
+    public ResolutionBuilder znsProviderUrl( String providerUrl) {
+        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
+        return this.providerUrl(nsConfig, providerUrl);
+    }
+
+    /**
+     * @param providerUrl blockchain provider URL for ENS
+     * @return builder object to allow chaining
+     */
+    public ResolutionBuilder ensProviderUrl(String providerUrl) {
+        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ENS);
         return this.providerUrl(nsConfig, providerUrl);
     }
 
@@ -105,12 +122,21 @@ public class ResolutionBuilder {
     }
 
     /**
-     * @param nsType            the naming service for which config is applied
-     * @param contractAddress   address of `Registry` contract for ZNS or ENS
+     * @param contractAddress   address of `Registry` contract for ZNS
      * @return builder object to allow chaining
      */
-    public ResolutionBuilder contractAddress(NamingServiceType nsType, String contractAddress) {
-        NSConfig nsConfig = serviceConfigs.get(nsType);
+    public ResolutionBuilder znsContractAddress(String contractAddress) {
+        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
+        nsConfig.setContractAddress(contractAddress);
+        return this;
+    }
+
+    /**
+     * @param contractAddress   address of `Registry` contract for ENS
+     * @return builder object to allow chaining
+     */
+    public ResolutionBuilder ensContractAddress(String contractAddress) {
+        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ENS);
         nsConfig.setContractAddress(contractAddress);
         return this;
     }
@@ -220,7 +246,7 @@ public class ResolutionBuilder {
      */
     public Resolution build() throws IllegalArgumentException {
         if (unsConfigs.get(UNSLocation.Layer1).isDefault() ^ unsConfigs.get(UNSLocation.Layer2).isDefault()) {
-            throw new IllegalArgumentException("Configuration provided only for one UNS layer");
+            throw new IllegalArgumentException("Configuration should be provided for UNS Layer1 and UNS Layer2");
         }
         checkConfigs(unsConfigs, "Invalid configuration for UNS layer");
         checkConfigs(serviceConfigs, "Invalid configuration for service");
