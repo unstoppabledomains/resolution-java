@@ -41,7 +41,7 @@ public class BuilderNSConfig extends NSConfig {
     }
 
     public boolean isDefault() {
-        return state == DEFAULT || state == COMPLETE;
+        return state == DEFAULT;
     }
 
     public String getMisconfiguredMessage() {
