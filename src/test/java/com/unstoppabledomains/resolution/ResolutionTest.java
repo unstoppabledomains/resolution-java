@@ -96,27 +96,6 @@ public class ResolutionTest {
     }
 
     @Test
-    public void shouldResolveFromResolutionCreatedByBuilderWithInfura() throws Exception {
-        DomainResolution resolutionFromBuilderWithInfura = Resolution.builder()
-            .ensChainId(Network.ROPSTEN)
-            .znsChainId(Network.ZIL_TESTNET)
-            .infura(NamingServiceType.ENS, TestUtils.TESTING_INFURA_ENS_PROJECT_ID)
-            .unsInfura(UNSLocation.Layer1, Network.RINKEBY, TestUtils.TESTING_INFURA_UNS_PROJECT_ID)
-            .unsInfura(UNSLocation.Layer2, Network.MUMBAI_TESTNET, TestUtils.TESTING_INFURA_UNS_L2_PROJECT_ID)
-            .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
-            .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-            .ensContractAddress(ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS)
-            .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
-            .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
-            .build();
-
-        assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilderWithInfura.getOwner("testing.crypto"));
-        assertEquals("0x5d069edc8cc1c559e4482bec199c13547455208", resolutionFromBuilderWithInfura.getOwner("monkybrain.eth"));
-        assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", resolutionFromBuilderWithInfura.getOwner("testing.zil"));
-        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", resolutionFromBuilderWithInfura.getOwner("udtestdev-test-l2-domain-784391.wallet"));
-    }
-
-    @Test
     public void isSupported() throws NamingServiceException{
         boolean isValid = resolution.isSupported("example.test");
         assertFalse(isValid);

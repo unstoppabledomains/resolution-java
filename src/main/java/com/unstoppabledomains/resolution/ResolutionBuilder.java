@@ -21,7 +21,6 @@ import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 import com.unstoppabledomains.util.BuilderNSConfig;
 
 public class ResolutionBuilder {
-    private static final String INFURA_URL = "https://%s.infura.io/v3/%s";
     static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String UNS_L2_DEFAULT_URL = "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
@@ -150,73 +149,6 @@ public class ResolutionBuilder {
     public ResolutionBuilder unsContractAddress(UNSLocation location, String contractAddress) {
         NSConfig nsConfig = unsConfigs.get(location);
         nsConfig.setContractAddress(contractAddress);
-        return this;
-    }
-
-    /**
-     * Configuration for <a href="https://infura.io">infura.io</a>
-     * blockchain provider with previously set network ID using
-     * {@link ResolutionBuilder#chainId(NamingServiceType, Network)} or default one
-     * ({@link Network#MAINNET})
-     *
-     * @param nsType    the naming service for which config is applied
-     * @param projectId Infura project ID
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder infura(NamingServiceType nsType, String projectId) {
-        NSConfig nsConfig = serviceConfigs.get(nsType);
-        final Network network = nsConfig.getChainId();
-        return this.infura(nsConfig, network, projectId);
-    }
-
-    /**
-     * Configuration for <a href="https://infura.io">infura.io</a>
-     * blockchain provider with previously set network ID using
-     * {@link ResolutionBuilder#chainId(NamingServiceType, Network)} or default one
-     * ({@link Network#MAINNET})
-     *
-     * @param location the location of the UNS service (layer 1 or layer 2)
-     * @param projectId Infura project ID
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder unsInfura(UNSLocation location, String projectId) {
-        NSConfig nsConfig = unsConfigs.get(location);
-        final Network network = nsConfig.getChainId();
-        return this.infura(nsConfig, network, projectId);
-    }
-
-    /**
-     * Configuration for <a href="https://infura.io">infura</a> blockchain provider
-     *
-     * @param nsType    the naming service for which config is applied
-     * @param chainId   blockchain network ID
-     * @param projectId Infura project ID
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder infura(NamingServiceType nsType, Network chainId, String projectId) {
-        NSConfig nsConfig = serviceConfigs.get(nsType);
-        return this.infura(nsConfig, chainId, projectId);
-    }
-
-    /**
-     * Configuration for <a href="https://infura.io">infura</a> blockchain provider
-     *
-     * @param location the location of the UNS service (layer 1 or layer 2)
-     * @param chainId   blockchain network ID
-     * @param projectId Infura project ID
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder unsInfura(UNSLocation location, Network chainId, String projectId) {
-        NSConfig nsConfig = unsConfigs.get(location);
-        return this.infura(nsConfig, chainId, projectId);
-    }
-
-    private ResolutionBuilder infura(NSConfig nsConfig, Network chainId, String projectId) {
-        nsConfig.setChainId(chainId);
-
-        String infuraUrl = String.format(INFURA_URL, chainId.getName(), projectId);
-        nsConfig.setBlockchainProviderUrl(infuraUrl);
-
         return this;
     }
 
