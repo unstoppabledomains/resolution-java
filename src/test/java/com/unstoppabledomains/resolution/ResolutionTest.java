@@ -510,7 +510,7 @@ public class ResolutionTest {
     @Test
     public void testReturnsDataFromL2() throws Exception {
         String record = resolution.getRecord("udtestdev-test-l1-and-l2-ownership.wallet", "crypto.ETH.address");
-        assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", record);
+        assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", record);
 
         String address = resolution.getOwner("udtestdev-test-l1-and-l2-ownership.wallet");
         assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", address);
