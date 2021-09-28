@@ -11,6 +11,7 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
+import com.unstoppabledomains.config.network.model.Location;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.math.BigInteger;
 
@@ -100,6 +102,22 @@ public class ZNS extends BaseNamingService {
     @Override
     public List<String> getTokensOwnedBy(String address) throws NamingServiceException {
         throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", getType().toString()));
+    }
+
+    @Override
+    public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+      Map<String, Location> locations = new HashMap<>();
+      for (String domain : domains) {
+        Location location = new Location();
+        location.setBlockchain("ZIL");
+        location.setBlockchainProviderURL(this.getProviderUrl());
+        location.setNetworkId(this.getNetwork());
+        location.setOwner(this.getOwner(domain));
+        location.setRegistryAddress(this.contractAddress);
+        location.setResolverAddress(this.getResolverAddress(domain));
+        locations.put(domain, location);
+      }
+      return locations;
     }
 
     private String getIpfsHash(JsonObject records) {

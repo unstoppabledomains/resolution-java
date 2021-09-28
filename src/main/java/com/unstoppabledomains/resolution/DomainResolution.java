@@ -3,6 +3,7 @@ package com.unstoppabledomains.resolution;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -155,4 +156,23 @@ public interface DomainResolution {
      * @throws NamingServiceException if domain is not found or invalid
      */
     String unhash(String hash, NamingServiceType service) throws NamingServiceException;
+
+    /**
+     * Retrieves the location info for provided domains. Location info contains:
+     * <ul>
+     *     <li>RegistryAddress</li>
+     *     <li>ResolverAddress</li>
+     *     <li>Network Id</li>
+     *     <li>Blockchain (Coin symbol) </li>
+     *     <li>Owner address</li>
+     *     <li>Blockchain provider URL</li>
+     * </ul>
+     * If a domain is not found, {@code null} will be returned for that domain in the resulting map.
+     * The domain array should be consistent. All domains should be from the same naming service.
+     * 
+     * @param domains domain names
+     * @return map of domain names and Location info
+     * @throws NamingServiceException for network errors
+     */
+    Map<String, Location> getLocations(String... domains) throws NamingServiceException;
 }
