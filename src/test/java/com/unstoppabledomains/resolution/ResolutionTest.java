@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -222,13 +223,13 @@ public class ResolutionTest {
     @Test
     public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
-        assertEquals("QmZ13Z6wRdtDm5c1vee9J5q7gWg6Mnq6SXiqau7Fa4CNrc", ipfs);
+        assertEquals("QmS23QDsc3Y26rUfME32Q7jawTrCH8bTrZ7iW8EGLJYMvD", ipfs);
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
         
         ipfs = resolution.getIpfsHash(" TESTING.crYpto ");
-        assertEquals("QmZ13Z6wRdtDm5c1vee9J5q7gWg6Mnq6SXiqau7Fa4CNrc", ipfs);
+        assertEquals("QmS23QDsc3Y26rUfME32Q7jawTrCH8bTrZ7iW8EGLJYMvD", ipfs);
 
         ipfs = resolution.getIpfsHash("udtestdev-test-l2-domain-784391.wallet");
         assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
@@ -514,5 +515,58 @@ public class ResolutionTest {
 
         String address = resolution.getOwner("udtestdev-test-l1-and-l2-ownership.wallet");
         assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", address);
+    }
+
+    @Test
+    public void testLocationsUNS() throws Exception {
+        Location cns = new Location(
+            "0xAAD76BEA7CFEC82927239415BB18D2E93518ECBB", 
+            "0x95AE1515367AA64C462C71E87157771165B1287A", 
+            Network.RINKEBY,
+            "ETH",
+            "0x499DD6D875787869670900A2130223D85D4F6AA7",
+            "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6");
+
+        Location uns = new Location(
+            "0x7FB83000B8ED59D3EAD22F0D584DF3A85FBC0086", 
+            "0x7FB83000B8ED59D3EAD22F0D584DF3A85FBC0086", 
+            Network.RINKEBY,
+            "ETH",
+            "0x6EC0DEED30605BCD19342F3C30201DB263291589",
+            "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6");
+
+        Location l2 = new Location(
+            "0x2A93C52E7B6E7054870758E15A1446E769EDFB93", 
+            "0x2A93C52E7B6E7054870758E15A1446E769EDFB93", 
+            Network.MUMBAI_TESTNET,
+            "MATIC",
+            "0x499DD6D875787869670900A2130223D85D4F6AA7",
+            "https://matic-testnet-archive-rpc.bwarelabs.com/");
+
+        Map<String, Location> locations = resolution.getLocations("brad.crypto", "udtestdev-my-new-tls.wallet", "not-registered-12345abc.crypto", "udtestdev-test-l2-domain-784391.wallet");
+        assertEquals(cns, locations.get("brad.crypto"));
+        assertEquals(uns, locations.get("udtestdev-my-new-tls.wallet"));
+        assertEquals(null, locations.get("not-registered-12345abc.crypto"));
+        assertEquals(l2, locations.get("udtestdev-test-l2-domain-784391.wallet"));
+    }
+
+    @Test
+    public void testLocationsZNS() throws Exception {
+        Location zns = new Location(
+            "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727", 
+            "0x02621c64a57e1424adfe122569f2356145f05d4f", 
+            Network.ZIL_TESTNET,
+            "ZIL",
+            "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
+            "https://dev-api.zilliqa.com");
+
+        Map<String, Location> locations = resolution.getLocations("testing.zil", "not-registered-12345abc.zil");
+        assertEquals(zns, locations.get("testing.zil"));
+        assertEquals(null, locations.get("not-registered-12345abc.zil"));
+    }
+
+    @Test
+    public void testLocationsMixed() throws Exception {
+        TestUtils.expectError(() -> resolution.getLocations("brad.crypto", "testing.zil"), NSExceptionCode.InconsistentDomainArray);
     }
 }

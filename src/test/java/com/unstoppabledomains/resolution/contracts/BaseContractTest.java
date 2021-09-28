@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.esaulpaugh.headlong.abi.Tuple;
@@ -41,7 +42,12 @@ class TestContract extends BaseContract {
         + "  { \"internalType\": \"uint256\", \"name\": \"valueId\", \"type\": \"uint256\" }" + "],"
         + "\"name\": \"getValue\"," + "\"outputs\": ["
         + "  { \"internalType\": \"string\", \"name\": \"value\", \"type\": \"string\" }" + "],"
-        + "\"stateMutability\": \"view\"," + " \"type\": \"function\"" + "}]";
+        + "\"stateMutability\": \"view\"," + " \"type\": \"function\"" + "},"
+        + "{" + "\"inputs\": ["
+        + "  { \"internalType\": \"bytes[]\", \"name\": \"data\", \"type\": \"bytes[]\" }" + "],"
+        + "\"name\": \"multicall\"," + "\"outputs\": ["
+        + "  { \"internalType\": \"bytes[]\", \"name\": \"results\", \"type\": \"bytes[]\" }" + "],"
+        + "\"stateMutability\": \"nonpayable\"," + " \"type\": \"function\"" + "}]";
     return new Gson().fromJson(abi, JsonArray.class);
   }
 
@@ -61,6 +67,10 @@ public class BaseContractTest {
   private static final String ETH_CALL_PARAM = "{\"jsonrpc\":\"2.0\"," + "\"id\":1," + "\"method\":\"eth_call\","
       + "\"params\":[{" + "\"data\":\"0x0ff4c9160000000000000000000000000000000000000000000000000000000000000001\","
       + "\"to\":\"test-address\"}," + "\"latest\"]}";
+
+  private static final String ETH_MULTICALL_PARAM = "{\"jsonrpc\":\"2.0\"," + "\"id\":1," + "\"method\":\"eth_call\","
+  + "\"params\":[{" + "\"data\":\"0xac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000240ff4c91600000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000240ff4c916000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000\","
+  + "\"to\":\"test-address\"}," + "\"latest\"]}";
 
   private static final String ETH_GET_LOGS_PARAM = "{\"jsonrpc\":\"2.0\"," + "\"id\":1," + "\"method\":\"eth_getLogs\","
       + "\"params\":[{" + "\"fromBlock\":\"earliest\"," + "\"toBlock\":\"latest\"," + "\"address\":\"test-address\","
@@ -186,5 +196,22 @@ public class BaseContractTest {
 
     assertThrows(NamingServiceException.class, () -> testContract.fetchLogs("earliest", "testEvent",
         new String[] { "0x0000000000000000000000000000000000000000000000000000000000000001" }));
+  }
+
+  @Test
+  public void testBaseContractFetchMulticall() throws Exception {
+    JsonObject paramObject = new Gson().fromJson(ETH_MULTICALL_PARAM, JsonObject.class);
+    JsonObject returnObject = new Gson().fromJson("{\"jsonrpc\":\"2.0\"," + "\"id\":1,"
+        + "\"result\":\"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a746573742076616c75650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000c746573742076616c756520320000000000000000000000000000000000000000\"}",
+        JsonObject.class);
+    when(mockProvider.request(eq(TEST_URL), eq(paramObject))).thenReturn(returnObject);
+
+    List<BaseContract.MulticallArgs> args = new ArrayList<>();
+    args.add(testContract.new MulticallArgs("getValue", new Object[] { BigInteger.valueOf(1L) }));
+    args.add(testContract.new MulticallArgs("getValue", new Object[] { BigInteger.valueOf(2L) }));
+    List<Tuple> result = testContract.fetchMulticall(args);
+    
+    assertEquals("test value", result.get(0).get(0));
+    assertEquals("test value 2", result.get(1).get(0));
   }
 }

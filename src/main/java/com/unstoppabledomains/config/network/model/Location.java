@@ -2,9 +2,11 @@ package com.unstoppabledomains.config.network.model;
 
 import java.math.BigInteger;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Location {
     String RegistryAddress;
     String ResolverAddress;
@@ -13,7 +15,9 @@ public class Location {
     String Owner;
     String BlockchainProviderURL;
 
-    private static final String addressFormat = "0x%042X";
+    private static final String addressFormat = "0x%040X";
+
+    public Location() {}
 
     public void setRegistryAddress(String address) {
         this.RegistryAddress = address;

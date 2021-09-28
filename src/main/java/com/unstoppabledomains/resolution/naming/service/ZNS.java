@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
 import java.math.BigInteger;
+import java.rmi.Naming;
 
 public class ZNS extends BaseNamingService {
     static final String RECORDS_KEY = "records";
@@ -108,14 +109,22 @@ public class ZNS extends BaseNamingService {
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
       Map<String, Location> locations = new HashMap<>();
       for (String domain : domains) {
-        Location location = new Location();
-        location.setBlockchain("ZIL");
-        location.setBlockchainProviderURL(this.getProviderUrl());
-        location.setNetworkId(this.getNetwork());
-        location.setOwner(this.getOwner(domain));
-        location.setRegistryAddress(this.contractAddress);
-        location.setResolverAddress(this.getResolverAddress(domain));
-        locations.put(domain, location);
+        try {
+            Location location = new Location();
+            location.setBlockchain("ZIL");
+            location.setBlockchainProviderURL(this.getProviderUrl());
+            location.setNetworkId(this.getNetwork());
+            location.setOwner(this.getOwner(domain));
+            location.setRegistryAddress(this.contractAddress);
+            location.setResolverAddress(this.getResolverAddress(domain));
+            locations.put(domain, location);
+        } catch (NamingServiceException exception){
+            if (exception.getCode() == NSExceptionCode.UnregisteredDomain) {
+                locations.put(domain, null);
+            } else {
+                throw exception;
+            }
+        }
       }
       return locations;
     }
