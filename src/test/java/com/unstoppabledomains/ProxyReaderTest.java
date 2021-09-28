@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProxyReaderTest {
     private static final String ADDRESS = "0x299974AeD8911bcbd2C61262605b89F591a53E83";
-    private static final String TOKEN_NAME = "testing.crypto";
     private static final String TOKEN_ID_HASH = "0xd52e0f8bfe7e039fddb362c7e00f3628e2dca805f191d8bef74a07ca0e848245";
     private static final BigInteger TOKEN_ID = new BigInteger(TOKEN_ID_HASH.replace("0x", ""), 16);
 

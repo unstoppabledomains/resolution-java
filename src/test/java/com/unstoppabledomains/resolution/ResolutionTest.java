@@ -222,13 +222,13 @@ public class ResolutionTest {
     @Test
     public void getIpfsHash() throws NamingServiceException {
         String ipfs = resolution.getIpfsHash("testing.crypto");
-        assertEquals("QmZ13Z6wRdtDm5c1vee9J5q7gWg6Mnq6SXiqau7Fa4CNrc", ipfs);
+        assertEquals("QmS23QDsc3Y26rUfME32Q7jawTrCH8bTrZ7iW8EGLJYMvD", ipfs);
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
         
         ipfs = resolution.getIpfsHash(" TESTING.crYpto ");
-        assertEquals("QmZ13Z6wRdtDm5c1vee9J5q7gWg6Mnq6SXiqau7Fa4CNrc", ipfs);
+        assertEquals("QmS23QDsc3Y26rUfME32Q7jawTrCH8bTrZ7iW8EGLJYMvD", ipfs);
 
         ipfs = resolution.getIpfsHash("udtestdev-test-l2-domain-784391.wallet");
         assertEquals("QmfRXG3CcM1eWiCUA89uzimCvQUnw4HzTKLo6hRZ47PYsN", ipfs);
@@ -293,33 +293,6 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev-my-new-tls.wallet"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev--awefawef.crypto"), NSExceptionCode.RecordNotFound);
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev-test-l2-domain-empty.wallet"), NSExceptionCode.RecordNotFound);
-    }
-
-    @Test
-    public void getTokensOwnedBy() throws Exception {
-        List<String> domains = resolution.getTokensOwnedBy("0xd1aD435c5Cdaf73dD2820A7eF04BcC6E22c0c843", NamingServiceType.UNS);
-        List<String> ownedDomains = Arrays.asList(
-            "udtestdev-udtestdev-test-l1-ownership.crypto",
-            "udtestdev-test-l1-ownership.dao",
-            "udtestdev-test-l1-ownership.wallet",
-            "udtestdev-test-l1-ownership-l2.wallet",
-            "udtestdev-l1-and-l2-ownership.wallet",
-            "udtestdev-test-l1-and-l2-ownership.wallet",
-            "udtestdev-test-l2-ownership.wallet",
-            "udtestdev-test-l2-ownership.nft",
-            "udtestdev-test-l1-and-l2-ownership.crypto",
-            "udtestdev-test-l1-and-l2-ownership.wallet"
-        );
-        domains.forEach((domain) -> {
-            assertTrue(ownedDomains.contains(domain), "Expected ownedDomains to contain " + domain);
-        });
-    }
-
-    @Test
-    public void getTokensOwnedByEnsZns() throws Exception {
-
-        TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ENS), NSExceptionCode.NotImplemented);
-        TestUtils.expectError(() -> resolution.getTokensOwnedBy("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", NamingServiceType.ZNS), NSExceptionCode.NotImplemented);
     }
 
     public void invalidDomains() throws Exception {

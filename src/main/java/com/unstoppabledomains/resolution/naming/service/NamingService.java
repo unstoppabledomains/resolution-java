@@ -23,7 +23,6 @@ public interface NamingService {
     String getNamehash(String domain) throws NamingServiceException;
 
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
-    List<String> getTokensOwnedBy(String address) throws NamingServiceException;
     
     Network getNetwork();
 
