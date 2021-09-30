@@ -520,27 +520,27 @@ public class ResolutionTest {
     @Test
     public void testLocationsUNS() throws Exception {
         Location cns = new Location(
-            "0xAAD76BEA7CFEC82927239415BB18D2E93518ECBB", 
-            "0x95AE1515367AA64C462C71E87157771165B1287A", 
+            "0xaad76bea7cfec82927239415bb18d2e93518ecbb", 
+            "0x95ae1515367aa64c462c71e87157771165b1287a", 
             Network.RINKEBY,
             "ETH",
-            "0x499DD6D875787869670900A2130223D85D4F6AA7",
+            "0x499dd6d875787869670900a2130223d85d4f6aa7",
             "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6");
 
         Location uns = new Location(
-            "0x7FB83000B8ED59D3EAD22F0D584DF3A85FBC0086", 
-            "0x7FB83000B8ED59D3EAD22F0D584DF3A85FBC0086", 
+            "0x7fb83000b8ed59d3ead22f0d584df3a85fbc0086", 
+            "0x7fb83000b8ed59d3ead22f0d584df3a85fbc0086", 
             Network.RINKEBY,
             "ETH",
-            "0x6EC0DEED30605BCD19342F3C30201DB263291589",
+            "0x6ec0deed30605bcd19342f3c30201db263291589",
             "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6");
 
         Location l2 = new Location(
-            "0x2A93C52E7B6E7054870758E15A1446E769EDFB93", 
-            "0x2A93C52E7B6E7054870758E15A1446E769EDFB93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
             Network.MUMBAI_TESTNET,
             "MATIC",
-            "0x499DD6D875787869670900A2130223D85D4F6AA7",
+            "0x499dd6d875787869670900a2130223d85d4f6aa7",
             "https://matic-testnet-archive-rpc.bwarelabs.com/");
 
         Map<String, Location> locations = resolution.getLocations("brad.crypto", "udtestdev-my-new-tls.wallet", "not-registered-12345abc.crypto", "udtestdev-test-l2-domain-784391.wallet");

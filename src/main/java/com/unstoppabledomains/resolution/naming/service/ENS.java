@@ -101,14 +101,14 @@ public class ENS extends BaseNamingService {
     Map<String, Location> locations = new HashMap<>();
     for (String domain : domains) {
       try {
-        Location location = new Location();
-        location.setBlockchain("ETH");
-        location.setBlockchainProviderURL(this.getProviderUrl());
-        location.setNetworkId(this.getNetwork());
-        location.setOwner(this.getOwner(domain));
-        location.setRegistryAddress(this.contractAddress);
-        location.setResolverAddress(this.getResolverAddress(domain));
-        locations.put(domain, location);
+        Location.LocationBuilder location = Location.builder();
+        location.Blockchain("ETH");
+        location.BlockchainProviderURL(this.getProviderUrl());
+        location.NetworkId(this.getNetwork());
+        location.Owner(this.getOwner(domain));
+        location.RegistryAddress(this.contractAddress);
+        location.ResolverAddress(this.getResolverAddress(domain));
+        locations.put(domain, location.build());
       } catch (NamingServiceException exception){
         if (exception.getCode() == NSExceptionCode.UnregisteredDomain) {
           locations.put(domain, null);

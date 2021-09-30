@@ -202,13 +202,15 @@ class UNSInternal extends BaseNamingService {
         tokenIDs[i] = getTokenID(domains[i]);
       }
 
-      List<Location> results = proxyReaderContract.getLocations(tokenIDs);
+      List<Location.LocationBuilder> results = proxyReaderContract.getLocationAddresses(tokenIDs);
       for (int i = 0; i < domains.length; i++) {
-        Location location = results.get(i);
-        if (location != null) {
-          location.setBlockchain(this.location.getBlockchain());
-          location.setBlockchainProviderURL(this.getProviderUrl());
-          location.setNetworkId(this.getNetwork());
+        Location.LocationBuilder builder = results.get(i);
+        Location location = null;
+        if (builder != null) {
+          builder.Blockchain(this.location.getBlockchain());
+          builder.BlockchainProviderURL(this.getProviderUrl());
+          builder.NetworkId(this.getNetwork());
+          location = builder.build();
         }
         locations.put(domains[i], location);
       }

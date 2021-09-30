@@ -54,11 +54,19 @@ public class Utilities {
     return new BigInteger(namehash.substring(2), 16);
   }
 
+  public static String convertEthAddress(BigInteger address) {
+    return normalizeAddress(address.toString(16), 40);
+  }
+
   public static String normalizeAddress(String address) {
+    return normalizeAddress(address, 64);
+  }
+
+  public static String normalizeAddress(String address, int length) {
     String hexPrefix = "0x";
     String cleanAddress = address.startsWith(hexPrefix) ? address.substring(2) : address;
-    if (cleanAddress.length() < 64) {
-      int amountOfZeroes = 64 - cleanAddress.length();
+    if (cleanAddress.length() < length) {
+      int amountOfZeroes = length - cleanAddress.length();
       String zeros = new String(new char[amountOfZeroes]).replace('\0', '0');
       return hexPrefix + zeros + cleanAddress;
     } 

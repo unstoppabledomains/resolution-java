@@ -9,6 +9,7 @@ import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.contracts.BaseContract;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
+import com.unstoppabledomains.util.Utilities;
 
 public class ProxyReader extends BaseContract {
 
@@ -68,7 +69,7 @@ public class ProxyReader extends BaseContract {
         }
     }
 
-    public List<Location> getLocations(BigInteger... tokenIDs) throws Exception {
+    public List<Location.LocationBuilder> getLocationAddresses(BigInteger... tokenIDs) throws Exception {
         List<MulticallArgs> args = new ArrayList<>();
         args.add(new MulticallArgs("getDataForMany", new Object[]{new String[]{}, tokenIDs}));
         for (BigInteger tokenId : tokenIDs) {
@@ -79,13 +80,13 @@ public class ProxyReader extends BaseContract {
 
         BigInteger[] resolvers = (BigInteger[])results.get(0).get(0);
         BigInteger[] owners = (BigInteger[])results.get(0).get(1);
-        List<Location> locations = new ArrayList<>();
+        List<Location.LocationBuilder> locations = new ArrayList<>();
         for (int i = 0; i < tokenIDs.length; i++) {
             if (!owners[i].equals(BigInteger.ZERO)) {
-                Location location = new Location();
-                location.setRegistryAddress((BigInteger)results.get(i + 1).get(0));
-                location.setResolverAddress(resolvers[i]);
-                location.setOwnerAddress(owners[i]);
+                Location.LocationBuilder location = Location.builder();
+                location.RegistryAddress(Utilities.convertEthAddress((BigInteger)results.get(i + 1).get(0)));
+                location.ResolverAddress(Utilities.convertEthAddress(resolvers[i]));
+                location.Owner(Utilities.convertEthAddress(owners[i]));
                 locations.add(location);
             } else {
                 locations.add(null);
