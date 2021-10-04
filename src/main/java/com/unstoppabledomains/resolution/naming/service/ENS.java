@@ -98,26 +98,7 @@ public class ENS extends BaseNamingService {
 
   @Override
   public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
-    Map<String, Location> locations = new HashMap<>();
-    for (String domain : domains) {
-      try {
-        Location.LocationBuilder location = Location.builder();
-        location.Blockchain("ETH");
-        location.BlockchainProviderURL(this.getProviderUrl());
-        location.NetworkId(this.getNetwork());
-        location.Owner(this.getOwner(domain));
-        location.RegistryAddress(this.contractAddress);
-        location.ResolverAddress(this.getResolverAddress(domain));
-        locations.put(domain, location.build());
-      } catch (NamingServiceException exception){
-        if (exception.getCode() == NSExceptionCode.UnregisteredDomain) {
-          locations.put(domain, null);
-        } else {
-          throw exception;
-        }
-      }
-    }
-    return locations;
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
   }
 
   private String getAddress(String domain, String ticker) throws NamingServiceException {

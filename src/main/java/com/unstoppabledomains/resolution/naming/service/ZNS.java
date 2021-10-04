@@ -21,10 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Optional;
 import java.math.BigInteger;
-import java.rmi.Naming;
 
 public class ZNS extends BaseNamingService {
     static final String RECORDS_KEY = "records";
@@ -107,26 +105,7 @@ public class ZNS extends BaseNamingService {
 
     @Override
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
-      Map<String, Location> locations = new HashMap<>();
-      for (String domain : domains) {
-        try {
-            Location.LocationBuilder location = Location.builder();
-            location.Blockchain("ZIL");
-            location.BlockchainProviderURL(this.getProviderUrl());
-            location.NetworkId(this.getNetwork());
-            location.Owner(this.getOwner(domain));
-            location.RegistryAddress(this.contractAddress);
-            location.ResolverAddress(this.getResolverAddress(domain));
-            locations.put(domain, location.build());
-        } catch (NamingServiceException exception){
-            if (exception.getCode() == NSExceptionCode.UnregisteredDomain) {
-                locations.put(domain, null);
-            } else {
-                throw exception;
-            }
-        }
-      }
-      return locations;
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
     }
 
     private String getIpfsHash(JsonObject records) {
