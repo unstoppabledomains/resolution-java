@@ -153,14 +153,6 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public List<String> getTokensOwnedBy(String address, NamingServiceType service) throws NamingServiceException {
-        if (service != NamingServiceType.UNS) {
-            throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", service.toString()));
-        }
-        return services.get(service).getTokensOwnedBy(address);
-    }
-
-    @Override
     public String getTokenURI(String domain) throws NamingServiceException {
         domain = normalizeDomain(domain);
         try {

@@ -99,11 +99,6 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
-    public List<String> getTokensOwnedBy(String address) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", getType().toString()));
-    }
-
-    @Override
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
         throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
     }

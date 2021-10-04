@@ -1,11 +1,8 @@
 package com.unstoppabledomains.resolution.naming.service.uns;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
@@ -161,22 +158,6 @@ public class UNS implements NamingService {
                 return unsl2.getDomainName(tokenID);
             }).build()
         );
-    }
-
-    @Override
-    public List<String> getTokensOwnedBy(String owner) throws NamingServiceException {
-        List<List<String>> results = resolver.resolveOnBothLayers(ResolutionMethods.<List<String>>builder()
-            .l1Func(() -> {
-                return unsl1.getTokensOwnedBy(owner);
-            })
-            .l2Func(() -> {
-                return unsl2.getTokensOwnedBy(owner);
-            }).build()
-        );
-
-        Set<String> result = new HashSet<>();
-        results.forEach(list -> result.addAll(list));
-        return new ArrayList<String>(result);
     }
     
     @Override
