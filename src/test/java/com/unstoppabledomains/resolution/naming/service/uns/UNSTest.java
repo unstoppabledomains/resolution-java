@@ -7,15 +7,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
+import com.unstoppabledomains.resolution.naming.service.NSConfig;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,22 +55,5 @@ public class UNSTest {
 
         verify(resolver).resolveOnBothLayers(any());
         assertEquals(expected.entrySet(), domainOwners.entrySet());
-    }
-
-    @Test
-    public void getTokensOwnedByReturnsUniqueTokens() throws NamingServiceException {
-        List<String> expected = Arrays.asList("domain1", "domain2", "domain3", "domain4");
-
-        List<String> l1Domains = Arrays.asList("domain1", "domain2", "domain3");
-        List<String> l2Domains = Arrays.asList("domain2", "domain3", "domain4");
-
-        when(resolver.<List<String>>resolveOnBothLayers(any())).thenReturn(Arrays.asList(l1Domains, l2Domains));
-
-        List<String> domains = uns.getTokensOwnedBy("owner");
-
-        verify(resolver).resolveOnBothLayers(any());
-        expected.sort(Comparator.naturalOrder());
-        domains.sort(Comparator.naturalOrder());
-        assertEquals(expected, domains);
     }
 }
