@@ -11,6 +11,7 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
+import com.unstoppabledomains.config.network.model.Location;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -95,6 +96,11 @@ public class ZNS extends BaseNamingService {
     @Override
     public String getDomainName(BigInteger tokenID) throws NamingServiceException {
         throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDomainName", getType().toString()));
+    }
+
+    @Override
+    public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
     }
 
     private String getIpfsHash(JsonObject records) {

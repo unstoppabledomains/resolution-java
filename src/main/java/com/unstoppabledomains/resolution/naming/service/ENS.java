@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution.naming.service;
 
 import java.math.BigInteger;
 
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -17,8 +18,11 @@ import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ENS extends BaseNamingService {
 
@@ -84,6 +88,11 @@ public class ENS extends BaseNamingService {
   @Override
   public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException {
     throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getDns", getType().toString()));
+  }
+
+  @Override
+  public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
   }
 
   private String getAddress(String domain, String ticker) throws NamingServiceException {

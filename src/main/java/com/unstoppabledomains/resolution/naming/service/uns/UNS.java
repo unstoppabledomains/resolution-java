@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -157,5 +158,25 @@ public class UNS implements NamingService {
                 return unsl2.getDomainName(tokenID);
             }).build()
         );
+    }
+    
+    @Override
+    public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+        List<Map<String, Location>> results = resolver.resolveOnBothLayers(ResolutionMethods.<Map<String, Location>>builder()
+            .l1Func(() -> {
+                return unsl1.getLocations(domains);
+            })
+            .l2Func(() -> {
+                return unsl2.getLocations(domains);
+            }).build()
+        );
+
+        Map<String, Location> result = results.get(0);
+        results.get(1).forEach((k, v) -> {
+            if (v != null) {
+                result.merge(k, v, (v1, v2) -> v2);
+            }
+        });
+        return result;
     }
 }

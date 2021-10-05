@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -33,4 +34,6 @@ public interface NamingService {
     String getProviderUrl();
 
     String getContractAddress();
+
+    Map<String, Location> getLocations(String... domains) throws NamingServiceException;
 }

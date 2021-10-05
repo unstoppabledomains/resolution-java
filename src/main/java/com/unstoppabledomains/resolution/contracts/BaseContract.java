@@ -16,6 +16,9 @@ import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.artifacts.Hash;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
+
+import lombok.AllArgsConstructor;
+
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 
 import java.io.IOException;
@@ -148,6 +151,53 @@ public abstract class BaseContract {
       return null;
     }
     return "0x" + address.toString(16);
+  }
+
+  @AllArgsConstructor
+  protected class MulticallArgs {
+      String functionName;
+      Object[] args;
+  }
+
+  protected List<Tuple> fetchMulticall(List<MulticallArgs> args) throws NamingServiceException {
+    List<Function> functions = new ArrayList<>();
+    List<byte[]> buffers = new ArrayList<>();
+    for (MulticallArgs call : args) {
+      JsonObject methodDescription = getMethodDescription(call.functionName, call.args.length);
+      Function function = Function.fromJson(methodDescription.toString());
+      functions.add(function);
+      buffers.add(function.encodeCallWithArgs(call.args).array());
+    }
+    JsonObject methodDescription = getMethodDescription("multicall", 1);
+    Function function = Function.fromJson(methodDescription.toString());
+    ByteBuffer encoded = function.encodeCallWithArgs(new Object[]{buffers.toArray(new byte[buffers.size()][])});
+
+    String data = toHexString(encoded.array());
+    JsonArray params = prepareParamsForBody(data, address);
+
+    JsonObject body = HTTPUtil.prepareBody("eth_call", params);
+    try {
+      JsonObject response = provider.request(url, body);
+      if (isUnknownError(response)) {
+        return null;
+      }
+      String answer = response.get("result").getAsString();
+      final String replacedAnswer = answer.replace("0x", "");
+
+      Tuple ansTuple = function.decodeReturn(FastHex.decode(replacedAnswer));
+      byte[][] bytes = (byte[][]) ansTuple.get(0);
+      List<Tuple> result = new ArrayList<>();
+      for (int i = 0; i < bytes.length; i++) {
+        result.add(functions.get(i).decodeReturn(bytes[i]));
+      }
+      return result;
+    } catch(IOException exception) {
+      throw new NamingServiceException(
+        NSExceptionCode.BlockchainIsDown,
+        new NSExceptionParams("n", namingServiceName),
+        exception
+      );
+    }
   }
 
   private String toHexString(byte[] input) {

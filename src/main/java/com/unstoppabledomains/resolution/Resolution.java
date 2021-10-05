@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
@@ -182,6 +183,17 @@ public class Resolution implements DomainResolution {
             throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "unhash"));
         }
         return domainName;
+    }
+
+    @Override
+    public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+        NamingService service = findService(domains[0]);
+        for (String domain : domains) {
+            if (findService(domain) != service) {
+                throw new NamingServiceException(NSExceptionCode.InconsistentDomainArray);
+            }
+        }
+        return service.getLocations(domains);
     }
 
     private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {

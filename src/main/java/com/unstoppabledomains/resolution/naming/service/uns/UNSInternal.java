@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
@@ -149,6 +150,34 @@ class UNSInternal extends BaseNamingService {
       throw configureNamingServiceException(e,
           new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()));
     }
+  }
+
+  @Override
+  public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+    Map<String, Location> locations = new HashMap<>(domains.length);
+    try {
+      BigInteger[] tokenIDs = new BigInteger[domains.length];
+      for (int i = 0; i < domains.length; i++) {
+        tokenIDs[i] = getTokenID(domains[i]);
+      }
+
+      List<Location.LocationBuilder> results = proxyReaderContract.getLocationAddresses(tokenIDs);
+      for (int i = 0; i < domains.length; i++) {
+        Location.LocationBuilder builder = results.get(i);
+        Location location = null;
+        if (builder != null) {
+          builder.Blockchain(this.location.getBlockchain());
+          builder.BlockchainProviderURL(this.getProviderUrl());
+          builder.NetworkId(this.getNetwork());
+          location = builder.build();
+        }
+        locations.put(domains[i], location);
+      }
+    } catch (Exception e) {
+      throw configureNamingServiceException(e,
+          new NSExceptionParams("m|n|l", "getLocations", "UNS", location.getName()));
+    }
+    return locations;
   }
 
   private String getRegistryAddress(BigInteger tokenID) throws NamingServiceException {
