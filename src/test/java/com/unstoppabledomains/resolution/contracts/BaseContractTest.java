@@ -54,10 +54,6 @@ class TestContract extends BaseContract {
   public <T> T fetchOne(String method, Object[] args) throws NamingServiceException {
     return super.fetchOne(method, args);
   }
-
-  public List<Tuple> fetchLogs(String fromBlock, String eventName, String[] topics) throws NamingServiceException {
-    return super.fetchLogs(fromBlock, eventName, topics);
-  }
 }
 
 @ExtendWith(MockitoExtension.class)
@@ -117,85 +113,6 @@ public class BaseContractTest {
 
     assertThrows(NamingServiceException.class,
         () -> testContract.fetchOne("getValue", new Object[] { BigInteger.valueOf(1L) }));
-  }
-
-  @Test
-  public void testBaseContractFetchLogs() throws Exception {
-    JsonObject paramObject = new Gson().fromJson(ETH_GET_LOGS_PARAM, JsonObject.class);
-    JsonObject returnObject = new Gson().fromJson("{\"jsonrpc\":\"2.0\"," + "\"id\":1," + "\"result\":[{"
-        + "\"address\": \"0x249f2ca1d033fd8f0272bdd0706193e4e3bff84b\","
-        + "\"blockHash\": \"0x24c8d3a6b9cc2837b95f6dea9a64661136d31eef5d183f8639bfe7209f8ab1b4\","
-        + "\"blockNumber\": \"0x87cfe0\","
-        + "\"data\": \"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000011746573742072657475726e2076616c7565000000000000000000000000000000\","
-        + "\"logIndex\": \"0xa\"," + "\"removed\": false," + "\"topics\": ["
-        + "\"0x2bc13f2ba6f4932aee041bb50f835e6392611e22122e6674651ed9ad7a21721a\","
-        + "\"0x0000000000000000000000000000000000000000000000000000000000000001\"" + "],"
-        + "\"transactionHash\": \"0x127d129c91349a69b699d0995ac793f0908412fe2131a301fdbd9e4024f979ec\","
-        + "\"transactionIndex\": \"0x9\"" + "}]}", JsonObject.class);
-    when(mockProvider.request(eq(TEST_URL), eq(paramObject))).thenReturn(returnObject);
-
-    List<Tuple> results = testContract.fetchLogs("earliest", "testEvent",
-        new String[] { "0x0000000000000000000000000000000000000000000000000000000000000001" });
-
-    assertEquals(results.size(), 1);
-    Tuple log = results.get(0);
-    String value = (String) log.get(0);
-    assertEquals("test return value", value);
-  }
-
-  @Test
-  public void testBaseContractFetchMultipleLogs() throws Exception {
-    JsonObject paramObject = new Gson().fromJson(ETH_GET_LOGS_PARAM, JsonObject.class);
-    JsonObject returnObject = new Gson().fromJson("{\"jsonrpc\":\"2.0\"," + "\"id\":1," + "\"result\":[{"
-        + "\"address\": \"0x249f2ca1d033fd8f0272bdd0706193e4e3bff84b\","
-        + "\"blockHash\": \"0x24c8d3a6b9cc2837b95f6dea9a64661136d31eef5d183f8639bfe7209f8ab1b4\","
-        + "\"blockNumber\": \"0x87cfe0\","
-        + "\"data\": \"0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000011746573742072657475726e2076616c7565000000000000000000000000000000\","
-        + "\"logIndex\": \"0xa\"," + "\"removed\": false," + "\"topics\": ["
-        + "\"0x2bc13f2ba6f4932aee041bb50f835e6392611e22122e6674651ed9ad7a21721a\","
-        + "\"0x0000000000000000000000000000000000000000000000000000000000000001\"" + "],"
-        + "\"transactionHash\": \"0x127d129c91349a69b699d0995ac793f0908412fe2131a301fdbd9e4024f979ec\","
-        + "\"transactionIndex\": \"0x9\"" + "},{" + "\"address\": \"0x249f2ca1d033fd8f0272bdd0706193e4e3bff84b\","
-        + "\"blockHash\": \"0x276031ef6a6df0d178db1f27aaf6bd3214c824c37c07d69a7598b882d258e06f\","
-        + "\"blockNumber\": \"0x87d07c\","
-        + "\"data\": \"0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001174657374207365636f6e642076616c7565000000000000000000000000000000\","
-        + "\"logIndex\": \"0x13\"," + "\"removed\": false," + "\"topics\": ["
-        + "    \"0x2bc13f2ba6f4932aee041bb50f835e6392611e22122e6674651ed9ad7a21721a\","
-        + "    \"0x0000000000000000000000000000000000000000000000000000000000000001\"" + "],"
-        + "\"transactionHash\": \"0xadb24a3b36516fe9fa8bb29ac77faef2d0ec2010c6b6a7c9d58cca63385b2998\","
-        + "\"transactionIndex\": \"0x14\"" + "}]}", JsonObject.class);
-    when(mockProvider.request(eq(TEST_URL), eq(paramObject))).thenReturn(returnObject);
-
-    List<Tuple> results = testContract.fetchLogs("earliest", "testEvent",
-        new String[] { "0x0000000000000000000000000000000000000000000000000000000000000001" });
-
-    assertEquals(results.size(), 2);
-    String firstValue = (String) results.get(0).get(0);
-    assertEquals("test return value", firstValue);
-    String secondValue = (String) results.get(1).get(0);
-    assertEquals("test second value", secondValue);
-  }
-
-  @Test
-  public void testBaseContractFetchLogsContractError() throws Exception {
-    JsonObject paramObject = new Gson().fromJson(ETH_GET_LOGS_PARAM, JsonObject.class);
-    JsonObject returnObject = new Gson().fromJson("{\"jsonrpc\":\"2.0\"," + "\"id\":1," + "\"error\": {"
-        + "\"code\": -32000," + "\"message\": \"execution reverted\"" + "}}", JsonObject.class);
-    when(mockProvider.request(eq(TEST_URL), eq(paramObject))).thenReturn(returnObject);
-
-    List<Tuple> results = testContract.fetchLogs("earliest", "testEvent",
-        new String[] { "0x0000000000000000000000000000000000000000000000000000000000000001" });
-
-    assertEquals(results.size(), 0);
-  }
-
-  @Test
-  public void testBaseContractFetchLogsNetworkError() throws Exception {
-    JsonObject paramObject = new Gson().fromJson(ETH_GET_LOGS_PARAM, JsonObject.class);
-    when(mockProvider.request(eq(TEST_URL), eq(paramObject))).thenThrow(new IOException());
-
-    assertThrows(NamingServiceException.class, () -> testContract.fetchLogs("earliest", "testEvent",
-        new String[] { "0x0000000000000000000000000000000000000000000000000000000000000001" }));
   }
 
   @Test
