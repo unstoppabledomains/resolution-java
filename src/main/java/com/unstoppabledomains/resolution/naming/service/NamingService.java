@@ -17,6 +17,7 @@ public interface NamingService {
     Boolean isSupported(String domain) throws NamingServiceException;
 
     String getRecord(String domain, String recordKey) throws NamingServiceException;
+    Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException;
 
     String getOwner(String domain) throws NamingServiceException;
     Map<String, String> batchOwners(List<String> domain) throws NamingServiceException;
