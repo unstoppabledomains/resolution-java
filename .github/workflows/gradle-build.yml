@@ -9,11 +9,7 @@ env:
   nexusUsername: ${{ secrets.NEXUS_USERNAME }}
   nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
