@@ -525,17 +525,7 @@ public class ResolutionTest {
 
     @Test
     public void testLocationsZNS() throws Exception {
-        Location zns = new Location(
-            "0xB925adD1d5EaF13f40efD43451bF97A22aB3d727", 
-            "0x02621c64a57e1424adfe122569f2356145f05d4f", 
-            Network.ZIL_TESTNET,
-            "ZIL",
-            "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
-            "https://dev-api.zilliqa.com");
-
-        Map<String, Location> locations = resolution.getLocations("testing.zil", "not-registered-12345abc.zil");
-        assertEquals(zns, locations.get("testing.zil"));
-        assertEquals(null, locations.get("not-registered-12345abc.zil"));
+        TestUtils.expectError(() -> resolution.getLocations("some.zil"), NSExceptionCode.NotImplemented);
     }
 
     @Test

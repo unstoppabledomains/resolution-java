@@ -15,6 +15,8 @@ import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.Namehash;
+import com.unstoppabledomains.resolution.TokenUriMetadata;
+import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyReader;
@@ -139,9 +141,10 @@ class UNSInternal extends BaseNamingService {
   @Override
   public String getDomainName(BigInteger tokenID) throws NamingServiceException {
     try {
-      String registryAddress = this.getRegistryAddress(tokenID);
-      Registry registryContract = new Registry(blockchainProviderUrl, registryAddress, provider);
-      String domainName = registryContract.getDomainName(tokenID);
+      String tokenURI = this.getTokenUri(tokenID);
+      JsonProvider provider = new JsonProvider();
+      TokenUriMetadata metadata = provider.request(tokenURI, TokenUriMetadata.class);
+      String domainName = metadata.getName();
       if (domainName == null) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()));
       }
