@@ -1,13 +1,21 @@
 
 package com.unstoppabledomains.resolution.naming.service.uns;
 
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
+import com.unstoppabledomains.config.KnownRecords;
 import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.exceptions.ContractCallException;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -20,7 +28,6 @@ import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyReader;
-import com.unstoppabledomains.resolution.contracts.uns.Registry;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.dns.DnsUtils;
@@ -57,6 +64,32 @@ class UNSInternal extends BaseNamingService {
       return false;
     }
     return proxyReaderContract.getExists(tokenID);
+  }
+
+  @Override
+  public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
+    BigInteger tokenID = getTokenID(domain);
+    Map<String, String> metadataRecords = new HashMap<>();
+    try {
+      metadataRecords = getTokenUriMetadata(tokenID).getProperties().getRecords();
+    } catch(NamingServiceException e) {
+      if (e.getCode() == NSExceptionCode.UnregisteredDomain) {
+        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
+      }
+      throw e;
+    }
+    Set<String> recordsSet = Utilities.combineTwoSets(KnownRecords.getAllRecordKeys(), metadataRecords.keySet());
+    String[] records = recordsSet.stream().toArray(String[] ::new);
+    ProxyData data = resolveKeys(records, domain);
+    List<String> values = data.getValues();
+
+    Map<String, String> result = new HashMap<>();
+    Utilities.iterateSimultaneously(Arrays.asList(records), values, (record, value) -> {
+      if (!value.isEmpty()) {
+        result.put(record, value);
+      }
+    });
+    return result;
   }
 
   @Override
@@ -140,19 +173,12 @@ class UNSInternal extends BaseNamingService {
 
   @Override
   public String getDomainName(BigInteger tokenID) throws NamingServiceException {
-    try {
-      String tokenURI = this.getTokenUri(tokenID);
-      JsonProvider provider = new JsonProvider();
-      TokenUriMetadata metadata = provider.request(tokenURI, TokenUriMetadata.class);
+      TokenUriMetadata metadata = getTokenUriMetadata(tokenID);
       String domainName = metadata.getName();
       if (domainName == null) {
         throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()));
       }
       return domainName;
-    } catch (Exception e) {
-      throw configureNamingServiceException(e,
-          new NSExceptionParams("m|n|l", "getDomainName", "UNS", location.getName()));
-    }
   }
 
   @Override
@@ -183,19 +209,6 @@ class UNSInternal extends BaseNamingService {
     return locations;
   }
 
-  private String getRegistryAddress(BigInteger tokenID) throws NamingServiceException {
-    try {
-      String tokenURI = proxyReaderContract.registryOf(tokenID);
-      if (tokenURI == null) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("m|n|l", "getRegistryAddress", "UNS", location.getName()));
-      }
-      return tokenURI;
-    } catch (Exception e) {
-      throw configureNamingServiceException(e,
-          new NSExceptionParams("m|n|l", "getRegistryAddress", "UNS", location.getName()));
-    }
-  }
-
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
     return resolveKeys(new String[]{key}, domain);
   }
@@ -220,6 +233,18 @@ class UNSInternal extends BaseNamingService {
       records.add("dns." + type.toString() + ".ttl");
     }
     return records;
+  }
+
+  private TokenUriMetadata getTokenUriMetadata(BigInteger tokenID) throws NamingServiceException {
+    try {
+      String tokenURI = this.getTokenUri(tokenID);
+      JsonProvider provider = new JsonProvider();
+      TokenUriMetadata metadata = provider.request(tokenURI, TokenUriMetadata.class);
+      return metadata;
+    } catch (Exception e) {
+      throw configureNamingServiceException(e,
+          new NSExceptionParams("m|n|l", "getTokenUriMetadata", "UNS", location.getName()));
+    }
   }
 
   private void checkDomainOwnership(ProxyData data, String domain) throws NamingServiceException {
@@ -251,7 +276,6 @@ class UNSInternal extends BaseNamingService {
     checkDomainOwnership(data, domain);
     return data;
   }
-
 
   private String owner(BigInteger tokenID) {
     return proxyReaderContract.getOwner(tokenID);

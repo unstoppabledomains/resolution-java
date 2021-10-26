@@ -1,7 +1,9 @@
 package com.unstoppabledomains.util;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.unstoppabledomains.resolution.artifacts.Numeric;
@@ -79,5 +81,12 @@ public class Utilities {
     while (i1.hasNext() && i2.hasNext()) {
         consumer.accept(i1.next(), i2.next());
     }
+  }
+
+  public static <T> Set<T> combineTwoSets(Set<T> set1, Set<T> set2) {
+    HashSet<T> set = new HashSet<>();
+    set.addAll(set1);
+    set.addAll(set2);
+    return set;
   }
 }
