@@ -196,7 +196,7 @@ public class ResolutionTest {
             put("whois.email.value", "derainberk@gmail.com");
             put("unknown.record", "");
         }};
-        Map<String, String> result = resolution.getRecords("testing.zil", new ArrayList(given.keySet()));
+        Map<String, String> result = resolution.getRecords("testing.zil", new ArrayList<>(given.keySet()));
         assertEquals(result.size(), given.keySet().size());
         for (Map.Entry<String, String> entry: given.entrySet()) {
             String key = entry.getKey();
@@ -206,7 +206,7 @@ public class ResolutionTest {
 
     @Test
     public void UnregisteredGetRecords() throws Exception {
-        List<String> records = Arrays.asList("some", "records", "which", "does", "not", "exists");
+        List<String> records = Arrays.asList("crypto.ETH.address", "ipfs.html.value");
         TestUtils.expectError(() -> resolution.getRecords("unregistered.crypto", records), NSExceptionCode.UnregisteredDomain);
     }
 
