@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
@@ -169,6 +170,26 @@ public class ResolutionTest {
         recordValue = resolution.getRecord("udtestdev-test-l2-domain-784391.wallet", "crypto.LINK.address");
         assertEquals("0x6A1fd9a073256f14659fe59613bbf169Ed27CdcC", recordValue);
     }
+
+    @Test
+    public void getAllZilRecords() throws Exception {
+        Map<String, String> result = resolution.getAllRecords("testing.zil");
+        List<String> allRecordKeys = Arrays.asList(
+            "crypto.BCH.address", "crypto.BTC.address", "crypto.DASH.address", "crypto.ETH.address", 
+            "crypto.LTC.address", "crypto.USDT.version.ERC20.address", "crypto.XMR.address",
+            "crypto.ZEC.address", "crypto.ZIL.address", "ipfs.html.value", "ipfs.redirect_domain.value", "whois.email.value");
+        assertEquals(result.entrySet().size(), allRecordKeys.size());
+        Set<String> resultKeys = result.keySet();
+        for (String record : allRecordKeys) {
+            assertTrue(resultKeys.contains(record));
+        }
+    }
+
+    @Test
+    public void getAllRecordsUnregistered() throws Exception {
+        TestUtils.expectError(() -> resolution.getAllRecords("unregistered.zil"), NSExceptionCode.UnregisteredDomain);
+    }
+
 
     @Test
     public void noRecord() throws Exception {

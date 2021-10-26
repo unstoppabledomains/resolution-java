@@ -1,5 +1,6 @@
 package com.unstoppabledomains.resolution.naming.service;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -76,9 +77,16 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
+    public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
+        JsonObject jsonRecords = getAllRecordsAsJson(domain);
+        Map<String, String> result = new Gson().fromJson(jsonRecords, Map.class);
+        return result;
+    }
+
+    @Override
     public String getRecord(String domain, String key) throws NamingServiceException {
         try {
-            JsonObject records = getAllRecords(domain);
+            JsonObject records = getAllRecordsAsJson(domain);
             if (key.equals("dweb.ipfs.hash") || key.equals("ipfs.html.value")) {
                 return getIpfsHash(records);
             }
@@ -115,7 +123,7 @@ public class ZNS extends BaseNamingService {
         return newRecord.getAsString();
     }
 
-    private JsonObject getAllRecords(String domain) throws NamingServiceException {
+    private JsonObject getAllRecordsAsJson(String domain) throws NamingServiceException {
         try {
             String resolverAddress = getResolverAddress(domain);
             String[] keys = {};
