@@ -41,4 +41,9 @@ public class ENSTest {
     addr = resolution.getAddress("monkybrain.eth", "EtH");
     assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", addr);
   }
+
+  @Test
+  public void getAllRecords() throws Exception {
+    TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
+  }
 }
