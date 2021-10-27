@@ -71,6 +71,11 @@ public class ENS extends BaseNamingService {
   }
 
   @Override
+  public Map<String, String> getRecords(String domain, List<String> recordKeys) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getRecords", "ENS"));
+  }
+
+  @Override
   public String getOwner(String domain) throws NamingServiceException {
    byte[] tokenId = tokenId(domain);
    String owner = registryContract.getOwner(tokenId);

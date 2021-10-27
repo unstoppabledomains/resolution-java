@@ -1,6 +1,6 @@
 ## Unreleased
 * Introduced `Resolution#getBatchOwners` method to resolve owner addresses of many domains only for UNS. 
-* Introduced `Resolution#getTokensOwnedBy` method to resolve all UD domains that are attached to an address
+* Introduced `Resolution#getRecords` method to resole multiple records of a single domain.
 * Domain name is now trimmed and lowercased before resolving
 * Domain names that are not accomply with this regex `^[.a-z\d-]+$` will throw a NSExceptionCode.InvalidDomain
 

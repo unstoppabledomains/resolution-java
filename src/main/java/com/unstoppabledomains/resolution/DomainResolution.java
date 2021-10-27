@@ -40,6 +40,17 @@ public interface DomainResolution {
     String getRecord(String domain, String recordKey) throws NamingServiceException;
     
     /**
+     * Resolves domain for specific list of records
+     * 
+     * @param domain domain name such as "brad.crypto"
+     * @param recordsKeys list of all recordsKeys to be resolved
+     * @return Map of recordKey to values
+     * @throws NamingServiceException when domain is not registered
+     */
+    Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException;
+
+
+    /**
      * Resolves domain for a specific ticker address
      *
      * @param domain domain name such as "brad.crypto"
