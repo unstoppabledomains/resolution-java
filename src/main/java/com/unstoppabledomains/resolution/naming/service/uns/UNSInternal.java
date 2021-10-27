@@ -1,20 +1,17 @@
 
 package com.unstoppabledomains.resolution.naming.service.uns;
 
-import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 import com.unstoppabledomains.config.KnownRecords;
 import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.exceptions.ContractCallException;
@@ -103,6 +100,16 @@ class UNSInternal extends BaseNamingService {
     if (Utilities.isEmptyResponse(result)) {
       throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r|l", domain, recordKey, location.getName()));
     }
+    return result;
+  }
+
+  @Override
+  public Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException {
+    ProxyData data = resolveKeys(recordsKeys.toArray(new String[recordsKeys.size()]), domain);
+    List<String> values = data.getValues();
+    Map<String, String> result = IntStream.range(0, recordsKeys.size())
+    .boxed()
+    .collect(Collectors.toMap(recordsKeys::get, values::get));
     return result;
   }
 
@@ -213,6 +220,13 @@ class UNSInternal extends BaseNamingService {
     return resolveKeys(new String[]{key}, domain);
   }
 
+  protected ProxyData resolveKeys(String[] keys, String domain) throws NamingServiceException {
+    BigInteger tokenID = getTokenID(domain);
+    ProxyData data =  proxyReaderContract.getProxyData(keys, tokenID);
+    checkDomainOwnership(data, domain);
+    return data;
+  }
+
   private  String getIpfsHash(String domain) throws NamingServiceException {
     String[] keys = {"dweb.ipfs.hash", "ipfs.html.value"};
     ProxyData data = resolveKeys(keys, domain);
@@ -268,13 +282,6 @@ class UNSInternal extends BaseNamingService {
       return new NamingServiceException(NSExceptionCode.RecordNotFound, params, e);
     }
     return new NamingServiceException(NSExceptionCode.UnknownError, params, e);
-  }
-
-  private ProxyData resolveKeys(String[] keys, String domain) throws NamingServiceException {
-    BigInteger tokenID = getTokenID(domain);
-    ProxyData data =  proxyReaderContract.getProxyData(keys, tokenID);
-    checkDomainOwnership(data, domain);
-    return data;
   }
 
   private String owner(BigInteger tokenID) {

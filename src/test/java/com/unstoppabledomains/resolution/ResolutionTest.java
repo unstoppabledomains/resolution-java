@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -219,6 +220,45 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.nft"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
+    }
+    
+    @Test
+    public void getRecords() throws Exception {
+        Map<String, String> given = new HashMap<String, String>() {{
+            put("crypto.ETH.address", "0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2");
+            put("crypto.BTC.address", "");
+            put("ipfs.html.value", "QmS23QDsc3Y26rUfME32Q7jawTrCH8bTrZ7iW8EGLJYMvD");
+        }};
+        List<String> recordsKeys = new ArrayList<String>(given.keySet());
+        Map<String, String> result = resolution.getRecords("testing.crypto", recordsKeys);
+        assertEquals(result.size(), recordsKeys.size());
+        for (Map.Entry<String, String> entry: given.entrySet()) {
+            String key = entry.getKey();
+            assertEquals(result.get(key), entry.getValue());
+        }
+    }
+
+    @Test
+    public void getZilliqaRecords() throws Exception {
+        Map<String, String> given = new HashMap<String, String>() {{
+            put("crypto.ETH.address", "0x45b31e01AA6f42F0549aD482BE81635ED3149abb");
+            put("crypto.LTC.address", "LetmswTW3b7dgJ46mXuiXMUY17XbK29UmL");
+            put("ipfs.html.value", "QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK");
+            put("whois.email.value", "derainberk@gmail.com");
+            put("unknown.record", "");
+        }};
+        Map<String, String> result = resolution.getRecords("testing.zil", new ArrayList<>(given.keySet()));
+        assertEquals(result.size(), given.keySet().size());
+        for (Map.Entry<String, String> entry: given.entrySet()) {
+            String key = entry.getKey();
+            assertEquals(result.get(key), entry.getValue());
+        }
+    }
+
+    @Test
+    public void UnregisteredGetRecords() throws Exception {
+        List<String> records = Arrays.asList("crypto.ETH.address", "ipfs.html.value");
+        TestUtils.expectError(() -> resolution.getRecords("unregistered.crypto", records), NSExceptionCode.UnregisteredDomain);
     }
 
     @Test

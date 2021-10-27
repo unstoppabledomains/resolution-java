@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.math.BigInteger;
 
@@ -94,6 +95,20 @@ public class ZNS extends BaseNamingService {
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }
+    }
+
+    @Override
+    public Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException {
+        JsonObject records = getAllRecordsAsJson(domain);  
+        Map<String, String> result = new HashMap<>();
+        for (String key : recordsKeys) {
+            try {
+                result.put(key, records.get(key).getAsString());
+            } catch(NullPointerException exception) {
+                result.put(key, "");
+            }
+        }
+        return result;
     }
 
     @Override
