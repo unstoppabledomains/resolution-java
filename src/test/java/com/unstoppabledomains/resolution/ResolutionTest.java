@@ -24,6 +24,7 @@ import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataAttribute;
+import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataProperties;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
@@ -221,7 +222,7 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.nft"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
     }
-    
+
     @Test
     public void getRecords() throws Exception {
         Map<String, String> given = new HashMap<String, String>() {{
@@ -538,12 +539,19 @@ public class ResolutionTest {
 
         TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
         assertNotNull(metadata);
-        assertEquals(metadata.getName(), testDomain);
-        assertEquals(metadata.getAttributes().size(), 8);
-        TokenUriMetadataAttribute attribute = metadata.new TokenUriMetadataAttribute();
-        attribute.setTraitType("ETH");
-        attribute.setValue("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
-        assertTrue(metadata.getAttributes().contains(attribute));
+        assertEquals(testDomain, metadata.getName());
+        assertEquals(5, metadata.getAttributes().size());
+        Map<String, String> expectedRecords = new HashMap<String, String>() {{
+            put("ipfs.html.value", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
+            put("crypto.ADA.address", "DdzFFzCqrhsuwQKiR3CdQ1FzuPAydtVCBFTRdy9FPKepAHEoXCee2qrio975M4cEbqYwZBsWJTNyrJ8NLJmAReSwAakQEHWBEd2HvSS7");
+            put("crypto.BTC.address", "bc1q359khn0phg58xgezyqsuuaha28zkwx047c0c3y");
+            put("crypto.ETH.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
+            put("gundb.username.value", "0x8912623832e174f2eb1f59cc3b587444d619376ad5bf10070e937e0dc22b9ffb2e3ae059e6ebf729f87746b2f71e5d88ec99c1fb3c7c49b8617e2520d474c48e1c");
+            put("gundb.public_key.value", "pqeBHabDQdCHhbdivgNEc74QO-x8CPGXq4PKWgfIzhY.7WJR5cZFuSyh1bFwx0GWzjmrim0T5Y6Bp0SSK0im3nI");
+            put("ipfs.redirect_domain.value", "https://abbfe6z95qov3d40hf6j30g7auo7afhp.mypinata.cloud/ipfs/Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6");            
+        }};
+        Map<String, String> recordsFromProperties = metadata.getProperties().getRecords();
+        assertEquals(expectedRecords, recordsFromProperties);
     }
 
     @Test
