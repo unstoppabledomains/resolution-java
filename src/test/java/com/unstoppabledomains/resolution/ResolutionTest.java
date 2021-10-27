@@ -213,11 +213,13 @@ public class ResolutionTest {
     }
 
     @Test
-    public void getAllRecordsUnregistered() throws Exception {
+    public void getAllRecordsAllFails() throws Exception {
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.zil"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("myjohnny.wallet"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("unregistered.nft"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
     }
-
 
     @Test
     public void noRecord() throws Exception {
