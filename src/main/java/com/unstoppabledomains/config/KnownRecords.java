@@ -9,22 +9,30 @@ import com.google.gson.stream.JsonReader;
 
 public class KnownRecords {
   private static final String KNOWN_RECORDS_FILE = "knownRecords.json";
+  private static final JsonObject RECORDS = initKnownRecords();
+
+  public static JsonObject getRecordsObj() {
+    return RECORDS;
+  }
 
   public static String getVersion() {
-    JsonObject fileContent = getFileContent();
-    return fileContent.get("version").getAsString();
+    return RECORDS.get("version").getAsString();
   }
 
   public static Set<String> getAllRecordKeys() {
-    JsonObject fileContent = getFileContent();
-    JsonObject keysStructures = fileContent.get("keys").getAsJsonObject();
+    JsonObject keysStructures = RECORDS.get("keys").getAsJsonObject();
     return keysStructures.keySet();
   }
 
-  private static JsonObject getFileContent() {
-    final JsonReader jsonReader =
-                new JsonReader(new InputStreamReader(KnownRecords.class.getResourceAsStream(KNOWN_RECORDS_FILE)));
-    final JsonObject jsonObj = new Gson().fromJson(jsonReader, JsonObject.class);
-    return jsonObj;
+  private static JsonObject initKnownRecords() {
+    JsonObject knowRecordsObj;
+    try {
+      final JsonReader jsonReader =
+                  new JsonReader(new InputStreamReader(KnownRecords.class.getResourceAsStream(KNOWN_RECORDS_FILE)));
+      knowRecordsObj = new Gson().fromJson(jsonReader, JsonObject.class);
+    } catch (Exception e) {
+      throw new RuntimeException("Couldn't load known records file", e);
+  }
+    return knowRecordsObj;
   }
 }
