@@ -82,6 +82,19 @@ public class UNS implements NamingService {
     }
 
     @Override
+    public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
+        return resolver.resolve(ResolutionMethods.<Map<String, String>>builder()
+            .l1Func(() -> {
+                return unsl1.getAllRecords(domain);
+            })
+            .l2Func(() -> {
+                return unsl2.getAllRecords(domain);
+            }).build()
+        );
+    }
+  
+
+    @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
         return resolver.resolve(ResolutionMethods.<String>builder()
             .l1Func(() -> {

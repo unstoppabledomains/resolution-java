@@ -30,6 +30,14 @@ public interface DomainResolution {
     Network getNetwork(NamingServiceType type);
 
     /**
+     * Returns all records and their's values from a domain
+     * @param domain domain name such as "brad.crypto"
+     * @return map of recordKey to recordValue
+     * @throws NamingServiceException when domain is not registered
+     */
+    Map<String, String> getAllRecords(String domain) throws NamingServiceException;
+
+    /**
      * Resolves domain for a specific record
      *
      * @param domain trimed and lowercased domain name such as "brad.crypto"

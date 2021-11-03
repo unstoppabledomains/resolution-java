@@ -48,7 +48,12 @@ public class ENS extends BaseNamingService {
 
   @Override
   public String getTokenUri(BigInteger tokenID) throws NamingServiceException {
-    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", "ENS"));
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokenUri", getType().toString()));
+  }
+
+  @Override
+  public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
+    throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getAllRecords", getType().toString()));
   }
 
   @Override

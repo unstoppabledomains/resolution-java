@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
@@ -23,6 +24,7 @@ import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataAttribute;
+import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataProperties;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
@@ -169,6 +171,56 @@ public class ResolutionTest {
 
         recordValue = resolution.getRecord("udtestdev-test-l2-domain-784391.wallet", "crypto.LINK.address");
         assertEquals("0x6A1fd9a073256f14659fe59613bbf169Ed27CdcC", recordValue);
+    }
+
+    @Test
+    public void getAllRecords() throws Exception {
+        Map<String,String> expected = new HashMap<String, String>() {{
+            put("custom.record", "custom.value");
+            put("crypto.USDT.version.EOS.address", "letsminesome");
+            put("crypto.USDT.version.OMNI.address", "19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ");
+            put("crypto.USDT.version.ERC20.address", "0xe7474D07fD2FA286e7e0aa23cd107F8379085037");
+            put("crypto.ETH.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
+            put("ipfs.html.value", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
+            put("dweb.ipfs.hash", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
+            put("crypto.USDT.version.TRON.address", "TNemhXhpX7MwzZJa3oXvfCjo5pEeXrfN2h");
+            put("dns.ttl", "128");
+            put("dns.A.ttl", "98");
+            put("dns.A", "[\"10.0.0.1\", \"10.0.0.3\"]");
+            put("dns.AAAA", "[]");
+            put("gundb.username.value", "0x8912623832e174f2eb1f59cc3b587444d619376ad5bf10070e937e0dc22b9ffb2e3ae059e6ebf729f87746b2f71e5d88ec99c1fb3c7c49b8617e2520d474c48e1c");
+        }};
+        Map<String, String> result = resolution.getAllRecords("udtestdev-265f8f.crypto");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void getAllZilRecords() throws Exception {
+        Map<String, String> expected = new HashMap<String, String>() {{
+            put("crypto.BCH.address", "qrq4sk49ayvepqz7j7ep8x4km2qp8lauvcnzhveyu6");
+            put("crypto.BTC.address", "1EVt92qQnaLDcmVFtHivRJaunG2mf2C3mB");
+            put("crypto.DASH.address", "XnixreEBqFuSLnDSLNbfqMH1GsZk7cgW4j");
+            put("crypto.ETH.address", "0x45b31e01AA6f42F0549aD482BE81635ED3149abb");
+            put("crypto.LTC.address", "LetmswTW3b7dgJ46mXuiXMUY17XbK29UmL");
+            put("crypto.USDT.version.ERC20.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
+            put("crypto.XMR.address", "447d7TVFkoQ57k3jm3wGKoEAkfEym59mK96Xw5yWamDNFGaLKW5wL2qK5RMTDKGSvYfQYVN7dLSrLdkwtKH3hwbSCQCu26d");
+            put("crypto.ZEC.address", "t1h7ttmQvWCSH1wfrcmvT4mZJfGw2DgCSqV");
+            put("crypto.ZIL.address", "zil1yu5u4hegy9v3xgluweg4en54zm8f8auwxu0xxj");
+            put("ipfs.html.value", "QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK");
+            put("ipfs.redirect_domain.value", "www.unstoppabledomains.com");
+            put("whois.email.value", "derainberk@gmail.com");
+        }};
+        Map<String, String> result = resolution.getAllRecords("testing.zil");
+        assertEquals(expected, result);   
+    }
+
+    @Test
+    public void getAllRecordsAllFails() throws Exception {
+        TestUtils.expectError(() -> resolution.getAllRecords("unregistered.zil"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("myjohnny.wallet"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("unregistered.nft"), NSExceptionCode.UnregisteredDomain);
+        TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
     }
 
     @Test
@@ -487,12 +539,19 @@ public class ResolutionTest {
 
         TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
         assertNotNull(metadata);
-        assertEquals(metadata.getName(), testDomain);
-        assertEquals(metadata.getAttributes().size(), 8);
-        TokenUriMetadataAttribute attribute = metadata.new TokenUriMetadataAttribute();
-        attribute.setTraitType("ETH");
-        attribute.setValue("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
-        assertTrue(metadata.getAttributes().contains(attribute));
+        assertEquals(testDomain, metadata.getName());
+        assertEquals(5, metadata.getAttributes().size());
+        Map<String, String> expectedRecords = new HashMap<String, String>() {{
+            put("ipfs.html.value", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
+            put("crypto.ADA.address", "DdzFFzCqrhsuwQKiR3CdQ1FzuPAydtVCBFTRdy9FPKepAHEoXCee2qrio975M4cEbqYwZBsWJTNyrJ8NLJmAReSwAakQEHWBEd2HvSS7");
+            put("crypto.BTC.address", "bc1q359khn0phg58xgezyqsuuaha28zkwx047c0c3y");
+            put("crypto.ETH.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
+            put("gundb.username.value", "0x8912623832e174f2eb1f59cc3b587444d619376ad5bf10070e937e0dc22b9ffb2e3ae059e6ebf729f87746b2f71e5d88ec99c1fb3c7c49b8617e2520d474c48e1c");
+            put("gundb.public_key.value", "pqeBHabDQdCHhbdivgNEc74QO-x8CPGXq4PKWgfIzhY.7WJR5cZFuSyh1bFwx0GWzjmrim0T5Y6Bp0SSK0im3nI");
+            put("ipfs.redirect_domain.value", "https://abbfe6z95qov3d40hf6j30g7auo7afhp.mypinata.cloud/ipfs/Qme54oEzRkgooJbCDr78vzKAWcv6DDEZqRhhDyDtzgrZP6");            
+        }};
+        Map<String, String> recordsFromProperties = metadata.getProperties().getRecords();
+        assertEquals(expectedRecords, recordsFromProperties);
     }
 
     @Test
