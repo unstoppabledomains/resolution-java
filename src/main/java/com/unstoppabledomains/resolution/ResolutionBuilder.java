@@ -23,7 +23,7 @@ import com.unstoppabledomains.util.BuilderNSConfig;
 public class ResolutionBuilder {
     static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
-    static final String UNS_L2_DEFAULT_URL = "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+    static final String UNS_L2_DEFAULT_URL = "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
@@ -41,10 +41,10 @@ public class ResolutionBuilder {
         serviceConfigs.put(NamingServiceType.ENS, new BuilderNSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
         
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
-        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader");
+        String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
         unsConfigs = new HashMap<>();
         unsConfigs.put(UNSLocation.Layer1, new BuilderNSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-        unsConfigs.put(UNSLocation.Layer2, new BuilderNSConfig(Network.MUMBAI_TESTNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
+        unsConfigs.put(UNSLocation.Layer2, new BuilderNSConfig(Network.MATIC_MAINNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
         
         provider = new DefaultProvider();
     }

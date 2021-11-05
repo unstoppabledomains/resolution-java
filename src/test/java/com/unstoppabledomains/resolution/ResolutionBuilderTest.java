@@ -44,7 +44,7 @@ public class ResolutionBuilderTest {
     @Test
     public void buildsWithDefaultParams() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xc3C2BAB5e3e52DBF311b2aAcEf2e40344f19494E");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x332A8191905fA8E6eeA7350B5799F225B8ed30a9");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xA3f32c8cd786dc089Bd1fC175F2707223aeE5d00");
         NSConfig expectedENSConfig = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee", "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e");
         NSConfig expectedZNSConfig = new NSConfig(Network.MAINNET, "https://api.zilliqa.com", "0x9611c53BE6d1b32058b2747bdeCECed7e1216793");
 
@@ -97,7 +97,7 @@ public class ResolutionBuilderTest {
     @Test
     public void allowsToCustomizeOneService() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xc3C2BAB5e3e52DBF311b2aAcEf2e40344f19494E");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x332A8191905fA8E6eeA7350B5799F225B8ed30a9");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xA3f32c8cd786dc089Bd1fC175F2707223aeE5d00");
         NSConfig expectedENSConfig = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee", "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 

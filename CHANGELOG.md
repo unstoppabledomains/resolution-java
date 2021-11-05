@@ -1,6 +1,27 @@
-## Unreleased
-* Introduced `Resolution#getBatchOwners` method to resolve owner addresses of many domains only for UNS. 
+## 4.0.0
+### Breaking changes
+* Library builder methods has changed it's signature. Almost all methods now has prefixes related to specific name server (`UNS`, `ZNS`, `ENS`)
+  * Example of changed methods:
+    * `ensChainId`
+    * `unsChainId`
+    * `znsChainId`
+  * ENS considered deprecated and will be removed in future
+
+### New methods and features 
+* 🎉 🎉 🎉 Add Polygon Layer 2 support!
+* Introduced `Resolution#getBatchOwners` method to resolve owner addresses of many domains only for UNS.
 * Introduced `Resolution#getRecords` method to resole multiple records of a single domain.
+* Introduced `Resolution#getAllRecords` method to resole all known records of a single domain.
+* Introduced `Resolution#getLocations` method to resole all known records of a single domain.
+* Add `Resolution#getLocations` method which will help to determine domains location (blockhain, networkId) and useful metadata like owner, resolver, registry addresses, provider url if possible.
+  * Method returns:
+    * Domain blockhain (ETH or MATIC)
+    * Blockchain network id (numeric)
+    * Owner address
+    * Resolver address
+    * Registry address
+    * Provider URL if possible
+      * Infura URL by default
 * Domain name is now trimmed and lowercased before resolving
 * Domain names that are not accomply with this regex `^[.a-z\d-]+$` will throw a NSExceptionCode.InvalidDomain
 
