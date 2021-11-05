@@ -5,7 +5,7 @@
     * `ensChainId`
     * `unsChainId`
     * `znsChainId`
-  * ENS considered deprecated and will be removed in future
+* ENS considered deprecated and will be removed in future
 
 ### New methods and features 
 * 🎉 🎉 🎉 Add Polygon Layer 2 support!
