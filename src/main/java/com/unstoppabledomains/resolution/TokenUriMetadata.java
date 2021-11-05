@@ -2,6 +2,7 @@ package com.unstoppabledomains.resolution;
 
 import lombok.Data;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class TokenUriMetadata {
@@ -12,9 +13,15 @@ public class TokenUriMetadata {
     private String value;
   }
 
+  @Data
+  public class TokenUriMetadataProperties {
+    private Map<String, String> records;
+  }
+
   private String name;
   private String description;
   private String image;
+  private TokenUriMetadataProperties properties;
   private String externalUrl;
   private String externalLink;
   private String imageData;

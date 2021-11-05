@@ -1,5 +1,6 @@
 package com.unstoppabledomains.resolution.naming.service;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,6 +12,7 @@ import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.util.Utilities;
+import com.unstoppabledomains.config.network.model.Location;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,9 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.math.BigInteger;
 
@@ -76,9 +78,16 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
+    public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
+        JsonObject jsonRecords = getAllRecordsAsJson(domain);
+        Map<String, String> result = new Gson().fromJson(jsonRecords, Map.class);
+        return result;
+    }
+
+    @Override
     public String getRecord(String domain, String key) throws NamingServiceException {
         try {
-            JsonObject records = getAllRecords(domain);
+            JsonObject records = getAllRecordsAsJson(domain);
             if (key.equals("dweb.ipfs.hash") || key.equals("ipfs.html.value")) {
                 return getIpfsHash(records);
             }
@@ -86,6 +95,20 @@ public class ZNS extends BaseNamingService {
         } catch(NullPointerException exception) {
             throw new NamingServiceException(NSExceptionCode.RecordNotFound, new NSExceptionParams("d|r", domain, key));
         }
+    }
+
+    @Override
+    public Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException {
+        JsonObject records = getAllRecordsAsJson(domain);  
+        Map<String, String> result = new HashMap<>();
+        for (String key : recordsKeys) {
+            try {
+                result.put(key, records.get(key).getAsString());
+            } catch(NullPointerException exception) {
+                result.put(key, "");
+            }
+        }
+        return result;
     }
 
     @Override
@@ -99,8 +122,8 @@ public class ZNS extends BaseNamingService {
     }
 
     @Override
-    public List<String> getTokensOwnedBy(String address) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getTokensOwnedBy", getType().toString()));
+    public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
     }
 
     private String getIpfsHash(JsonObject records) {
@@ -115,7 +138,7 @@ public class ZNS extends BaseNamingService {
         return newRecord.getAsString();
     }
 
-    private JsonObject getAllRecords(String domain) throws NamingServiceException {
+    private JsonObject getAllRecordsAsJson(String domain) throws NamingServiceException {
         try {
             String resolverAddress = getResolverAddress(domain);
             String[] keys = {};

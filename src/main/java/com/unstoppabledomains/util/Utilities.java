@@ -1,7 +1,9 @@
 package com.unstoppabledomains.util;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import com.unstoppabledomains.resolution.artifacts.Numeric;
@@ -54,11 +56,19 @@ public class Utilities {
     return new BigInteger(namehash.substring(2), 16);
   }
 
+  public static String convertEthAddress(BigInteger address) {
+    return normalizeAddress(address.toString(16), 40);
+  }
+
   public static String normalizeAddress(String address) {
+    return normalizeAddress(address, 64);
+  }
+
+  public static String normalizeAddress(String address, int length) {
     String hexPrefix = "0x";
     String cleanAddress = address.startsWith(hexPrefix) ? address.substring(2) : address;
-    if (cleanAddress.length() < 64) {
-      int amountOfZeroes = 64 - cleanAddress.length();
+    if (cleanAddress.length() < length) {
+      int amountOfZeroes = length - cleanAddress.length();
       String zeros = new String(new char[amountOfZeroes]).replace('\0', '0');
       return hexPrefix + zeros + cleanAddress;
     } 
@@ -71,5 +81,12 @@ public class Utilities {
     while (i1.hasNext() && i2.hasNext()) {
         consumer.accept(i1.next(), i2.next());
     }
+  }
+
+  public static <T> Set<T> combineTwoSets(Set<T> set1, Set<T> set2) {
+    HashSet<T> set = new HashSet<>();
+    set.addAll(set1);
+    set.addAll(set2);
+    return set;
   }
 }

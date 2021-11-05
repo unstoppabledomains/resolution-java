@@ -9,13 +9,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ENSTest {
   private static DomainResolution resolution;
@@ -29,6 +24,11 @@ public class ENSTest {
   public void ownerTest() throws NamingServiceException {
     String owner = resolution.getOwner("monkybrain.eth");
     assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", owner);
+  }
+
+  @Test
+  public void getRecordsEns() throws Exception {
+      TestUtils.expectError(() -> resolution.getRecords("someens.eth", Arrays.asList("crypto.ETH.address")), NSExceptionCode.NotImplemented);
   }
 
   @Test
@@ -47,5 +47,10 @@ public class ENSTest {
 
     addr = resolution.getAddress("monkybrain.eth", "EtH");
     assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", addr);
+  }
+
+  @Test
+  public void getAllRecords() throws Exception {
+    TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
   }
 }

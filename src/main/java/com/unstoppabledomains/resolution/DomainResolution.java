@@ -3,6 +3,7 @@ package com.unstoppabledomains.resolution;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -29,6 +30,14 @@ public interface DomainResolution {
     Network getNetwork(NamingServiceType type);
 
     /**
+     * Returns all records and their's values from a domain
+     * @param domain domain name such as "brad.crypto"
+     * @return map of recordKey to recordValue
+     * @throws NamingServiceException when domain is not registered
+     */
+    Map<String, String> getAllRecords(String domain) throws NamingServiceException;
+
+    /**
      * Resolves domain for a specific record
      *
      * @param domain trimed and lowercased domain name such as "brad.crypto"
@@ -38,6 +47,17 @@ public interface DomainResolution {
      */
     String getRecord(String domain, String recordKey) throws NamingServiceException;
     
+    /**
+     * Resolves domain for specific list of records
+     * 
+     * @param domain domain name such as "brad.crypto"
+     * @param recordsKeys list of all recordsKeys to be resolved
+     * @return Map of recordKey to values
+     * @throws NamingServiceException when domain is not registered
+     */
+    Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException;
+
+
     /**
      * Resolves domain for a specific ticker address
      *
@@ -117,16 +137,6 @@ public interface DomainResolution {
      */
     List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException;
 
-
-    /**
-     * Resolves all UD tokens owned by an address
-     * @param address an ethereum address of an owner
-     * @param service a value from NamingServiceType enum ("UNS" | "ENS" | "ZNS" )
-     * @return a list of ud domains this owner owns
-     * @throws NamingServiceException
-     */
-    List<String> getTokensOwnedBy(String address, NamingServiceType service) throws NamingServiceException;
-
     /**
      * Retrieves the tokenURI from the registry smart contract.
      *
@@ -155,4 +165,23 @@ public interface DomainResolution {
      * @throws NamingServiceException if domain is not found or invalid
      */
     String unhash(String hash, NamingServiceType service) throws NamingServiceException;
+
+    /**
+     * Retrieves the location info for provided domains. Location info contains:
+     * <ul>
+     *     <li>RegistryAddress</li>
+     *     <li>ResolverAddress</li>
+     *     <li>Network Id</li>
+     *     <li>Blockchain (Coin symbol) </li>
+     *     <li>Owner address</li>
+     *     <li>Blockchain provider URL</li>
+     * </ul>
+     * If a domain is not found, {@code null} will be returned for that domain in the resulting map.
+     * The domain array should be consistent. All domains should be from the same naming service.
+     * 
+     * @param domains domain names
+     * @return map of domain names and Location info
+     * @throws NamingServiceException for network errors
+     */
+    Map<String, Location> getLocations(String... domains) throws NamingServiceException;
 }
