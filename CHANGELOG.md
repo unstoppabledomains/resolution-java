@@ -1,3 +1,9 @@
+## 5.0.0
+
+### Breaking changes
+* Ens support has been removed from the library.
+* Librayr builder methods regarding ens has been removed: `ensChainId`, `ensProviderUrl` and `ensContractAddress`
+
 ## 4.0.0
 ### Breaking changes
 * Library builder methods has changed it's signature. Almost all methods now has prefixes related to specific name server (`UNS`, `ZNS`, `ENS`)

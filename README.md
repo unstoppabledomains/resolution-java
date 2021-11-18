@@ -10,7 +10,7 @@ Resolution-Java is a library for interacting with blockchain domain names. It ca
 
 Resolution-Java is primarily built and maintained by [Unstoppable Domains](https://unstoppabledomains.com/).
 
-Resoultion-Java supports decentralized domains across three zones:
+Resoultion-Java supports decentralized domains across two zones:
 
 - Unstoppable Name Service (UNS)
   - `.crypto`
@@ -25,11 +25,6 @@ Resoultion-Java supports decentralized domains across three zones:
   - `...`
 - Zilliqa Name Service (ZNS)
   - `.zil`
-- Ethereum Name Service (ENS)
-  - `.eth`
-  - `.kred`
-  - `.xyz`
-  - `.luxe`
 
 # Releases
 
@@ -44,7 +39,7 @@ Java 8+ version is required to use this library.
 ### Default Ethereum Providers
 
 resolution-java library provides zero-configuration experience by using built-in production-ready Infura endpoint by default.
-Default Ethereum provider is free to use without restrictions and rate-limits for UNS resolution. To resolve ENS domains on production it's recommended to change Ethereum provider.
+Default Ethereum provider is free to use without restrictions and rate-limits for UNS resolution.
 
 ### Custom Ethereum provider configuration
 
@@ -59,8 +54,6 @@ DomainResolution resolution = new Resolution();
 // Note: if a custom configuration is provided for one UNS layer, 
 // it should be provided for the other layer too
 DomainResolution resolution = Resolution.builder()
-                .ensProviderUrl("https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
-                .ensContractAddress("0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e")
                 .unsProviderUrl(UNSLocation.Layer1, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
                 .unsContractAddress(UNSLocation.Layer1, "0x299974AeD8911bcbd2C61262605b89F591a53E83")
                 .unsProviderUrl(UNSLocation.Layer2, "https://polygon-mumbai.infura.io/e0c0cb9d12c440a29379df066de587e6")

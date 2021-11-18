@@ -1,7 +1,6 @@
 package com.unstoppabledomains.resolution;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import com.unstoppabledomains.resolution.contracts.JsonProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
-import com.unstoppabledomains.resolution.naming.service.ENS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
@@ -43,7 +41,7 @@ public class Resolution implements DomainResolution {
 
     /**
      * Create resolution object with default config:
-     * <a href="https://infura.io">infura</a> blockchain provider for ENS and UNS and
+     * <a href="https://infura.io">infura</a> blockchain provider for UNS
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {
@@ -106,10 +104,6 @@ public class Resolution implements DomainResolution {
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
         NamingService service = findService(domain);
-        if (service.getType() == NamingServiceType.ENS) {
-            throw new NamingServiceException(NSExceptionCode.NotImplemented,
-                new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
-        }
         String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
         return getRecord(domain, recordKey);
     }
@@ -225,7 +219,6 @@ public class Resolution implements DomainResolution {
                 new NSConfig(Network.MAINNET, ResolutionBuilder.UNS_DEFAULT_URL, unsProxyAddress),
                 new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
                 , provider));
-        namingServices.put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, ResolutionBuilder.ENS_DEFAULT_URL, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS), provider));
         namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         
         return namingServices;
@@ -233,15 +226,11 @@ public class Resolution implements DomainResolution {
 
     private NamingService findService(String domain) throws NamingServiceException {
         String[] split = domain.split("\\.");
-        String[] ensTLDs = { "eth", "kred", "luxe", "xyz" };
         if (split.length == 0) {
             throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
         }
         if (split[split.length - 1].equals("zil")) {
             return services.get(NamingServiceType.ZNS);
-        }
-        if (Arrays.asList(ensTLDs).contains(split[split.length - 1])) {
-            return services.get(NamingServiceType.ENS);
         }
         return services.get(NamingServiceType.UNS);
     }

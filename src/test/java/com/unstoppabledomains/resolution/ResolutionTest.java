@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
@@ -23,8 +22,6 @@ import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataAttribute;
-import com.unstoppabledomains.resolution.TokenUriMetadata.TokenUriMetadataProperties;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
@@ -57,11 +54,9 @@ public class ResolutionTest {
         DomainResolution rinkebyResolution = Resolution.builder()
             .znsChainId(Network.ZIL_TESTNET)
             .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
-            .ensProviderUrl("https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
             .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
             .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
             .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
-            .ensContractAddress(ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS)
             .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader"))
             .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
             .build();
@@ -73,10 +68,8 @@ public class ResolutionTest {
     public void testDefaultNetworks() throws Exception {
         DomainResolution defaultSettings = new Resolution();
         Network defaultUnsChainId = defaultSettings.getNetwork(NamingServiceType.UNS);
-        Network defaultEnsChainId = defaultSettings.getNetwork(NamingServiceType.ENS);
         Network defaultZnsChainId = defaultSettings.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.MAINNET, defaultUnsChainId);
-        assertEquals(Network.MAINNET, defaultEnsChainId);
         assertEquals(Network.MAINNET, defaultZnsChainId);
     }
 
@@ -94,7 +87,6 @@ public class ResolutionTest {
         .build();
 
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", resolutionFromBuilder.getOwner("testing.crypto"));
-        assertEquals("0x842f373409191cff2988a6f19ab9f605308ee462", resolutionFromBuilder.getOwner("monkybrain.eth"));
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", resolutionFromBuilder.getOwner("testing.zil"));
         assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", resolutionFromBuilder.getOwner("udtestdev-test-l2-domain-784391.wallet"));
     }
@@ -220,7 +212,6 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getAllRecords("myjohnny.wallet"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.crypto"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.nft"), NSExceptionCode.UnregisteredDomain);
-        TestUtils.expectError(() -> resolution.getAllRecords("monkybrain.eth"), NSExceptionCode.NotImplemented);
     }
 
     @Test
