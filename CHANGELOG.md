@@ -1,3 +1,7 @@
+## 4.1.0
+### Changes
+ * Library builder methods no longer require UNS smart contract addresses for known networks (mainnet, testnet). Only `unsChainId` and `unsProviderUrl` methods are required.
+
 ## 4.0.0
 ### Breaking changes
 * Library builder methods has changed it's signature. Almost all methods now has prefixes related to specific name server (`UNS`, `ZNS`, `ENS`)

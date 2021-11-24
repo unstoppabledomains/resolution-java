@@ -3,6 +3,7 @@ package com.unstoppabledomains.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 
@@ -22,6 +23,12 @@ public class BuilderNSConfig extends NSConfig {
     public void setChainId(Network chainId) {
         super.setChainId(chainId);
         this.state |= BuilderNSConfig.CHAIN_ID_SET;
+        if ((this.state & CONTRACT_SET) == 0) {
+            if (NetworkConfigLoader.getNetworkConfig().getNetworks().get(chainId.getCode()) != null) {
+                super.setContractAddress(NetworkConfigLoader.getContractAddress(chainId, "ProxyReader"));
+                this.state |= BuilderNSConfig.CONTRACT_SET;
+            }
+        }
     }
 
     @Override

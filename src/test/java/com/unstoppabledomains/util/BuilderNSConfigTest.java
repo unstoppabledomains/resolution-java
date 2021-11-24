@@ -51,10 +51,10 @@ public class BuilderNSConfigTest {
     }
 
     List<TestData> notFullyConfiguredCases = new ArrayList<>(Arrays.asList(
-        new TestData("set chainId only", "Provider URL is not set; Contract address is not set", (c) -> c.setChainId(Network.RINKEBY)),
+        new TestData("set known chainId only", "Provider URL is not set", (c) -> c.setChainId(Network.RINKEBY)),
+        new TestData("set unknown chainId only", "Provider URL is not set; Contract address is not set", (c) -> c.setChainId(Network.ZIL_TESTNET)),
         new TestData("set provider url only", "Chain ID is not set; Contract address is not set", (c) -> c.setBlockchainProviderUrl("custom provider")),
         new TestData("set contract only", "Chain ID is not set; Provider URL is not set", (c) -> c.setContractAddress("custom contract")),
-        new TestData("set chainId and provider url", "Contract address is not set", (c) -> {c.setChainId(Network.RINKEBY); c.setBlockchainProviderUrl("custom provider");}),
         new TestData("set chainId and contract", "Provider URL is not set", (c) -> {c.setChainId(Network.RINKEBY); c.setContractAddress("custom contract");}),
         new TestData("set provider url and contract", "Chain ID is not set", (c) -> {c.setBlockchainProviderUrl("custom provider"); c.setContractAddress("custom contract");})
     ));
