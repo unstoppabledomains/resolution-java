@@ -341,17 +341,20 @@ public class ResolutionTest {
 
     @Test
     public void getOwnerTest() throws NamingServiceException {
-        String owner = resolution.getOwner("testing.crypto");
+        String owner = resolution.getOwner("testing.crypto"); // cns
         assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", owner);
 
-        owner = resolution.getOwner("  UDTESTDEV-my-NEW-TLS.wallet    ");
+        owner = resolution.getOwner("  UDTESTDEV-my-NEW-TLS.wallet    "); // uns
         assertEquals("0x6ec0deed30605bcd19342f3c30201db263291589", owner);
 
-        owner = resolution.getOwner("testing.zil");
+        owner = resolution.getOwner("testing.zil"); // zil
         assertEquals("0x003e3cdfeceae96efe007f8196a1b1b1df547eee", owner);
 
-        owner = resolution.getOwner("udtestdev-test-l2-domain-784391.wallet");
+        owner = resolution.getOwner("udtestdev-test-l2-domain-784391.wallet"); // l2
         assertEquals("0x499dd6d875787869670900a2130223d85d4f6aa7", owner);
+
+        owner = resolution.getOwner("udtestdev-d0137c.crypto"); // unconfigured domain
+        assertEquals("0x58ca45e932a88b2e7d0130712b3aa9fb7c5781e2", owner);
     }
 
     @Test
