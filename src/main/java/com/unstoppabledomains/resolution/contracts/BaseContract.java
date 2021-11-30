@@ -1,6 +1,5 @@
 package com.unstoppabledomains.resolution.contracts;
 
-import com.esaulpaugh.headlong.abi.Event;
 import com.esaulpaugh.headlong.abi.Function;
 import com.esaulpaugh.headlong.abi.Tuple;
 import com.esaulpaugh.headlong.util.FastHex;
@@ -14,7 +13,6 @@ import com.google.gson.stream.JsonReader;
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
-import com.unstoppabledomains.resolution.artifacts.Hash;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyData;
 
 import lombok.AllArgsConstructor;

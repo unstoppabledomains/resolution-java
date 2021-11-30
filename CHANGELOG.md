@@ -1,3 +1,8 @@
+## 5.0.0
+
+### Breaking changes
+* Ens support has been removed from the library.
+* Library builder methods regarding ens has been removed: `ensChainId`, `ensProviderUrl` and `ensContractAddress`
 ## 4.1.0
 ### Changes
  * Library builder methods no longer require UNS smart contract addresses for known networks (mainnet, testnet). Only `unsChainId` and `unsProviderUrl` methods are required.

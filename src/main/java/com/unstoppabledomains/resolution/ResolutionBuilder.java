@@ -10,7 +10,6 @@ import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.interfaces.IProvider;
-import com.unstoppabledomains.resolution.naming.service.ENS;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
@@ -21,12 +20,10 @@ import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 import com.unstoppabledomains.util.BuilderNSConfig;
 
 public class ResolutionBuilder {
-    static final String ENS_DEFAULT_URL = "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee";
     static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String UNS_L2_DEFAULT_URL = "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
-    static final String ENS_DEFAULT_REGISTRY_ADDRESS = "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e";
     static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
     private final Map<NamingServiceType, BuilderNSConfig> serviceConfigs;
@@ -38,7 +35,6 @@ public class ResolutionBuilder {
         this.connector = connector;
         serviceConfigs = new HashMap<>();
         serviceConfigs.put(NamingServiceType.ZNS, new BuilderNSConfig(Network.MAINNET, ZILLIQA_DEFAULT_URL, ZNS_DEFAULT_REGISTRY_ADDRESS));
-        serviceConfigs.put(NamingServiceType.ENS, new BuilderNSConfig(Network.MAINNET, ENS_DEFAULT_URL, ENS_DEFAULT_REGISTRY_ADDRESS));
         
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
@@ -55,16 +51,6 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder znsChainId(Network chainId) {
         NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
-        nsConfig.setChainId(chainId);
-        return this;
-    }
-
-    /**
-     * @param chainId blockchain network ID for ENS
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder ensChainId(Network chainId) {
-        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ENS);
         nsConfig.setChainId(chainId);
         return this;
     }
@@ -87,15 +73,6 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder znsProviderUrl( String providerUrl) {
         NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
-        return this.providerUrl(nsConfig, providerUrl);
-    }
-
-    /**
-     * @param providerUrl blockchain provider URL for ENS
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder ensProviderUrl(String providerUrl) {
-        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ENS);
         return this.providerUrl(nsConfig, providerUrl);
     }
 
@@ -126,16 +103,6 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder znsContractAddress(String contractAddress) {
         NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
-        nsConfig.setContractAddress(contractAddress);
-        return this;
-    }
-
-    /**
-     * @param contractAddress   address of `Registry` contract for ENS
-     * @return builder object to allow chaining
-     */
-    public ResolutionBuilder ensContractAddress(String contractAddress) {
-        NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ENS);
         nsConfig.setContractAddress(contractAddress);
         return this;
     }
@@ -187,7 +154,6 @@ public class ResolutionBuilder {
         services.put(NamingServiceType.UNS, new UNS(new UNSConfig(unsConfigs.get(UNSLocation.Layer1),
                                                               unsConfigs.get(UNSLocation.Layer2)), provider));
         services.put(NamingServiceType.ZNS, new ZNS(serviceConfigs.get(NamingServiceType.ZNS), provider));
-        services.put(NamingServiceType.ENS, new ENS(serviceConfigs.get(NamingServiceType.ENS), provider));
         return connector.buildResolution(services);
     }
 

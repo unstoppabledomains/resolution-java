@@ -45,7 +45,6 @@ public class ResolutionBuilderTest {
     public void buildsWithDefaultParams() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xc3C2BAB5e3e52DBF311b2aAcEf2e40344f19494E");
         NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xA3f32c8cd786dc089Bd1fC175F2707223aeE5d00");
-        NSConfig expectedENSConfig = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee", "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e");
         NSConfig expectedZNSConfig = new NSConfig(Network.MAINNET, "https://api.zilliqa.com", "0x9611c53BE6d1b32058b2747bdeCECed7e1216793");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
@@ -57,7 +56,6 @@ public class ResolutionBuilderTest {
         UNS unsService = (UNS) capturedServices.get(NamingServiceType.UNS);
         checkUnsConfigurations(expectedUNSL1Config, unsService, UNSLocation.Layer1);
         checkUnsConfigurations(expectedUNSL2Config, unsService, UNSLocation.Layer2);
-        checkConfigurations(expectedENSConfig, capturedServices.get(NamingServiceType.ENS));
         checkConfigurations(expectedZNSConfig, capturedServices.get(NamingServiceType.ZNS));
     }
 
@@ -65,22 +63,18 @@ public class ResolutionBuilderTest {
     public void buildsWithCustomParams() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.RINKEBY, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x00000000000000000000000000000000000000001");
         NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x00000000000000000000000000000000000000002");
-        NSConfig expectedENSConfig = new NSConfig(Network.RINKEBY, "https://rinkeby.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee", "0x00000000000000000000000000000000000000003");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
         builder
             .unsChainId(UNSLocation.Layer1, expectedUNSL1Config.getChainId())
             .unsChainId(UNSLocation.Layer2, expectedUNSL2Config.getChainId())
-            .ensChainId(expectedENSConfig.getChainId())
             .znsChainId(expectedZNSConfig.getChainId())
             .unsProviderUrl(UNSLocation.Layer1, expectedUNSL1Config.getBlockchainProviderUrl())
             .unsProviderUrl(UNSLocation.Layer2, expectedUNSL2Config.getBlockchainProviderUrl())
-            .ensProviderUrl(expectedENSConfig.getBlockchainProviderUrl())
             .znsProviderUrl(expectedZNSConfig.getBlockchainProviderUrl())
             .unsContractAddress(UNSLocation.Layer1, expectedUNSL1Config.getContractAddress())
             .unsContractAddress(UNSLocation.Layer2, expectedUNSL2Config.getContractAddress())
-            .ensContractAddress(expectedENSConfig.getContractAddress())
             .znsContractAddress(expectedZNSConfig.getContractAddress())
             .build();
 
@@ -90,7 +84,6 @@ public class ResolutionBuilderTest {
         UNS unsService = (UNS) capturedServices.get(NamingServiceType.UNS);
         checkUnsConfigurations(expectedUNSL1Config, unsService, UNSLocation.Layer1);
         checkUnsConfigurations(expectedUNSL2Config, unsService, UNSLocation.Layer2);
-        checkConfigurations(expectedENSConfig, capturedServices.get(NamingServiceType.ENS));
         checkConfigurations(expectedZNSConfig, capturedServices.get(NamingServiceType.ZNS));
     }
 
@@ -98,7 +91,6 @@ public class ResolutionBuilderTest {
     public void allowsToCustomizeOneService() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xc3C2BAB5e3e52DBF311b2aAcEf2e40344f19494E");
         NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xA3f32c8cd786dc089Bd1fC175F2707223aeE5d00");
-        NSConfig expectedENSConfig = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/d423cf2499584d7fbe171e33b42cfbee", "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
@@ -114,7 +106,6 @@ public class ResolutionBuilderTest {
         UNS unsService = (UNS) capturedServices.get(NamingServiceType.UNS);
         checkUnsConfigurations(expectedUNSL1Config, unsService, UNSLocation.Layer1);
         checkUnsConfigurations(expectedUNSL2Config, unsService, UNSLocation.Layer2);
-        checkConfigurations(expectedENSConfig, capturedServices.get(NamingServiceType.ENS));
         checkConfigurations(expectedZNSConfig, capturedServices.get(NamingServiceType.ZNS));
     }
 
