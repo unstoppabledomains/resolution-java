@@ -129,4 +129,25 @@ public class ResolutionBuilderTest {
         ex = assertThrows(IllegalArgumentException.class, () -> builder.build());
         assertEquals("Invalid configuration for service ZNS: Contract address is not set", ex.getMessage());
     }
+
+    @Test
+    public void pullsContractAddressFromConfig() throws Exception {
+        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xc3C2BAB5e3e52DBF311b2aAcEf2e40344f19494E");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0xA3f32c8cd786dc089Bd1fC175F2707223aeE5d00");
+
+        ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
+        builder
+            .unsChainId(UNSLocation.Layer1, Network.MAINNET)
+            .unsChainId(UNSLocation.Layer2, Network.MATIC_MAINNET)
+            .unsProviderUrl(UNSLocation.Layer1, expectedUNSL1Config.getBlockchainProviderUrl())
+            .unsProviderUrl(UNSLocation.Layer2, expectedUNSL2Config.getBlockchainProviderUrl())
+            .build();
+
+        verify(mockConnector).buildResolution(servicesCaptor.capture());
+
+        Map<NamingServiceType, NamingService> capturedServices = servicesCaptor.getValue();
+        UNS unsService = (UNS) capturedServices.get(NamingServiceType.UNS);
+        checkUnsConfigurations(expectedUNSL1Config, unsService, UNSLocation.Layer1);
+        checkUnsConfigurations(expectedUNSL2Config, unsService, UNSLocation.Layer2);
+    }
 }
