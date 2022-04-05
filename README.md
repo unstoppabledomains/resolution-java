@@ -28,7 +28,9 @@ Resoultion-Java supports decentralized domains across two zones:
 
 # Releases
 
-The most recent release of this library is available on [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution).
+The most recent release of this library is available on [JitPack](https://jitpack.io/#unstoppabledomains/resolution-java).
+
+> We are no longer supporting [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution) for new versions of the resolution-java library.
 
 # Usage
 
@@ -51,7 +53,7 @@ DomainResolution resolution = new Resolution();
 // Optionally override default config using builder options:
 // providerUrl overwrites chainId by making net_version JSON RPC call to the provider
 // in the following example blockchain would be set to the rinkeby testnet
-// Note: if a custom configuration is provided for one UNS layer, 
+// Note: if a custom configuration is provided for one UNS layer,
 // it should be provided for the other layer too
 DomainResolution resolution = Resolution.builder()
                 .unsProviderUrl(UNSLocation.Layer1, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
