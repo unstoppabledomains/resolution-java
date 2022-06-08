@@ -218,7 +218,12 @@ class UNSInternal extends BaseNamingService {
 
   @Override
   public String getReverseTokenId(String address) throws NamingServiceException {
-      return proxyReaderContract.getReverseResolution(address);
+      BigInteger tokenId = proxyReaderContract.getReverseResolution(address);
+      if (tokenId.equals(BigInteger.ZERO)) {
+          throw new NamingServiceException(NSExceptionCode.ReverseResolutionNotSpecified, 
+          new NSExceptionParams("m|n|l|a", "getReverseTokenId", "UNS", location.getName(), address));
+      }
+      return Utilities.tokenIDToNamehash(tokenId);
   }
 
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {

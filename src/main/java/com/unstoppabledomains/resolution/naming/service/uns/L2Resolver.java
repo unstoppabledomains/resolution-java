@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.lang.model.element.NestingKind;
+
 import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
 import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.exceptions.ns.NamingServiceException;
@@ -33,7 +35,7 @@ public class L2Resolver {
     try {
       return processFutureResult(l2result);
     } catch (NamingServiceException e) {
-      if (e.getCode() != NSExceptionCode.UnregisteredDomain) {
+      if (e.getCode() != NSExceptionCode.UnregisteredDomain && e.getCode() != NSExceptionCode.ReverseResolutionNotSpecified) {
         throw e;
       }
     }

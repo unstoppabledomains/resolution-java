@@ -104,7 +104,6 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
-        NamingService service = findService(domain);
         String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
         return getRecord(domain, recordKey);
     }
@@ -219,23 +218,14 @@ public class Resolution implements DomainResolution {
     public String getReverse(String address) throws NamingServiceException {
         NamingService service = services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
         String tokenIdHash = service.getReverseTokenId(address);
-        return tokenIdHashToDomainName(service, tokenIdHash);
+        return unhash(tokenIdHash, NamingServiceType.UNS);
     }
 
     @Override
     public String getReverse(String address, UNSLocation location) throws NamingServiceException {
         UNS service = (UNS) services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
         String tokenIdHash = service.getReverseTokenId(address, location);
-        return tokenIdHashToDomainName(service, tokenIdHash);
-    }
-
-    private String tokenIdHashToDomainName(NamingService service, String tokenIdHash) throws NamingServiceException {
-        BigInteger tokenId = Utilities.namehashToTokenID(tokenIdHash);
-        String domainName = service.getDomainName(tokenId);
-        if (!service.getNamehash(domainName).equals(tokenIdHash)) {
-            throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "unhash"));
-        }
-        return domainName;
+        return unhash(tokenIdHash, NamingServiceType.UNS);
     }
 
     private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {

@@ -58,6 +58,9 @@ public class NamingServiceException extends Exception {
       case InvalidDomain: {
         return "Domain: " + params.domain + " does not passes the following regex pattern ^[.a-z\\d-]+$ ";
       }
+      case ReverseResolutionNotSpecified: {
+        return "Reverse resolution is not specified for address " + params.contractAddress;
+      }
       case UnknownError:
       default: 
         return "Unknown Error occurred";

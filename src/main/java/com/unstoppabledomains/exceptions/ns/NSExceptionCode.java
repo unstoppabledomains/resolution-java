@@ -13,5 +13,6 @@ public enum NSExceptionCode {
   UnsupportedCurrency,
   NotImplemented,
   InconsistentDomainArray,
-  InvalidDomain;
+  InvalidDomain,
+  ReverseResolutionNotSpecified;
 }
