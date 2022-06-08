@@ -23,6 +23,7 @@ import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
 import com.unstoppabledomains.resolution.naming.service.uns.UNS;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSConfig;
+import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 import com.unstoppabledomains.util.Utilities;
 
 public class Resolution implements DomainResolution {
@@ -200,6 +201,41 @@ public class Resolution implements DomainResolution {
             }
         }
         return service.getLocations(domains);
+    }
+
+    @Override
+    public String getReverseTokenId(String address) throws NamingServiceException {
+        NamingService service = services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
+        return service.getReverseTokenId(address);
+    }
+
+    @Override
+    public String getReverseTokenId(String address, UNSLocation location) throws NamingServiceException {
+        UNS service = (UNS) services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
+        return service.getReverseTokenId(address, location);
+    }
+
+    @Override
+    public String getReverse(String address) throws NamingServiceException {
+        NamingService service = services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
+        String tokenIdHash = service.getReverseTokenId(address);
+        return tokenIdHashToDomainName(service, tokenIdHash);
+    }
+
+    @Override
+    public String getReverse(String address, UNSLocation location) throws NamingServiceException {
+        UNS service = (UNS) services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
+        String tokenIdHash = service.getReverseTokenId(address, location);
+        return tokenIdHashToDomainName(service, tokenIdHash);
+    }
+
+    private String tokenIdHashToDomainName(NamingService service, String tokenIdHash) throws NamingServiceException {
+        BigInteger tokenId = Utilities.namehashToTokenID(tokenIdHash);
+        String domainName = service.getDomainName(tokenId);
+        if (!service.getNamehash(domainName).equals(tokenIdHash)) {
+            throw new NamingServiceException(NSExceptionCode.UnknownError, new NSExceptionParams("m", "unhash"));
+        }
+        return domainName;
     }
 
     private TokenUriMetadata getMetadataFromTokenURI(String tokenURI) throws NamingServiceException {

@@ -195,4 +195,9 @@ public class ZNS extends BaseNamingService {
         JsonElement result = response.get("result");
         return result.getAsJsonObject();
     }
+
+    @Override
+    public String getReverseTokenId(String address) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getReverseTokenId", getType().toString()));
+    }
 }

@@ -10,6 +10,7 @@ import com.unstoppabledomains.exceptions.ns.NamingServiceException;
 import com.unstoppabledomains.resolution.dns.DnsRecord;
 import com.unstoppabledomains.resolution.dns.DnsRecordsType;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
+import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 
 public interface DomainResolution {
 
@@ -184,4 +185,46 @@ public interface DomainResolution {
      * @throws NamingServiceException for network errors
      */
     Map<String, Location> getLocations(String... domains) throws NamingServiceException;
+
+    /**
+     * Retrieves the domain token id configured as reverse resolution for this address.
+     * If reverse resolution is not configured, {@code null} will be returned for that domain in the resulting map.
+     * 
+     * @param address blockchain address for reverse resolution
+     * @return reverse resolution token id
+     * @throws NamingServiceException for network errors
+     */
+    String getReverseTokenId(String address) throws NamingServiceException;
+
+    /**
+     * Retrieves the domain token id configured as reverse resolution for this address.
+     * If reverse resolution is not configured, {@code null} will be returned for that domain in the resulting map.
+     * 
+     * @param address blockchain address for reverse resolution
+     * @param location can be used to specify which network to use for reverse resolution
+     * @return reverse resolution token id
+     * @throws NamingServiceException for network errors
+     */
+    String getReverseTokenId(String address, UNSLocation location) throws NamingServiceException;
+
+    /**
+     * Retrieves the domain name configured as reverse resolution for this address.
+     * If reverse resolution is not configured, {@code null} will be returned for that domain in the resulting map.
+     * 
+     * @param address blockchain address for reverse resolution
+     * @return reverse resolution domain name
+     * @throws NamingServiceException for network errors
+     */
+    String getReverse(String address) throws NamingServiceException;
+
+    /**
+     * Retrieves the domain name configured as reverse resolution for this address.
+     * If reverse resolution is not configured, {@code null} will be returned for that domain in the resulting map.
+     * 
+     * @param address blockchain address for reverse resolution
+     * @param location can be used to specify which network to use for reverse resolution
+     * @return reverse resolution domain name
+     * @throws NamingServiceException for network errors
+     */
+    String getReverse(String address, UNSLocation location) throws NamingServiceException;
 }
