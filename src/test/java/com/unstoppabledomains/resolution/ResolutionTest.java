@@ -523,7 +523,7 @@ public class ResolutionTest {
         assertEquals(testDomain, metadata.getName());
         assertEquals(5, metadata.getAttributes().size());
         Map<String, String> expectedRecords = new HashMap<String, String>() {{
-            put("dns.A", "[\\\"10.0.0.1\\\", \\\"10.0.0.3\\\"]");
+            put("dns.A", "[\"10.0.0.1\", \"10.0.0.3\"]");
             put("dns.ttl", "128");
             put("dns.AAAA", "[]");
             put("dns.A.ttl", "98");
@@ -536,6 +536,8 @@ public class ResolutionTest {
             put("crypto.USDT.version.OMNI.address", "19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ");
             put("crypto.USDT.version.TRON.address", "TNemhXhpX7MwzZJa3oXvfCjo5pEeXrfN2h");
             put("crypto.USDT.version.ERC20.address", "0xe7474D07fD2FA286e7e0aa23cd107F8379085037");
+            put("whois.email.value", "testing@example.com");
+            put("custom.record", "custom.value");
         }};
         Map<String, String> recordsFromProperties = metadata.getProperties().getRecords();
         assertEquals(expectedRecords, recordsFromProperties);
@@ -635,14 +637,14 @@ public class ResolutionTest {
         String addressL1 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
         String tokenName = resolution.getReverseTokenId(addressL1);
         String tokenNameL1 = resolution.getReverseTokenId(addressL1, UNSLocation.Layer2); // todo change to L1
-        assertEquals("6304531997610998161237844647282663196661123000121147597890468333969432655810", tokenName);
-        assertEquals("6304531997610998161237844647282663196661123000121147597890468333969432655810", tokenNameL1);
+        assertEquals("0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2", tokenName);
+        assertEquals("0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2", tokenNameL1);
 
         String addressL2 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
         tokenName = resolution.getReverseTokenId(addressL2);
         String tokenNameL2 = resolution.getReverseTokenId(addressL2, UNSLocation.Layer2);
-        assertEquals("6304531997610998161237844647282663196661123000121147597890468333969432655810", tokenName);
-        assertEquals("6304531997610998161237844647282663196661123000121147597890468333969432655810", tokenNameL2);
+        assertEquals("0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2", tokenName);
+        assertEquals("0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2", tokenNameL2);
     }
 
     @Test
