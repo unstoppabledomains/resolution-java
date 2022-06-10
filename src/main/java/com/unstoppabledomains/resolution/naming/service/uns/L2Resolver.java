@@ -33,8 +33,14 @@ public class L2Resolver {
     try {
       return processFutureResult(l2result);
     } catch (NamingServiceException e) {
-      if (e.getCode() != NSExceptionCode.UnregisteredDomain && e.getCode() != NSExceptionCode.ReverseResolutionNotSpecified) {
-        throw e;
+      switch (e.getCode()) {
+        case UnregisteredDomain:
+        case ReverseResolutionNotSpecified:
+        case UnsupportedDomain:
+        case NotImplemented:
+          break;
+        default:
+          throw e;
       }
     }
     return processFutureResult(l1result);

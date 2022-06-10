@@ -1,9 +1,11 @@
 package com.unstoppabledomains.resolution;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.unstoppabledomains.config.network.NetworkConfigLoader;
 import com.unstoppabledomains.config.network.model.Network;
@@ -21,6 +23,8 @@ import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
 import com.unstoppabledomains.resolution.naming.service.NamingServiceType;
 import com.unstoppabledomains.resolution.naming.service.ZNS;
+import com.unstoppabledomains.resolution.naming.service.uns.L2Resolver;
+import com.unstoppabledomains.resolution.naming.service.uns.ResolutionMethods;
 import com.unstoppabledomains.resolution.naming.service.uns.UNS;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
@@ -72,20 +76,20 @@ public class Resolution implements DomainResolution {
 
     @Override
     public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        return findService(domain).getAllRecords(domain);
+        String normailzedDomain = normalizeDomain(domain);
+        return getFromZilAndUNS(normailzedDomain, (service) -> service.getAllRecords(normailzedDomain));
     }
 
     @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        return findService(domain).getRecord(domain, recordKey);
+        String normailzedDomain = normalizeDomain(domain);
+        return getFromZilAndUNS(normailzedDomain, (service) -> service.getRecord(normailzedDomain, recordKey));
     }
 
     @Override
     public Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        return findService(domain).getRecords(domain, recordsKeys);
+        String normailzedDomain = normalizeDomain(domain);
+        return getFromZilAndUNS(normailzedDomain, (service) -> service.getRecords(normailzedDomain, recordsKeys));
     }
 
     @Override
@@ -109,10 +113,14 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
-    public String getNamehash(String domain) throws NamingServiceException {
+    public String getNamehash(String domain, NamingServiceType serviceType) throws NamingServiceException {
         domain = normalizeDomain(domain);
-        NamingService service = findService(domain);
-        return service.getNamehash(domain);
+        switch (serviceType) {
+            case ZNS:
+                return services.get(NamingServiceType.ZNS).getNamehash(domain);
+            default:
+                return services.get(NamingServiceType.UNS).getNamehash(domain);
+        }
     }
 
     @Override
@@ -129,43 +137,48 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getOwner(String domain) throws NamingServiceException {
-        domain = normalizeDomain(domain);
-        NamingService service = findService(domain);
-        return service.getOwner(domain);
+        String normailzedDomain = normalizeDomain(domain);
+        return getFromZilAndUNS(normailzedDomain, (service) -> service.getOwner(normailzedDomain));
     }
 
     @Override
     public Map<String, String> getBatchOwners(List<String> domains) throws NamingServiceException {
-        NamingService service = findService(domains.get(0));
-        boolean inconsistentDomainArray = domains.stream().allMatch(d-> {
+        NamingService zns = services.get(NamingServiceType.ZNS);
+        NamingService uns = services.get(NamingServiceType.UNS);
+        List<String> znsDomains = domains.stream().filter(d -> {
             try {
-                return (findService(d) == service);
+                return zns.isSupported(d);
             } catch (NamingServiceException e) {
                 return false;
             }
-        });
-        if (!inconsistentDomainArray) {
-            throw new NamingServiceException(NSExceptionCode.InconsistentDomainArray);
-        }
+        }).collect(Collectors.toList());
+        
+        Map<String, String> unsOwners = uns.batchOwners(domains);
+        Map<String, String> znsOwners = zns.batchOwners(znsDomains);
 
-        return service.batchOwners(domains);
+        znsOwners.forEach((k, v) -> {
+            if (v != null) {
+                unsOwners.merge(k, v, (v1, v2) -> v2);
+            }
+        });
+        return unsOwners;
     }
 
     @Override
     public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
-        domain = normalizeDomain(domain);
-        NamingService service = findService(domain);
-        return service.getDns(domain, types);
+        String normailzedDomain = normalizeDomain(domain);
+        return getFromZilAndUNS(normailzedDomain, (service) -> service.getDns(normailzedDomain, types));
     }
 
     @Override
     public String getTokenURI(String domain) throws NamingServiceException {
-        domain = normalizeDomain(domain);
+        String normalizedDomain = normalizeDomain(domain);
         try {
-            NamingService service = findService(domain);
-            String namehash = service.getNamehash(domain);
-            BigInteger tokenId = Utilities.namehashToTokenID(namehash);
-            return service.getTokenUri(tokenId);
+            return getFromZilAndUNS(normalizedDomain, (service) -> {
+                String namehash = service.getNamehash(normalizedDomain);
+                BigInteger tokenId = Utilities.namehashToTokenID(namehash);
+                return service.getTokenUri(tokenId);
+            });
         } catch (NamingServiceException e) {
             if (e.getCode() == NSExceptionCode.UnregisteredDomain) {
                 throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d|m", domain, "tokenURI"), e);
@@ -193,13 +206,25 @@ public class Resolution implements DomainResolution {
 
     @Override
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
-        NamingService service = findService(domains[0]);
-        for (String domain : domains) {
-            if (findService(domain) != service) {
-                throw new NamingServiceException(NSExceptionCode.InconsistentDomainArray);
+        NamingService zns = services.get(NamingServiceType.ZNS);
+        NamingService uns = services.get(NamingServiceType.UNS);
+        String[] znsDomains = Arrays.stream(domains).filter(d -> {
+            try {
+                return zns.isSupported(d);
+            } catch (NamingServiceException e) {
+                return false;
             }
-        }
-        return service.getLocations(domains);
+        }).toArray(String[]::new);
+        
+        Map<String, Location> unsLocations = uns.getLocations(domains);
+        Map<String, Location> znsLocations = zns.getLocations(znsDomains);
+
+        znsLocations.forEach((k, v) -> {
+            if (v != null) {
+                unsLocations.merge(k, v, (v1, v2) -> v2);
+            }
+        });
+        return unsLocations;
     }
 
     @Override
@@ -262,15 +287,25 @@ public class Resolution implements DomainResolution {
         return namingServices;
     }
 
-    private NamingService findService(String domain) throws NamingServiceException {
-        String[] split = domain.split("\\.");
-        if (split.length == 0) {
-            throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
-        }
-        if (split[split.length - 1].equals("zil")) {
-            return services.get(NamingServiceType.ZNS);
-        }
-        return services.get(NamingServiceType.UNS);
+    private interface ThrowFunc<T, R, E extends Exception> {
+        R apply(T t) throws E;
+    }
+
+    private <T> T getFromZilAndUNS(String domain, ThrowFunc<NamingService, T, Exception> func) throws NamingServiceException{
+        NamingService zns = services.get(NamingServiceType.ZNS);
+        NamingService uns = services.get(NamingServiceType.UNS);
+
+        L2Resolver resolver = new L2Resolver();
+        return resolver.resolve(ResolutionMethods.<T>builder()
+        .l2Func(() -> {
+            if (!zns.isSupported(domain)) {
+                throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
+            }
+            return func.apply(zns);
+        })
+        .l1Func(() -> {
+            return func.apply(uns);
+        }).build());
     }
 
     private String normalizeDomain(String domain) throws NamingServiceException {
