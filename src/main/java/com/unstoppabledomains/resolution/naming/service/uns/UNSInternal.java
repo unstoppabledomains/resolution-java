@@ -51,9 +51,6 @@ class UNSInternal extends BaseNamingService {
 
   public Boolean isSupported(String domain) throws NamingServiceException {
     String[] split = domain.split("\\.");
-    if (split.length == 0 || split[split.length - 1].equals("zil")) {
-      return false;
-    }
     BigInteger tokenID;
     try {
       tokenID = getTokenID(split[split.length - 1]);
