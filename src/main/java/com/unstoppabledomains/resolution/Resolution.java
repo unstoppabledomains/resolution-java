@@ -77,19 +77,19 @@ public class Resolution implements DomainResolution {
     @Override
     public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
         String normailzedDomain = normalizeDomain(domain);
-        return getFromZilAndUNS(normailzedDomain, (service) -> service.getAllRecords(normailzedDomain));
+        return callServicesForDomain(normailzedDomain, (service) -> service.getAllRecords(normailzedDomain));
     }
 
     @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
         String normailzedDomain = normalizeDomain(domain);
-        return getFromZilAndUNS(normailzedDomain, (service) -> service.getRecord(normailzedDomain, recordKey));
+        return callServicesForDomain(normailzedDomain, (service) -> service.getRecord(normailzedDomain, recordKey));
     }
 
     @Override
     public Map<String, String> getRecords(String domain, List<String> recordsKeys) throws NamingServiceException {
         String normailzedDomain = normalizeDomain(domain);
-        return getFromZilAndUNS(normailzedDomain, (service) -> service.getRecords(normailzedDomain, recordsKeys));
+        return callServicesForDomain(normailzedDomain, (service) -> service.getRecords(normailzedDomain, recordsKeys));
     }
 
     @Override
@@ -138,22 +138,24 @@ public class Resolution implements DomainResolution {
     @Override
     public String getOwner(String domain) throws NamingServiceException {
         String normailzedDomain = normalizeDomain(domain);
-        return getFromZilAndUNS(normailzedDomain, (service) -> service.getOwner(normailzedDomain));
+        return callServicesForDomain(normailzedDomain, (service) -> service.getOwner(normailzedDomain));
     }
 
     @Override
     public Map<String, String> getBatchOwners(List<String> domains) throws NamingServiceException {
         NamingService zns = services.get(NamingServiceType.ZNS);
         NamingService uns = services.get(NamingServiceType.UNS);
+
+        Map<String, String> unsOwners = uns.batchOwners(domains);
+
         List<String> znsDomains = domains.stream().filter(d -> {
             try {
-                return zns.isSupported(d);
+                return zns.isSupported(d) && unsOwners.get(d) == null;
             } catch (NamingServiceException e) {
                 return false;
             }
         }).collect(Collectors.toList());
         
-        Map<String, String> unsOwners = uns.batchOwners(domains);
         Map<String, String> znsOwners = zns.batchOwners(znsDomains);
 
         znsOwners.forEach((k, v) -> {
@@ -167,14 +169,14 @@ public class Resolution implements DomainResolution {
     @Override
     public List<DnsRecord> getDns(String domain, List<DnsRecordsType> types) throws NamingServiceException, DnsException {
         String normailzedDomain = normalizeDomain(domain);
-        return getFromZilAndUNS(normailzedDomain, (service) -> service.getDns(normailzedDomain, types));
+        return callServicesForDomain(normailzedDomain, (service) -> service.getDns(normailzedDomain, types));
     }
 
     @Override
     public String getTokenURI(String domain) throws NamingServiceException {
         String normalizedDomain = normalizeDomain(domain);
         try {
-            return getFromZilAndUNS(normalizedDomain, (service) -> {
+            return callServicesForDomain(normalizedDomain, (service) -> {
                 String namehash = service.getNamehash(normalizedDomain);
                 BigInteger tokenId = Utilities.namehashToTokenID(namehash);
                 return service.getTokenUri(tokenId);
@@ -208,15 +210,17 @@ public class Resolution implements DomainResolution {
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
         NamingService zns = services.get(NamingServiceType.ZNS);
         NamingService uns = services.get(NamingServiceType.UNS);
+        
+        Map<String, Location> unsLocations = uns.getLocations(domains);
+
         String[] znsDomains = Arrays.stream(domains).filter(d -> {
             try {
-                return zns.isSupported(d);
+                return zns.isSupported(d) && unsLocations.get(d) == null;
             } catch (NamingServiceException e) {
                 return false;
             }
         }).toArray(String[]::new);
-        
-        Map<String, Location> unsLocations = uns.getLocations(domains);
+
         Map<String, Location> znsLocations = zns.getLocations(znsDomains);
 
         znsLocations.forEach((k, v) -> {
@@ -291,7 +295,7 @@ public class Resolution implements DomainResolution {
         R apply(T t) throws E;
     }
 
-    private <T> T getFromZilAndUNS(String domain, ThrowFunc<NamingService, T, Exception> func) throws NamingServiceException{
+    private <T> T callServicesForDomain(String domain, ThrowFunc<NamingService, T, Exception> func) throws NamingServiceException{
         NamingService zns = services.get(NamingServiceType.ZNS);
         NamingService uns = services.get(NamingServiceType.UNS);
 
