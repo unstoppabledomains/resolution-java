@@ -633,6 +633,13 @@ public class ResolutionTest {
     }
 
     @Test
+    public void testGetReverseInvalid() throws Exception {
+        String address = "invalid0x";
+        TestUtils.expectError(() -> resolution.getReverse(address), NSExceptionCode.IncorrectAddress);
+        TestUtils.expectError(() -> resolution.getReverse(address, UNSLocation.Layer1), NSExceptionCode.IncorrectAddress);
+    }
+
+    @Test
     public void testGetReverseTokenId() throws Exception {
         String addressL1 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
         String tokenName = resolution.getReverseTokenId(addressL1);
@@ -651,6 +658,13 @@ public class ResolutionTest {
     public void testGetReverseTokenIdDoesntExist() throws Exception {
         String address = "0x0000000000000000000000000000000000000001";
         TestUtils.expectError(() -> resolution.getReverseTokenId(address), NSExceptionCode.ReverseResolutionNotSpecified);
+    }
+
+    @Test
+    public void testGetReverseTokenIdInvalid() throws Exception {
+        String address = "invalid0x";
+        TestUtils.expectError(() -> resolution.getReverseTokenId(address), NSExceptionCode.IncorrectAddress);
+        TestUtils.expectError(() -> resolution.getReverseTokenId(address, UNSLocation.Layer1), NSExceptionCode.IncorrectAddress);
     }
 
 }

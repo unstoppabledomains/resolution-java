@@ -204,18 +204,27 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getReverseTokenId(String address) throws NamingServiceException {
+        if (!Utilities.verifyAddress(address)) {
+            throw new NamingServiceException(NSExceptionCode.IncorrectAddress);
+        }
         NamingService service = services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
         return service.getReverseTokenId(address);
     }
 
     @Override
     public String getReverseTokenId(String address, UNSLocation location) throws NamingServiceException {
+        if (!Utilities.verifyAddress(address)) {
+            throw new NamingServiceException(NSExceptionCode.IncorrectAddress);
+        }
         UNS service = (UNS) services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
         return service.getReverseTokenId(address, location);
     }
 
     @Override
     public String getReverse(String address) throws NamingServiceException {
+        if (!Utilities.verifyAddress(address)) {
+            throw new NamingServiceException(NSExceptionCode.IncorrectAddress);
+        }
         NamingService service = services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
         String tokenIdHash = service.getReverseTokenId(address);
         return unhash(tokenIdHash, NamingServiceType.UNS);
@@ -223,6 +232,9 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getReverse(String address, UNSLocation location) throws NamingServiceException {
+        if (!Utilities.verifyAddress(address)) {
+            throw new NamingServiceException(NSExceptionCode.IncorrectAddress);
+        }
         UNS service = (UNS) services.get(NamingServiceType.UNS); // reverse is supported only for UNS 
         String tokenIdHash = service.getReverseTokenId(address, location);
         return unhash(tokenIdHash, NamingServiceType.UNS);

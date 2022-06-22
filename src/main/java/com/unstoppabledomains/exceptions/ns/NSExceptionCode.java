@@ -8,6 +8,7 @@ public enum NSExceptionCode {
   BlockchainIsDown,
   UnknownError,
   IncorrectContractAddress,
+  IncorrectAddress,
   IncorrectMethodName,
   UnspecifiedResolver,
   UnsupportedCurrency,
