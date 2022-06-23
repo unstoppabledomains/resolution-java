@@ -1,5 +1,7 @@
 package com.unstoppabledomains;
 
+import com.unstoppabledomains.config.network.NetworkConfigLoader;
+import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.resolution.contracts.DefaultProvider;
 import com.unstoppabledomains.resolution.contracts.uns.ProxyReader;
 
@@ -11,7 +13,6 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProxyReaderTest {
-    private static final String ADDRESS = "0x6fe7c857C1B0E54492C8762f27e0a45CA7ff264B";
     private static final String TOKEN_ID_HASH = "0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2";
     private static final BigInteger TOKEN_ID = new BigInteger(TOKEN_ID_HASH.replace("0x", ""), 16);
 
@@ -19,7 +20,10 @@ public class ProxyReaderTest {
 
     @BeforeAll
     public static void init() {
-        proxyReaderContract = new ProxyReader(TestUtils.TESTING_UNS_L2_PROVIDER_URL, ADDRESS, new DefaultProvider());
+        proxyReaderContract = new ProxyReader(
+            TestUtils.TESTING_UNS_L2_PROVIDER_URL, 
+            NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, 
+            "ProxyReader"), new DefaultProvider());
     }
 
     @Test
