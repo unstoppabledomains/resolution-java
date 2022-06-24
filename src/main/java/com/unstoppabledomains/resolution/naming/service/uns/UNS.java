@@ -204,4 +204,26 @@ public class UNS implements NamingService {
         });
         return result;
     }
+
+    @Override
+    public String getReverseTokenId(String address) throws NamingServiceException {
+        return resolver.resolve(ResolutionMethods.<String>builder() // use opposite l1 and l2 since reverse resolution on l1 takes priority.
+            .l1Func(() -> {
+                return unsl2.getReverseTokenId(address);
+            })
+            .l2Func(() -> {
+                return unsl1.getReverseTokenId(address);
+            }).build()
+        );
+    }
+
+    public String getReverseTokenId(String address, UNSLocation location) throws NamingServiceException {
+        switch (location) {
+            case Layer1:
+                return unsl1.getReverseTokenId(address);
+            case Layer2:
+                return unsl2.getReverseTokenId(address);
+        }
+        return null;
+    }
 }

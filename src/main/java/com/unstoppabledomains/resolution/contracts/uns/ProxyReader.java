@@ -95,6 +95,12 @@ public class ProxyReader extends BaseContract {
         return locations;
     }
 
+    public BigInteger getReverseResolution(String address) throws NamingServiceException {
+        BigInteger addressInt = new BigInteger(address.replace("0x", ""), 16);
+        Object[] args = { addressInt };
+        return fetchOne("reverseOf", args);
+    }
+
     @Override
     protected String getAbiPath() {
       return ABI_FILE;

@@ -28,9 +28,9 @@ public class UnsInternalTest {
       layer1 = new UNSInternal(
         UNSLocation.Layer1,
         new NSConfig(
-          Network.RINKEBY,
+          Network.GOERLI,
           TestUtils.TESTING_UNS_PROVIDER_URL,
-          NetworkConfigLoader.getContractAddress(Network.RINKEBY, "ProxyReader")
+          NetworkConfigLoader.getContractAddress(Network.GOERLI, "ProxyReader")
         ),
         new DefaultProvider()
       );
@@ -49,12 +49,10 @@ public class UnsInternalTest {
   @Test
   public void testGetRecordsOnLayer1() throws Exception {
     Map<String, String> given = new HashMap<String, String>() {{
-      put("crypto.ETH.address", "0x58cA45E932a88b2E7D0130712B3AA9fB7c5781e2");
-      put("crypto.BTC.address", "");
-      put("ipfs.html.value", "QmS23QDsc3Y26rUfME32Q7jawTrCH8bTrZ7iW8EGLJYMvD");
+      put("crypto.ETH.address", "0x084Ac37CDEfE1d3b68a63c08B203EFc3ccAB9742");
   }};
     List<String> recordsKeys = new ArrayList<String>(given.keySet());
-    Map<String, String> result = layer1.getRecords("testing.crypto", recordsKeys);
+    Map<String, String> result = layer1.getRecords("reseller-test-udtesting-459239285.crypto", recordsKeys);
     assertEquals(result.size(), recordsKeys.size());
     for (Map.Entry<String, String> entry: given.entrySet()) {
           String key = entry.getKey();

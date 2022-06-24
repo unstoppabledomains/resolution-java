@@ -38,4 +38,6 @@ public interface NamingService {
     String getContractAddress();
 
     Map<String, Location> getLocations(String... domains) throws NamingServiceException;
+
+    String getReverseTokenId(String address) throws NamingServiceException;
 }

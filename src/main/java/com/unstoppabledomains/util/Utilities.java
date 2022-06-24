@@ -74,6 +74,10 @@ public class Utilities {
     } 
     return hexPrefix + cleanAddress;
   }
+
+  public static boolean verifyAddress(String address) {
+    return address.matches("^0x[0-9a-fA-F]{40}$");
+  }
   
   public static <T1, T2> void iterateSimultaneously(Iterable<T1> c1, Iterable<T2> c2, BiConsumer<T1, T2> consumer) {
     Iterator<T1> i1 = c1.iterator();
