@@ -55,11 +55,14 @@ DomainResolution resolution = new Resolution();
 // in the following example blockchain would be set to the rinkeby testnet
 // Note: if a custom configuration is provided for one UNS layer,
 // it should be provided for the other layer too
+
+String infuraApiKey = INFURA_PROJECT_ID;
+String ethProviderURL = "https://mainnet.infura.io/v3/" + infuraApiKey
+String polygonProviderURL = "https://polygon-mainnet.infura.io/v3/" + infuraApiKey
+
 DomainResolution resolution = Resolution.builder()
-                .unsProviderUrl(UNSLocation.Layer1, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
-                .unsContractAddress(UNSLocation.Layer1, "0x299974AeD8911bcbd2C61262605b89F591a53E83")
-                .unsProviderUrl(UNSLocation.Layer2, "https://polygon-mumbai.infura.io/e0c0cb9d12c440a29379df066de587e6")
-                .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
+                .unsProviderUrl(UNSLocation.Layer1, ethProviderURL)
+                .unsProviderUrl(UNSLocation.Layer1, polygonProviderURL)
                 .build();
 
 // Custom provider config:
