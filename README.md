@@ -10,7 +10,7 @@ Resolution-Java is a library for interacting with blockchain domain names. It ca
 
 Resolution-Java is primarily built and maintained by [Unstoppable Domains](https://unstoppabledomains.com/).
 
-Resoultion-Java supports decentralized domains across two zones:
+Resoultion-Java supports decentralized domains:
 
 - Unstoppable Name Service (UNS)
   - `.crypto`
@@ -22,9 +22,8 @@ Resoultion-Java supports decentralized domains across two zones:
   - `.888`
   - `.dao`
   - `.x`
-  - `...`
-- Zilliqa Name Service (ZNS)
   - `.zil`
+  - and more...
 
 # Releases
 
@@ -160,7 +159,12 @@ public enum NSExceptionCode {
   UnknownError,
   IncorrectContractAddress,
   IncorrectMethodName,
-  UnspecifiedResolver;
+  UnspecifiedResolver,
+  UnsupportedCurrency,
+  NotImplemented,
+  InconsistentDomainArray,
+  InvalidDomain,
+  ReverseResolutionNotSpecified;
 }
 ```
 
@@ -209,5 +213,8 @@ Once your app has a working Unstoppable Domains integration, [register it here](
 Also, every week we select a newly-integrated app to feature in the Unstoppable Update newsletter. This newsletter is delivered to straight into the inbox of ~100,000 crypto fanatics — all of whom could be new customers to grow your business.
 
 # Get help
+[Join our discord community](https://discord.gg/unstoppabledomains) and ask questions.
 
-[Join our discord community](https://discord.com/invite/b6ZVxSZ9Hn) and ask questions.
+# Help us improve
+
+We're always looking for ways to improve how developers use and integrate our products into their applications. We'd love to hear about your experience to help us improve by [taking our survey](https://form.typeform.com/to/uHPQyHO6).
