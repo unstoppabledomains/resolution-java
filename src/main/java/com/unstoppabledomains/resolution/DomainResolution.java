@@ -80,15 +80,16 @@ public interface DomainResolution {
     String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException;
 
     /**
-     * Produces a getNamehash for a specific domain
+     * Produces a getNamehash for a specific domain and naming service
      *
      * @param domain domain name such as "brad.crypto"
+     * @param serviceType which service to use for namehashing
      * @return getNamehash of a domain for a specific NamingService
      * @throws NamingServiceException if tld of the domain is not recognized
      * @see <a href="https://docs.ens.domains/contract-api-reference/name-processing">
      * https://docs.ens.domains/contract-api-reference/name-processing </a>
      */
-    String getNamehash(String domain) throws NamingServiceException;
+    String getNamehash(String domain, NamingServiceType serviceType) throws NamingServiceException;
 
     /**
      * Resolves domain for an ipfs hash

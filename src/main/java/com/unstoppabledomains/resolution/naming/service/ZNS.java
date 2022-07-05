@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Map.Entry;
 import java.math.BigInteger;
 
 public class ZNS extends BaseNamingService {
@@ -74,7 +75,19 @@ public class ZNS extends BaseNamingService {
 
     @Override
     public Map<String, String> batchOwners(List<String> domains) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "batchOwners", getType().toString()));
+        Map<String, String> owners = new HashMap<>();
+        for (String domain : domains) {
+            String owner = null;
+            try {
+                owner = getOwner(domain);
+            } catch (NamingServiceException e) {
+                if (e.getCode() != NSExceptionCode.UnregisteredDomain) {
+                    throw e;
+                }
+            }
+            owners.put(domain, owner);
+        }
+        return owners;
     }
 
     @Override
@@ -123,7 +136,16 @@ public class ZNS extends BaseNamingService {
 
     @Override
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
-        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getLocations", getType().toString()));
+        Map<String, Location> locations = new HashMap<>();
+        Map<String, String> owners = batchOwners(Arrays.asList(domains));
+        for (Entry<String, String> e : owners.entrySet()) {
+            Location l = null;
+            if (e.getValue() != null) {
+                l = new Location(null, null, this.chainId, "ZIL", e.getValue(), this.blockchainProviderUrl);
+            }
+            locations.put(e.getKey(), l);
+        }
+        return locations;
     }
 
     private String getIpfsHash(JsonObject records) {

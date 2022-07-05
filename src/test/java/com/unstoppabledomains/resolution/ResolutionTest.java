@@ -135,21 +135,21 @@ public class ResolutionTest {
 
     @Test
     public void namehash() throws NamingServiceException {
-        String hash = resolution.getNamehash("crypto");
+        String hash = resolution.getNamehash("crypto", NamingServiceType.UNS);
         assertEquals("0x0f4a10a4f46c288cea365fcf45cccf0e9d901b945b9829ccdb54c10dc3cb7a6f", hash);
-        hash = resolution.getNamehash("brad.crypto");
+        hash = resolution.getNamehash("brad.crypto", NamingServiceType.UNS);
         assertEquals("0x756e4e998dbffd803c21d23b06cd855cdc7a4b57706c95964a37e24b47c10fc9", hash);
-        hash = resolution.getNamehash("    manyspace.crypto     ");
+        hash = resolution.getNamehash("    manyspace.crypto     ", NamingServiceType.UNS);
         assertEquals("0x09d8df1b31fdca2df375ae7f345a001b498733fce6f476eaaac20c9c9eeb639c", hash);
 
-        hash = resolution.getNamehash("wallet");
+        hash = resolution.getNamehash("wallet", NamingServiceType.UNS);
         assertEquals("0x1e3f482b3363eb4710dae2cb2183128e272eafbe137f686851c1caea32502230", hash);
-        hash = resolution.getNamehash("udtestdev-my-new-tls.wallet");
+        hash = resolution.getNamehash("udtestdev-my-new-tls.wallet", NamingServiceType.UNS);
         assertEquals("0x1586d090e1b5781399f988e4b4f5639f4c2775ef5ec093d1279bb95b9bceb1a0", hash);
 
-        hash = resolution.getNamehash("zil");
+        hash = resolution.getNamehash("zil", NamingServiceType.ZNS);
         assertEquals("0x9915d0456b878862e822e2361da37232f626a2e47505c8795134a95d36138ed3", hash);
-        hash = resolution.getNamehash("testing.zil");
+        hash = resolution.getNamehash("testing.zil", NamingServiceType.ZNS);
         assertEquals("0xee0e6cb578ffb17b0f374b11324240aa9498da475879d4459d13bc387cdbe90b", hash);
     }
 
@@ -208,6 +208,18 @@ public class ResolutionTest {
     }
 
     @Test
+    public void getAllZilOnUNSRecords() throws Exception {
+        Map<String, String> expected = new HashMap<String, String>() {{
+            put("crypto.ETH.address", "0x45b31e01AA6f42F0549aD482BE81635ED3149abb");
+            put("crypto.USDT.version.ERC20.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
+            put("ipfs.html.value", "QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK");
+            put("whois.email.value", "derainberk@gmail.com");
+        }};
+        Map<String, String> result = resolution.getAllRecords("uns-devtest-testdomain303030.zil");
+        assertEquals(expected, result);   
+    }
+
+    @Test
     public void getAllRecordsAllFails() throws Exception {
         TestUtils.expectError(() -> resolution.getAllRecords("unregistered.zil"), NSExceptionCode.UnregisteredDomain);
         TestUtils.expectError(() -> resolution.getAllRecords("myjohnny.wallet"), NSExceptionCode.UnregisteredDomain);
@@ -241,6 +253,22 @@ public class ResolutionTest {
             put("unknown.record", "");
         }};
         Map<String, String> result = resolution.getRecords("testing.zil", new ArrayList<>(given.keySet()));
+        assertEquals(result.size(), given.keySet().size());
+        for (Map.Entry<String, String> entry: given.entrySet()) {
+            String key = entry.getKey();
+            assertEquals(result.get(key), entry.getValue());
+        }
+    }
+
+    @Test
+    public void getZilDomainRecordsOnUNS() throws Exception {
+        Map<String, String> given = new HashMap<String, String>() {{
+            put("crypto.ETH.address", "0x45b31e01AA6f42F0549aD482BE81635ED3149abb");
+            put("ipfs.html.value", "QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK");
+            put("whois.email.value", "derainberk@gmail.com");
+            put("unknown.record", "");
+        }};
+        Map<String, String> result = resolution.getRecords("uns-devtest-testdomain303030.zil", new ArrayList<>(given.keySet()));
         assertEquals(result.size(), given.keySet().size());
         for (Map.Entry<String, String> entry: given.entrySet()) {
             String key = entry.getKey();
@@ -354,9 +382,16 @@ public class ResolutionTest {
     }
     
     @Test
-    public void getBatchOwnersInconsistentArray() throws Exception {
-        List<String> domains = Arrays.asList("brad.crypto", "domain.eth", "something.zil");
-        TestUtils.expectError(() -> resolution.getBatchOwners(domains), NSExceptionCode.InconsistentDomainArray);
+    public void getBatchOwnersMixed() throws Exception {
+        Map<String,String> domainForTest = new HashMap<String, String>() {{
+            put("reseller-test-udtesting-459239285.crypto", "0xe586d5bf4d7779498648df67b73c88a712e4359d");
+            put("unregistered.crypto", null);
+            put("testing.zil", "0x003e3cdfeceae96efe007f8196a1b1b1df547eee");
+            put("uns-devtest-testdomain303030.zil", "0x499dd6d875787869670900a2130223d85d4f6aa7");
+        }};
+        List<String> domains = domainForTest.keySet().stream().collect(Collectors.toList());
+        Map<String, String> owners = resolution.getBatchOwners(domains);
+        assertEquals(true, domainForTest.equals(owners));
     }
 
     @Test
@@ -510,8 +545,8 @@ public class ResolutionTest {
 
     @Test
     public void testTokenURIZNS() throws Exception {
-        String testDomain = "brad.zil";
-        TestUtils.expectError(() -> resolution.getTokenURI(testDomain), NSExceptionCode.NotImplemented);
+        String tokenUri = resolution.getTokenURI("uns-devtest-testdomain303030.zil");
+        assertEquals("https://metadata.staging.unstoppabledomains.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
     }
 
     @Test
@@ -603,12 +638,77 @@ public class ResolutionTest {
 
     @Test
     public void testLocationsZNS() throws Exception {
-        TestUtils.expectError(() -> resolution.getLocations("some.zil"), NSExceptionCode.NotImplemented);
+        Location zil = new Location(
+            null, 
+            null, 
+            Network.ZIL_TESTNET,
+            "ZIL",
+            "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
+            "https://dev-api.zilliqa.com");
+
+        Location uns = new Location(
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            Network.MUMBAI_TESTNET,
+            "MATIC",
+            "0x499dd6d875787869670900a2130223d85d4f6aa7",
+            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+
+        Map<String, Location> locations = resolution.getLocations(
+            "uns-devtest-testdomain303030.zil",
+            "testing.zil"
+            );
+        assertEquals(uns, locations.get("uns-devtest-testdomain303030.zil"));
+        assertEquals(zil, locations.get("testing.zil"));
     }
 
     @Test
     public void testLocationsMixed() throws Exception {
-        TestUtils.expectError(() -> resolution.getLocations("brad.crypto", "testing.zil"), NSExceptionCode.InconsistentDomainArray);
+        Location uns = new Location(
+            "0x801452cfac27e79a11c6b185986fde09e8637589", 
+            "0x0555344a5f440bd1d8cb6b42db46c5e5d4070437", 
+            Network.GOERLI,
+            "ETH",
+            "0xe586d5bf4d7779498648df67b73c88a712e4359d",
+            "https://eth-goerli.alchemyapi.io/v2/J-ff_OlmWzw41ocqwpkRccHdfqSZML4q");
+
+        Location l2 = new Location(
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            Network.MUMBAI_TESTNET,
+            "MATIC",
+            "0x499dd6d875787869670900a2130223d85d4f6aa7",
+            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+
+        Location l2zil = new Location(
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            Network.MUMBAI_TESTNET,
+            "MATIC",
+            "0x499dd6d875787869670900a2130223d85d4f6aa7",
+            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+
+        Location zil = new Location(
+            null, 
+            null, 
+            Network.ZIL_TESTNET,
+            "ZIL",
+            "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
+            "https://dev-api.zilliqa.com");
+
+        Map<String, Location> locations = resolution.getLocations(
+            "reseller-test-udtesting-459239285.crypto", 
+            "udtestdev-my-new-tls.wallet", 
+            "not-registered-12345abc.crypto", 
+            "udtestdev-test-l2-domain-784391.wallet",
+            "uns-devtest-testdomain303030.zil",
+            "testing.zil"
+            );
+        assertEquals(uns, locations.get("reseller-test-udtesting-459239285.crypto"));
+        assertEquals(null, locations.get("not-registered-12345abc.crypto"));
+        assertEquals(l2, locations.get("udtestdev-test-l2-domain-784391.wallet"));
+        assertEquals(l2zil, locations.get("uns-devtest-testdomain303030.zil"));
+        assertEquals(zil, locations.get("testing.zil"));
     }
 
     @Test
