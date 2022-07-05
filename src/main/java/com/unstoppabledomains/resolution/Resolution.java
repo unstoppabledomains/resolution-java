@@ -208,27 +208,10 @@ public class Resolution implements DomainResolution {
 
     @Override
     public Map<String, Location> getLocations(String... domains) throws NamingServiceException {
-        NamingService zns = services.get(NamingServiceType.ZNS);
         NamingService uns = services.get(NamingServiceType.UNS);
-        
         Map<String, Location> unsLocations = uns.getLocations(domains);
 
-        String[] znsDomains = Arrays.stream(domains).filter(d -> {
-            try {
-                return zns.isSupported(d) && unsLocations.get(d) == null;
-            } catch (NamingServiceException e) {
-                return false;
-            }
-        }).toArray(String[]::new);
-
-        Map<String, Location> znsLocations = zns.getLocations(znsDomains);
-
-        znsLocations.forEach((k, v) -> {
-            if (v != null) {
-                unsLocations.merge(k, v, (v1, v2) -> v2);
-            }
-        });
-        return unsLocations;
+        return loadZnsLocations(domains, unsLocations);
     }
 
     @Override
@@ -318,6 +301,28 @@ public class Resolution implements DomainResolution {
             throw new NamingServiceException(NSExceptionCode.InvalidDomain, new NSExceptionParams("d", domain));
         }
         return normalizedDomain;
+    }
+
+    private Map<String, Location> loadZnsLocations(String[] domains, Map<String, Location> unsLocations) throws NamingServiceException {
+        NamingService zns = services.get(NamingServiceType.ZNS);
+
+        String[] znsDomains = Arrays.stream(domains).filter(d -> {
+            try {
+                return zns.isSupported(d) && unsLocations.get(d) == null;
+            } catch (NamingServiceException e) {
+                return false;
+            }
+        }).toArray(String[]::new);
+
+        Map<String, Location> znsLocations = zns.getLocations(znsDomains);
+
+        znsLocations.forEach((k, v) -> {
+            if (v != null) {
+                unsLocations.merge(k, v, (v1, v2) -> v2);
+            }
+        });
+
+        return unsLocations;
     }
 
     // Allows to create a class instance with a private constructor
