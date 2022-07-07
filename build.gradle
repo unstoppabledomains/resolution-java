@@ -109,6 +109,7 @@ publishing {
 }
 
 signing {
+    required { gradle.taskGraph.hasTask("publish") }
     useInMemoryPgpKeys(System.getenv('PGP_SIGNING_KEY'), System.getenv('PGP_SIGNING_PASSWORD'))
     sign publishing.publications.mavenJava
 }
