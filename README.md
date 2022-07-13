@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/maven-central/v/com.unstoppabledomains/resolution)](https://search.maven.org/artifact/com.unstoppabledomains/resolution)
+[![Version](https://jitpack.io/v/unstoppabledomains/resolution-java.svg)](https://jitpack.io/#unstoppabledomains/resolution-java)
 [![CI](https://github.com/unstoppabledomains/resolution-java/workflows/Build%20%26%20test/badge.svg?branch=master)](https://github.com/unstoppabledomains/resolution-java/actions)
 [![Version](https://img.shields.io/github/license/unstoppabledomains/resolution-java)](LICENSE)
 [![Unstoppable Domains Documentation](https://img.shields.io/badge/docs-unstoppabledomains.com-blue)](https://docs.unstoppabledomains.com/)
