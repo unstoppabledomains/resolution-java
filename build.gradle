@@ -133,3 +133,8 @@ task pullResolverKeys(type: Download) {
     src 'https://raw.githubusercontent.com/unstoppabledomains/uns/main/resolver-keys.json'
     dest 'src/main/resources/com/unstoppabledomains/config/knownRecords.json'
 }
+
+build {
+    dependsOn pullNetworkConfig
+    dependsOn pullResolverKeys
+}
