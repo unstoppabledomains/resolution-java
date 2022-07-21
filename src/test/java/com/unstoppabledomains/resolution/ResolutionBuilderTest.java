@@ -43,8 +43,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void buildsWithDefaultParams() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x3E67b8c702a1292d1CEb025494C84367fcb12b45");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://eth-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x3E67b8c702a1292d1CEb025494C84367fcb12b45");
         NSConfig expectedZNSConfig = new NSConfig(Network.MAINNET, "https://api.zilliqa.com", "0x9611c53BE6d1b32058b2747bdeCECed7e1216793");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
@@ -61,8 +61,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void buildsWithCustomParams() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.RINKEBY, "https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x00000000000000000000000000000000000000001");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x00000000000000000000000000000000000000002");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.RINKEBY, "https://eth-goerli.alchemyapi.io/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x00000000000000000000000000000000000000001");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mumbai.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x00000000000000000000000000000000000000002");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
@@ -89,8 +89,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void allowsToCustomizeOneService() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x3E67b8c702a1292d1CEb025494C84367fcb12b45");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://eth-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x3E67b8c702a1292d1CEb025494C84367fcb12b45");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
@@ -132,8 +132,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void pullsContractAddressFromConfig() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x3E67b8c702a1292d1CEb025494C84367fcb12b45");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://eth-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x1BDc0fD4fbABeed3E611fd6195fCd5d41dcEF393");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x3E67b8c702a1292d1CEb025494C84367fcb12b45");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
         builder

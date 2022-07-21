@@ -10,11 +10,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestUtils {
 
-    public static final String TESTING_INFURA_UNS_PROJECT_ID = "e0c0cb9d12c440a29379df066de587e6";
-    public static final String TESTING_INFURA_UNS_L2_PROJECT_ID = "e0c0cb9d12c440a29379df066de587e6";
-    public static final String TESTING_UNS_PROVIDER_URL = "https://eth-goerli.alchemyapi.io/v2/J-ff_OlmWzw41ocqwpkRccHdfqSZML4q";
+    public static final String TESTING_UNS_PROVIDER_URL = "https://eth-goerli.alchemyapi.io/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F";
     public static final String TESTING_ZNS_PROVIDER_URL = "https://dev-api.zilliqa.com";
-    public static final String TESTING_UNS_L2_PROVIDER_URL = "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX";
+    public static final String TESTING_UNS_L2_PROVIDER_URL = "https://polygon-mumbai.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F";
 
     public static <T> void expectError(Callable<T> f, NSExceptionCode code) throws Exception {
         try {
