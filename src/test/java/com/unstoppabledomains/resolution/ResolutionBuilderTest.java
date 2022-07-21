@@ -61,8 +61,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void buildsWithCustomParams() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.RINKEBY, "https://eth-goerli.alchemyapi.io/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x00000000000000000000000000000000000000001");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mumbai.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x00000000000000000000000000000000000000002");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.GOERLI, "https://eth-goerli.alchemyapi.io/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x00000000000000000000000000000000000000001");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, "https://polygon-mumbai.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F", "0x00000000000000000000000000000000000000002");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
