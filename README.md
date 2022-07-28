@@ -6,7 +6,7 @@
 
 # Resolution-Java
 
-Resolution-Java is a library for interacting with blockchain domain names. It can be used to retrieve [payment addresses](https://unstoppabledomains.com/features#Add-Crypto-Addresses), IPFS hashes for [decentralized websites](https://unstoppabledomains.com/features#Build-Website), and GunDB usernames for [decentralized chat](https://unstoppabledomains.com/chat).
+Resolution-Java is a library for interacting with blockchain domain names. It can be used to retrieve [payment addresses](https://unstoppabledomains.com/features#Add-Crypto-Addresses) and IPFS hashes for [decentralized websites](https://unstoppabledomains.com/features#Build-Website).
 
 Resolution-Java is primarily built and maintained by [Unstoppable Domains](https://unstoppabledomains.com/).
 
@@ -167,6 +167,8 @@ public enum NSExceptionCode {
   ReverseResolutionNotSpecified;
 }
 ```
+
+Please see the [Resolution-Java Error Codes](https://docs.unstoppabledomains.com/developer-toolkit/resolution-integration-methods/resolution-libraries/resolution-java/#error-codes) page for details of the specific error codes.
 
 # Development
 
