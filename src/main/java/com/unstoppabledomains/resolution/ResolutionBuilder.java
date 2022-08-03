@@ -21,7 +21,7 @@ import com.unstoppabledomains.util.BuilderNSConfig;
 
 public class ResolutionBuilder {
     static final String UNS_DEFAULT_URL = "https://eth-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F";
-    static final String UNS_L2_DEFAULT_URL = "https://polygon-mainnet.g.alchemy.com/v2/0f3HESE2kvMWVLZJboiFHtHAlTtdbE_F";
+    static final String UNS_L2_DEFAULT_URL = "https://polygon-mainnet.g.alchemy.com/v2/PX1vXP3OgwLSsbRrk4NetZF7oqi6vcLE";
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
 
     static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
