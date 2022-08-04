@@ -1,3 +1,6 @@
+## 6.1.0
+ - Disabled `.coin` resolution due to registry conflicts
+
 ## 6.0.0
 
 ### New methods and features 

@@ -102,13 +102,13 @@ public class ResolutionTest {
         isValid = resolution.isSupported("example.qwdqwdq.wd.tqwdest");
         assertFalse(isValid);
 
+        isValid = resolution.isSupported("example.coin");
+        assertFalse(isValid);
+
         isValid = resolution.isSupported("udtestdev-my-new-tls.wallet");
         assertTrue(isValid);
 
         isValid = resolution.isSupported("example.crypto");
-        assertTrue(isValid);
-
-        isValid = resolution.isSupported("example.coin");
         assertTrue(isValid);
 
         isValid = resolution.isSupported("example.wallet");
@@ -408,12 +408,19 @@ public class ResolutionTest {
         TestUtils.expectError(() -> resolution.getIpfsHash("udtestdev-test-l2-domain-empty.wallet"), NSExceptionCode.RecordNotFound);
     }
 
+    @Test
     public void invalidDomains() throws Exception {
         String[] invalidDomains = { "some#.crypto", "special!.zil", "character?.eth", "notAllowed%.nft"};
         for (int i = 0; i < invalidDomains.length; i++) {
             final int index = i;
             TestUtils.expectError(() -> resolution.getOwner(invalidDomains[index]), NSExceptionCode.InvalidDomain);
         }
+    }
+
+    @Test
+    public void unsupportedDomains() throws Exception {
+        TestUtils.expectError(() -> resolution.getOwner("unsupported.coin"), NSExceptionCode.UnsupportedDomain);
+        TestUtils.expectError(() -> resolution.getAddress("unsupported.coin", "ETH"), NSExceptionCode.UnsupportedDomain);
     }
 
     @Test
@@ -556,7 +563,7 @@ public class ResolutionTest {
         TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
         assertNotNull(metadata);
         assertEquals(testDomain, metadata.getName());
-        assertEquals(5, metadata.getAttributes().size());
+        assertEquals(6, metadata.getAttributes().size());
         Map<String, String> expectedRecords = new HashMap<String, String>() {{
             put("dns.A", "[\"10.0.0.1\", \"10.0.0.3\"]");
             put("dns.ttl", "128");

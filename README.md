@@ -17,13 +17,14 @@ Resoultion-Java supports decentralized domains:
   - `.nft`
   - `.blockchain`
   - `.bitcoin`
-  - `.coin`
   - `.wallet`
   - `.888`
   - `.dao`
   - `.x`
   - `.zil`
   - and more...
+
+> ⚠️ We are no longer offering .coin support. Please check our [blog post](url) for more details.
 
 # Releases
 

@@ -60,9 +60,16 @@ public class Resolution implements DomainResolution {
 
     @Override
     public boolean isSupported(String domain) throws NamingServiceException {
-        for (NamingService service: services.values()) {
-            if (service.isSupported(domain)) {
-                return true;
+        try {
+            String normailzedDomain = normalizeDomain(domain);
+            for (NamingService service: services.values()) {
+                if (service.isSupported(normailzedDomain)) {
+                    return true;
+                }
+            }
+        } catch (NamingServiceException e) {
+            if (e.getCode() != NSExceptionCode.UnsupportedDomain) {
+                throw e;
             }
         }
         return false;
@@ -299,6 +306,9 @@ public class Resolution implements DomainResolution {
         String normalizedDomain = domain.trim().toLowerCase();
         if (!normalizedDomain.matches("^[.a-z\\d-]+$")) {
             throw new NamingServiceException(NSExceptionCode.InvalidDomain, new NSExceptionParams("d", domain));
+        }
+        if (normalizedDomain.endsWith(".coin")) {
+            throw new NamingServiceException(NSExceptionCode.UnsupportedDomain, new NSExceptionParams("d", domain));
         }
         return normalizedDomain;
     }
