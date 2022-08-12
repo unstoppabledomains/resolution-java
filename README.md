@@ -10,20 +10,7 @@ Resolution-Java is a library for interacting with blockchain domain names. It ca
 
 Resolution-Java is primarily built and maintained by [Unstoppable Domains](https://unstoppabledomains.com/).
 
-Resoultion-Java supports decentralized domains:
-
-- Unstoppable Name Service (UNS)
-  - `.crypto`
-  - `.nft`
-  - `.blockchain`
-  - `.bitcoin`
-  - `.coin`
-  - `.wallet`
-  - `.888`
-  - `.dao`
-  - `.x`
-  - `.zil`
-  - and more...
+Resolution supports different decentralized domains. Please, refer to the [Top Level Domains List](https://resolve.unstoppabledomains.com/supported_tlds)
 
 # Releases
 
@@ -120,12 +107,14 @@ assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owner);
 ```
 
 You can also get the result in a batch format for UNS:
+
 ```java
 List<String> domains = Arrays.asList("brad.crypto", "homecakes.crypto");
 Map<String, String> owners = mainnetResolution.getBatchOwners(domains);
 assertEquals("0x8aad44321a86b170879d7a244c1e8d360c99dda8", owners.get("brad.crypto"));
 assertEquals("0xe7474d07fd2fa286e7e0aa23cd107f8379085037", owners.get("homecakes.crypto"));
 ```
+
 ### Getting a domain's IPFS hash
 
 Decentralized websites host their content on decentralized file storage systems such as [IPFS](http://ipfs.io/).
@@ -215,6 +204,7 @@ Once your app has a working Unstoppable Domains integration, [register it here](
 Also, every week we select a newly-integrated app to feature in the Unstoppable Update newsletter. This newsletter is delivered to straight into the inbox of ~100,000 crypto fanatics — all of whom could be new customers to grow your business.
 
 # Get help
+
 [Join our discord community](https://discord.gg/unstoppabledomains) and ask questions.
 
 # Help us improve
