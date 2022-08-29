@@ -46,7 +46,7 @@ public class Resolution implements DomainResolution {
 
     /**
      * Create resolution object with default config:
-     * <a href="https://infura.io">infura</a> blockchain provider for UNS
+     * <a href="https://alchemy.com">alchemy</a> blockchain provider for UNS
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
     public Resolution() {

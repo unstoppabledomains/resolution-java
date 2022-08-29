@@ -39,10 +39,17 @@ Java 8+ version is required to use this library.
 
 ### Default Ethereum Providers
 
-resolution-java library provides zero-configuration experience by using built-in production-ready Infura endpoint by default.
-Default Ethereum provider is free to use without restrictions and rate-limits for UNS resolution.
+resolution-java library provides zero-configuration experience by using built-in production-ready [Alchemy](http://alchemy.com/) endpoint by default.
+Default Ethereum provider is free to use without restrictions and rate-limits for `UNS` resolution.
 
 ### Custom Ethereum provider configuration
+
+You may want to specify a custom provider:
+ - if you want to use a dedicated blockchain node
+ - if you want to monitor app usage
+ - if you already have a provider in your app to re-use it for domain resolution
+
+Default provider can be changed by using the builder class `ResolutionBuilder`.
 
 ```java
 // Default config:
@@ -55,13 +62,13 @@ DomainResolution resolution = new Resolution();
 // Note: if a custom configuration is provided for one UNS layer,
 // it should be provided for the other layer too
 
-String infuraApiKey = INFURA_PROJECT_ID;
-String ethProviderURL = "https://mainnet.infura.io/v3/" + infuraApiKey
-String polygonProviderURL = "https://polygon-mainnet.infura.io/v3/" + infuraApiKey
+String ethProviderURL = ALCHEMY_ETHEREUM_API;
+String polygonProviderURL = ALCHEMY_POLYGON_API;
+
 
 DomainResolution resolution = Resolution.builder()
                 .unsProviderUrl(UNSLocation.Layer1, ethProviderURL)
-                .unsProviderUrl(UNSLocation.Layer1, polygonProviderURL)
+                .unsProviderUrl(UNSLocation.Layer2, polygonProviderURL)
                 .build();
 
 // Custom provider config:

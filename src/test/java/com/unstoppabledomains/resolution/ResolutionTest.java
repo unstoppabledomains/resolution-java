@@ -620,7 +620,7 @@ public class ResolutionTest {
             Network.GOERLI,
             "ETH",
             "0xe586d5bf4d7779498648df67b73c88a712e4359d",
-            "https://eth-goerli.alchemyapi.io/v2/J-ff_OlmWzw41ocqwpkRccHdfqSZML4q");
+            TestUtils.TESTING_UNS_PROVIDER_URL);
 
         Location l2 = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
@@ -628,7 +628,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
 
         Map<String, Location> locations = resolution.getLocations("reseller-test-udtesting-459239285.crypto", "udtestdev-my-new-tls.wallet", "not-registered-12345abc.crypto", "udtestdev-test-l2-domain-784391.wallet");
         assertEquals(uns, locations.get("reseller-test-udtesting-459239285.crypto"));
@@ -644,7 +644,7 @@ public class ResolutionTest {
             Network.ZIL_TESTNET,
             "ZIL",
             "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
-            "https://dev-api.zilliqa.com");
+            TestUtils.TESTING_ZNS_PROVIDER_URL);
 
         Location uns = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
@@ -652,7 +652,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
 
         Map<String, Location> locations = resolution.getLocations(
             "uns-devtest-testdomain303030.zil",
@@ -670,7 +670,7 @@ public class ResolutionTest {
             Network.GOERLI,
             "ETH",
             "0xe586d5bf4d7779498648df67b73c88a712e4359d",
-            "https://eth-goerli.alchemyapi.io/v2/J-ff_OlmWzw41ocqwpkRccHdfqSZML4q");
+            TestUtils.TESTING_UNS_PROVIDER_URL);
 
         Location l2 = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
@@ -678,7 +678,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
 
         Location l2zil = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
@@ -686,7 +686,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            "https://polygon-mumbai.g.alchemy.com/v2/ymbY17ik_HyGfXnPWxBAGhuZE7MwtErX");
+            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
 
         Location zil = new Location(
             null, 
@@ -694,7 +694,7 @@ public class ResolutionTest {
             Network.ZIL_TESTNET,
             "ZIL",
             "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
-            "https://dev-api.zilliqa.com");
+            TestUtils.TESTING_ZNS_PROVIDER_URL);
 
         Map<String, Location> locations = resolution.getLocations(
             "reseller-test-udtesting-459239285.crypto", 

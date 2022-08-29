@@ -1,3 +1,7 @@
+## 6.1.0
+### Changes
+ * Updated default providers to use [Alchemy](http://alchemy.com/)
+
 ## 6.0.0
 
 ### New methods and features 
