@@ -556,13 +556,14 @@ public class ResolutionTest {
         TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
         assertNotNull(metadata);
         assertEquals(testDomain, metadata.getName());
-        assertEquals(5, metadata.getAttributes().size());
+        assertEquals(4, metadata.getAttributes().size());
         Map<String, String> expectedRecords = new HashMap<String, String>() {{
             put("dns.A", "[\"10.0.0.1\", \"10.0.0.3\"]");
             put("dns.ttl", "128");
             put("dns.AAAA", "[]");
             put("dns.A.ttl", "98");
             put("custom.record", "custom.value");
+            put("whois.email.value", "testing@example.com");
             put("dweb.ipfs.hash", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
             put("ipfs.html.value", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
             put("crypto.ETH.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
@@ -571,8 +572,6 @@ public class ResolutionTest {
             put("crypto.USDT.version.OMNI.address", "19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ");
             put("crypto.USDT.version.TRON.address", "TNemhXhpX7MwzZJa3oXvfCjo5pEeXrfN2h");
             put("crypto.USDT.version.ERC20.address", "0xe7474D07fD2FA286e7e0aa23cd107F8379085037");
-            put("whois.email.value", "testing@example.com");
-            put("custom.record", "custom.value");
         }};
         Map<String, String> recordsFromProperties = metadata.getProperties().getRecords();
         assertEquals(expectedRecords, recordsFromProperties);
