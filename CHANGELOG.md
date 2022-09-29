@@ -1,3 +1,7 @@
+## 6.1.1
+### Changes
+ * Bump `com.esaulpaugh:headlong` version
+
 ## 6.1.0
 ### Changes
  * Updated default providers to use [Alchemy](http://alchemy.com/)
