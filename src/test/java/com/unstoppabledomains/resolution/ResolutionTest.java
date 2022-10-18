@@ -108,9 +108,6 @@ public class ResolutionTest {
         isValid = resolution.isSupported("example.crypto");
         assertTrue(isValid);
 
-        isValid = resolution.isSupported("example.coin");
-        assertTrue(isValid);
-
         isValid = resolution.isSupported("example.wallet");
         assertTrue(isValid);
 
@@ -204,7 +201,7 @@ public class ResolutionTest {
             put("whois.email.value", "derainberk@gmail.com");
         }};
         Map<String, String> result = resolution.getAllRecords("testing.zil");
-        assertEquals(expected, result);   
+        assertEquals(expected, result);
     }
 
     @Test
@@ -216,7 +213,7 @@ public class ResolutionTest {
             put("whois.email.value", "derainberk@gmail.com");
         }};
         Map<String, String> result = resolution.getAllRecords("uns-devtest-testdomain303030.zil");
-        assertEquals(expected, result);   
+        assertEquals(expected, result);
     }
 
     @Test
@@ -333,7 +330,7 @@ public class ResolutionTest {
 
         ipfs = resolution.getIpfsHash("testing.zil");
         assertEquals("QmVaAtQbi3EtsfpKoLzALm6vXphdi2KjMgxEDKeGg6wHuK", ipfs);
-        
+
         ipfs = resolution.getIpfsHash(" uns-dEVteSt-265f8f.wAlLet ");
         assertEquals("QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb", ipfs);
 
@@ -345,7 +342,7 @@ public class ResolutionTest {
     public void getEmailTest() throws NamingServiceException {
         String email = resolution.getEmail("uns-devtest-265f8f.wallet");
         assertEquals("testing@example.com", email);
-        
+
         String nonNormalizedTest = resolution.getEmail("    uns-DEVtesT-265f8f.WALLet     ");
         assertEquals("testing@example.com", nonNormalizedTest);
 
@@ -380,7 +377,7 @@ public class ResolutionTest {
         Map<String, String> owners = resolution.getBatchOwners(domains);
         assertEquals(true, domainForTest.equals(owners));
     }
-    
+
     @Test
     public void getBatchOwnersMixed() throws Exception {
         Map<String,String> domainForTest = new HashMap<String, String>() {{
@@ -614,16 +611,16 @@ public class ResolutionTest {
     @Test
     public void testLocationsUNS() throws Exception {
         Location uns = new Location(
-            "0x801452cfac27e79a11c6b185986fde09e8637589", 
-            "0x0555344a5f440bd1d8cb6b42db46c5e5d4070437", 
+            "0x801452cfac27e79a11c6b185986fde09e8637589",
+            "0x0555344a5f440bd1d8cb6b42db46c5e5d4070437",
             Network.GOERLI,
             "ETH",
             "0xe586d5bf4d7779498648df67b73c88a712e4359d",
             TestUtils.TESTING_UNS_PROVIDER_URL);
 
         Location l2 = new Location(
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
@@ -638,16 +635,16 @@ public class ResolutionTest {
     @Test
     public void testLocationsZNS() throws Exception {
         Location zil = new Location(
-            null, 
-            null, 
+            null,
+            null,
             Network.ZIL_TESTNET,
             "ZIL",
             "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
             TestUtils.TESTING_ZNS_PROVIDER_URL);
 
         Location uns = new Location(
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
@@ -664,41 +661,41 @@ public class ResolutionTest {
     @Test
     public void testLocationsMixed() throws Exception {
         Location uns = new Location(
-            "0x801452cfac27e79a11c6b185986fde09e8637589", 
-            "0x0555344a5f440bd1d8cb6b42db46c5e5d4070437", 
+            "0x801452cfac27e79a11c6b185986fde09e8637589",
+            "0x0555344a5f440bd1d8cb6b42db46c5e5d4070437",
             Network.GOERLI,
             "ETH",
             "0xe586d5bf4d7779498648df67b73c88a712e4359d",
             TestUtils.TESTING_UNS_PROVIDER_URL);
 
         Location l2 = new Location(
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
             TestUtils.TESTING_UNS_L2_PROVIDER_URL);
 
         Location l2zil = new Location(
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
-            "0x2a93c52e7b6e7054870758e15a1446e769edfb93", 
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
+            "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
             TestUtils.TESTING_UNS_L2_PROVIDER_URL);
 
         Location zil = new Location(
-            null, 
-            null, 
+            null,
+            null,
             Network.ZIL_TESTNET,
             "ZIL",
             "0x003e3cdfeceae96efe007f8196a1b1b1df547eee",
             TestUtils.TESTING_ZNS_PROVIDER_URL);
 
         Map<String, Location> locations = resolution.getLocations(
-            "reseller-test-udtesting-459239285.crypto", 
-            "udtestdev-my-new-tls.wallet", 
-            "not-registered-12345abc.crypto", 
+            "reseller-test-udtesting-459239285.crypto",
+            "udtestdev-my-new-tls.wallet",
+            "not-registered-12345abc.crypto",
             "udtestdev-test-l2-domain-784391.wallet",
             "uns-devtest-testdomain303030.zil",
             "testing.zil"
