@@ -62,17 +62,7 @@ class UNSInternal extends BaseNamingService {
 
   @Override
   public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
-    BigInteger tokenID = getTokenID(domain);
-    Map<String, String> metadataRecords = new HashMap<>();
-    try {
-      metadataRecords = getTokenUriMetadata(tokenID).getProperties().getRecords();
-    } catch(NamingServiceException e) {
-      if (e.getCode() == NSExceptionCode.UnregisteredDomain) {
-        throw new NamingServiceException(NSExceptionCode.UnregisteredDomain, new NSExceptionParams("d", domain));
-      }
-      throw e;
-    }
-    Set<String> recordsSet = Utilities.combineTwoSets(KnownRecords.getAllRecordKeys(), metadataRecords.keySet());
+    Set<String> recordsSet = KnownRecords.getAllRecordKeys();
     String[] records = recordsSet.stream().toArray(String[] ::new);
     ProxyData data = resolveKeys(records, domain);
     List<String> values = data.getValues();

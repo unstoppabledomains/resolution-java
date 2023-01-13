@@ -1,3 +1,8 @@
+## 6.2.0
+
+### Changes
+ * Deprecate `allRecords` methods
+
 ## 6.1.1
 ### Changes
  * Bump `com.esaulpaugh:headlong` version
