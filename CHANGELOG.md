@@ -1,3 +1,7 @@
+## 6.2.1
+### Changes
+ * Updated default providers to use [Infura](https://www.infura.io/)
+
 ## 6.2.0
 
 ### Changes
