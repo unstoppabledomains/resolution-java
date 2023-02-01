@@ -26,7 +26,7 @@ Java 8+ version is required to use this library.
 
 ### Default Ethereum Providers
 
-resolution-java library provides zero-configuration experience by using built-in production-ready [Alchemy](http://alchemy.com/) endpoint by default.
+resolution-java library provides zero-configuration experience by using built-in production-ready [Infura](https://www.infura.io/) endpoint by default.
 Default Ethereum provider is free to use without restrictions and rate-limits for `UNS` resolution.
 
 ### Custom Ethereum provider configuration
@@ -49,8 +49,8 @@ DomainResolution resolution = new Resolution();
 // Note: if a custom configuration is provided for one UNS layer,
 // it should be provided for the other layer too
 
-String ethProviderURL = ALCHEMY_ETHEREUM_API;
-String polygonProviderURL = ALCHEMY_POLYGON_API;
+String ethProviderURL = INFURA_ETHEREUM_API;
+String polygonProviderURL = INFURA_POLYGON_API;
 
 
 DomainResolution resolution = Resolution.builder()
