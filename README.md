@@ -38,6 +38,8 @@ You may want to specify a custom provider:
 
 Default provider can be changed by using the builder class `ResolutionBuilder`.
 
+> NOTE: The default Infura key provided is rate limited and should only be used for testing. For production applications, please bring your own Infura or Alchemy RPC URL to prevent downtime.
+
 ```java
 // Default config:
 
