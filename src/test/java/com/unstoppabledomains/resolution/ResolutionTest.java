@@ -470,7 +470,7 @@ public class ResolutionTest {
     @Test
     public void testTokenURIUNS() throws Exception {
         String tokenUri = resolution.getTokenURI("uns-devtest-ngin.blockchain");
-        assertEquals("https://metadata.staging.unstoppabledomains.com/metadata/38341110048240109319578877561688040885276568114621087858154157305222841866728", tokenUri);
+        assertEquals("https://metadata.ud-staging.com/metadata/38341110048240109319578877561688040885276568114621087858154157305222841866728", tokenUri);
     }
 
     @Test
@@ -481,35 +481,20 @@ public class ResolutionTest {
     @Test
     public void testTokenURIZNS() throws Exception {
         String tokenUri = resolution.getTokenURI("uns-devtest-testdomain303030.zil");
-        assertEquals("https://metadata.staging.unstoppabledomains.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
+        assertEquals("https://metadata.ud-staging.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
     }
 
     @Test
     public void testTokenURIMetadata() throws Exception {
         String testDomain = "uns-devtest-265f8f.wallet";
+        String testNamehash = resolution.getNamehash(testDomain, NamingServiceType.UNS);
 
         TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
         assertNotNull(metadata);
         assertEquals(testDomain, metadata.getName());
-        assertEquals(4, metadata.getAttributes().size());
-        Map<String, String> expectedRecords = new HashMap<String, String>() {{
-            put("dns.A", "[\"10.0.0.1\", \"10.0.0.3\"]");
-            put("dns.ttl", "128");
-            put("dns.AAAA", "[]");
-            put("dns.A.ttl", "98");
-            put("custom.record", "custom.value");
-            put("whois.email.value", "testing@example.com");
-            put("dweb.ipfs.hash", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
-            put("ipfs.html.value", "QmdyBw5oTgCtTLQ18PbDvPL8iaLoEPhSyzD91q9XmgmAjb");
-            put("crypto.ETH.address", "0x8aaD44321A86b170879d7A244c1e8d360c99DdA8");
-            put("gundb.username.value", "0x8912623832e174f2eb1f59cc3b587444d619376ad5bf10070e937e0dc22b9ffb2e3ae059e6ebf729f87746b2f71e5d88ec99c1fb3c7c49b8617e2520d474c48e1c");
-            put("crypto.USDT.version.EOS.address", "letsminesome");
-            put("crypto.USDT.version.OMNI.address", "19o6LvAdCPkjLi83VsjrCsmvQZUirT4KXJ");
-            put("crypto.USDT.version.TRON.address", "TNemhXhpX7MwzZJa3oXvfCjo5pEeXrfN2h");
-            put("crypto.USDT.version.ERC20.address", "0xe7474D07fD2FA286e7e0aa23cd107F8379085037");
-        }};
-        Map<String, String> recordsFromProperties = metadata.getProperties().getRecords();
-        assertEquals(expectedRecords, recordsFromProperties);
+        assertEquals(5, metadata.getAttributes().size());
+        assertEquals(testNamehash, metadata.getNamehash());
+        assertEquals("https://metadata.unstoppabledomains.com/image-src/uns-devtest-265f8f.wallet.svg", metadata.getImage());
     }
 
     @Test

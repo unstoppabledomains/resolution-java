@@ -1,3 +1,7 @@
+## 6.2.2
+### Changes
+ * Update `knownRecords.json` and `uns-config.json`
+
 ## 6.2.1
 ### Changes
  * Updated default providers to use [Infura](https://www.infura.io/)

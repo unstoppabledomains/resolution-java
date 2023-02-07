@@ -73,7 +73,7 @@ public class UNS implements NamingService {
 
     @Override
     public Boolean isSupported(String domain) throws NamingServiceException {
-        return unsl1.isSupported(domain);
+        return unsl1.isSupported(domain) || unsl2.isSupported(domain);
     }
 
     @Override
