@@ -19,9 +19,10 @@ public class TokenUriMetadata {
   }
 
   private String name;
+  private String namehash;
+  private String tokenId;
   private String description;
   private String image;
-  private TokenUriMetadataProperties properties;
   private String externalUrl;
   private String externalLink;
   private String imageData;
