@@ -26,8 +26,7 @@ Java 8+ version is required to use this library.
 
 ### Default Ethereum Providers
 
-resolution-java library provides zero-configuration experience by using built-in production-ready [Infura](https://www.infura.io/) endpoint by default.
-Default Ethereum provider is free to use without restrictions and rate-limits for `UNS` resolution.
+The default [Infura](https://www.infura.io/) key provided is rate limited and should only be used for testing. For production applications, please bring your own Infura or Alchemy RPC URL to prevent downtime.
 
 ### Custom Ethereum provider configuration
 
@@ -38,7 +37,6 @@ You may want to specify a custom provider:
 
 Default provider can be changed by using the builder class `ResolutionBuilder`.
 
-> NOTE: The default Infura key provided is rate limited and should only be used for testing. For production applications, please bring your own Infura or Alchemy RPC URL to prevent downtime.
 
 ```java
 // Default config:
