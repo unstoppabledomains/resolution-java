@@ -9,7 +9,7 @@ on:
         required: true
         default: ''
       releaseVersion:
-        description: 'New release version (ex: 5.3.2)'
+        description: 'New release version (ex: v5.3.2)'
         required: true
         default: ''
 
@@ -26,7 +26,7 @@ jobs:
 
       - name: 'Validate version input'
         run: |
-          if [[ ${{ github.event.inputs.releaseVersion }} =~ ^[0-9]+(\.[0-9]+){2,3}$ ]]; then
+          if [[ ${{ github.event.inputs.releaseVersion }} =~ ^v[0-9]+(\.[0-9]+){2,3}$ ]]; then
             echo "${{ github.event.inputs.releaseVersion }}"
           else
             echo "Bad version input"
