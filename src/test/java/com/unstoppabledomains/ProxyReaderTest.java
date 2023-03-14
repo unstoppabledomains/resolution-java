@@ -21,7 +21,7 @@ public class ProxyReaderTest {
     @BeforeAll
     public static void init() {
         proxyReaderContract = new ProxyReader(
-            TestUtils.TESTING_UNS_L2_PROVIDER_URL, 
+            TestUtils.getL2TestProviderUrl(),
             NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, 
             "ProxyReader"), new DefaultProvider());
     }

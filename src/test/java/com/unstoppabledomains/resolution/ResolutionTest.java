@@ -41,8 +41,8 @@ public class ResolutionTest {
         resolution = Resolution.builder()
         .znsChainId(Network.ZIL_TESTNET)
         .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
-        .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
-        .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
+        .unsProviderUrl(UNSLocation.Layer1, TestUtils.getL1TestProviderUrl())
+        .unsProviderUrl(UNSLocation.Layer2, TestUtils.getL2TestProviderUrl())
         .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
         .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.GOERLI, "ProxyReader"))
         .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
@@ -54,8 +54,8 @@ public class ResolutionTest {
         DomainResolution goerliResolution = Resolution.builder()
             .znsChainId(Network.ZIL_TESTNET)
             .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
-            .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
-            .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
+            .unsProviderUrl(UNSLocation.Layer1, TestUtils.getL1TestProviderUrl())
+            .unsProviderUrl(UNSLocation.Layer2, TestUtils.getL2TestProviderUrl())
             .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
             .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.GOERLI, "ProxyReader"))
             .unsContractAddress(UNSLocation.Layer2, NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader"))
@@ -78,8 +78,8 @@ public class ResolutionTest {
         DomainResolution resolutionFromBuilder = Resolution.builder()
         .unsChainId(UNSLocation.Layer1, Network.GOERLI)
         .znsChainId(Network.ZIL_TESTNET)
-        .unsProviderUrl(UNSLocation.Layer1, TestUtils.TESTING_UNS_PROVIDER_URL)
-        .unsProviderUrl(UNSLocation.Layer2, TestUtils.TESTING_UNS_L2_PROVIDER_URL)
+        .unsProviderUrl(UNSLocation.Layer1, TestUtils.getL1TestProviderUrl())
+        .unsProviderUrl(UNSLocation.Layer2, TestUtils.getL2TestProviderUrl())
         .znsProviderUrl(TestUtils.TESTING_ZNS_PROVIDER_URL)
         .znsContractAddress("0xB925adD1d5EaF13f40efD43451bF97A22aB3d727")
         .unsContractAddress(UNSLocation.Layer1, NetworkConfigLoader.getContractAddress(Network.GOERLI, "ProxyReader"))
@@ -539,7 +539,7 @@ public class ResolutionTest {
             Network.GOERLI,
             "ETH",
             "0xe586d5bf4d7779498648df67b73c88a712e4359d",
-            TestUtils.TESTING_UNS_PROVIDER_URL);
+            TestUtils.getL1TestProviderUrl());
 
         Location l2 = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
@@ -547,7 +547,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
+            TestUtils.getL2TestProviderUrl());
 
         Map<String, Location> locations = resolution.getLocations("reseller-test-udtesting-459239285.crypto", "udtestdev-my-new-tls.wallet", "not-registered-12345abc.crypto", "udtestdev-test-l2-domain-784391.wallet");
         assertEquals(uns, locations.get("reseller-test-udtesting-459239285.crypto"));
@@ -571,7 +571,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
+            TestUtils.getL2TestProviderUrl());
 
         Map<String, Location> locations = resolution.getLocations(
             "uns-devtest-testdomain303030.zil",
@@ -589,7 +589,7 @@ public class ResolutionTest {
             Network.GOERLI,
             "ETH",
             "0xe586d5bf4d7779498648df67b73c88a712e4359d",
-            TestUtils.TESTING_UNS_PROVIDER_URL);
+            TestUtils.getL1TestProviderUrl());
 
         Location l2 = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
@@ -597,7 +597,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
+            TestUtils.getL2TestProviderUrl());
 
         Location l2zil = new Location(
             "0x2a93c52e7b6e7054870758e15a1446e769edfb93",
@@ -605,7 +605,7 @@ public class ResolutionTest {
             Network.MUMBAI_TESTNET,
             "MATIC",
             "0x499dd6d875787869670900a2130223d85d4f6aa7",
-            TestUtils.TESTING_UNS_L2_PROVIDER_URL);
+            TestUtils.getL2TestProviderUrl());
 
         Location zil = new Location(
             null,

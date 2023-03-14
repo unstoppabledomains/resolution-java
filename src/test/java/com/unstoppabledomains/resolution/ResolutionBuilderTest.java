@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Map;
 
+import com.unstoppabledomains.TestUtils;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.resolution.naming.service.NSConfig;
 import com.unstoppabledomains.resolution.naming.service.NamingService;
@@ -41,26 +42,6 @@ public class ResolutionBuilderTest {
         assertEquals(expected.getContractAddress(), service.getContractAddress(layer));
     }
 
-    private String getL1TestProviderUrl() {
-        String url = System.getenv("L1_TEST_NET_RPC_URL");
-
-        if (url == null) {
-            throw new RuntimeException("L1_TEST_NET_RPC_URL is not set!");
-        }
-
-        return url;
-    }
-
-    private String getL2TestProviderUrl() {
-        String url = System.getenv("L2_TEST_NET_RPC_URL");
-
-        if (url == null) {
-            throw new RuntimeException("L2_TEST_NET_RPC_URL is not set!");
-        }
-
-        return url;
-    }
-
     @Test
     public void buildsWithDefaultParams() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x578853aa776Eef10CeE6c4dd2B5862bdcE767A8B");
@@ -81,8 +62,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void buildsWithCustomParams() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.GOERLI, this.getL1TestProviderUrl(), "0x00000000000000000000000000000000000000001");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, this.getL2TestProviderUrl(), "0x00000000000000000000000000000000000000002");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.GOERLI, TestUtils.getL1TestProviderUrl(), "0x00000000000000000000000000000000000000001");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, TestUtils.getL2TestProviderUrl(), "0x00000000000000000000000000000000000000002");
         NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
@@ -152,8 +133,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void pullsContractAddressFromConfig() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.GOERLI, this.getL1TestProviderUrl(), "0x76007c52C73972A441aFA1A0E1016B140ffdE689");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, this.getL2TestProviderUrl(), "0xBD4674F11d512120dFc8BAe5f84963d7419A5db2");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.GOERLI, TestUtils.getL1TestProviderUrl(), "0x76007c52C73972A441aFA1A0E1016B140ffdE689");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MUMBAI_TESTNET, TestUtils.getL2TestProviderUrl(), "0xBD4674F11d512120dFc8BAe5f84963d7419A5db2");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
         builder

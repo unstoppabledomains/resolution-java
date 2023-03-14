@@ -29,7 +29,7 @@ public class UnsInternalTest {
         UNSLocation.Layer1,
         new NSConfig(
           Network.GOERLI,
-          TestUtils.TESTING_UNS_PROVIDER_URL,
+          TestUtils.getL1TestProviderUrl(),
           NetworkConfigLoader.getContractAddress(Network.GOERLI, "ProxyReader")
         ),
         new DefaultProvider()
@@ -39,7 +39,7 @@ public class UnsInternalTest {
         UNSLocation.Layer2,
         new NSConfig(
           Network.MUMBAI_TESTNET,
-          TestUtils.TESTING_UNS_L2_PROVIDER_URL,
+          TestUtils.getL2TestProviderUrl(),
           NetworkConfigLoader.getContractAddress(Network.MUMBAI_TESTNET, "ProxyReader")
         ),
         new DefaultProvider()
