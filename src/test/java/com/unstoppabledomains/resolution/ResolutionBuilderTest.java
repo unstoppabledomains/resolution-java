@@ -88,6 +88,27 @@ public class ResolutionBuilderTest {
         checkConfigurations(expectedZNSConfig, capturedServices.get(NamingServiceType.ZNS));
     }
 
+    @Test void buildsWithUdClientKeyParams() throws Exception {
+        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc", "0x578853aa776Eef10CeE6c4dd2B5862bdcE767A8B");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc", "0x91EDd8708062bd4233f4Dd0FCE15A7cb4d500091");
+        NSConfig expectedZNSConfig = new NSConfig(Network.ZIL_TESTNET, "https://dev-api.zilliqa.com", "0x00000000000000000000000000000000000000004");
+
+        ResolutionBuilder builder = new ResolutionBuilder(mockConnector);
+        builder.udUnsClient("some key")
+            .znsChainId(expectedZNSConfig.getChainId())
+            .znsProviderUrl(expectedZNSConfig.getBlockchainProviderUrl())
+            .znsContractAddress(expectedZNSConfig.getContractAddress())
+            .build();
+
+        verify(mockConnector).buildResolution(servicesCaptor.capture());
+
+        Map<NamingServiceType, NamingService> capturedServices = servicesCaptor.getValue();
+        UNS unsService = (UNS) capturedServices.get(NamingServiceType.UNS);
+        checkUnsConfigurations(expectedUNSL1Config, unsService, UNSLocation.Layer1);
+        checkUnsConfigurations(expectedUNSL2Config, unsService, UNSLocation.Layer2);
+        checkConfigurations(expectedZNSConfig, capturedServices.get(NamingServiceType.ZNS));
+    }
+
     @Test
     public void allowsToCustomizeOneService() throws Exception {
         NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x578853aa776Eef10CeE6c4dd2B5862bdcE767A8B");

@@ -397,6 +397,11 @@ public class ResolutionTest {
                 throw cause;
             }
 
+            @Override 
+            public IProvider setHeader(String key, String value) {
+                return this;
+            }
+
         };
         Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
         TestUtils.expectError(
@@ -428,6 +433,11 @@ public class ResolutionTest {
                     }
                 }
                 throw new IOException("body has incorrect data in the test");
+            }
+
+            @Override 
+            public IProvider setHeader(String key, String value) {
+                return this;
             }
         };
         Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();

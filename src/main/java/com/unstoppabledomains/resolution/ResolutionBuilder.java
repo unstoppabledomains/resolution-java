@@ -88,18 +88,17 @@ public class ResolutionBuilder {
         return this.providerUrl(nsConfig, providerUrl);
     }
 
-    public ResolutionBuilder setUdUnsClient(String apiKey) {
+    public ResolutionBuilder udUnsClient(String apiKey) {
         NSConfig layer1Config = unsConfigs.get(UNSLocation.Layer1);
-        layer1Config.setApiKey(apiKey);
-
         layer1Config.setBlockchainProviderUrl(ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc");
         layer1Config.setChainId(Network.MAINNET);
 
         NSConfig layer2Config = unsConfigs.get(UNSLocation.Layer2);
-        layer2Config.setApiKey(apiKey);
-
         layer2Config.setBlockchainProviderUrl(ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc");
         layer2Config.setChainId(Network.MATIC_MAINNET);
+
+        this.provider.setHeader("Authorization", "Bearer " + apiKey);
+        this.provider.setHeader("X-Lib-Client", DefaultProvider.getUserAgent());
 
         return this;
     }
@@ -112,7 +111,6 @@ public class ResolutionBuilder {
         nsConfig.setBlockchainProviderUrl(providerUrl);
         nsConfig.setChainId(chainId);
 
-        System.out.println("nsConfig.toString() " + nsConfig.toString());
         return this;
     }
 
