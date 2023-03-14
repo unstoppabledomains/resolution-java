@@ -9,10 +9,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestUtils {
-
-    public static final String TESTING_UNS_PROVIDER_URL = "https://goerli.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     public static final String TESTING_ZNS_PROVIDER_URL = "https://dev-api.zilliqa.com";
-    public static final String TESTING_UNS_L2_PROVIDER_URL = "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+
+    public static String getL1TestProviderUrl() {
+        String url = System.getenv("L1_TEST_NET_RPC_URL");
+
+        if (url == null) {
+            return "https://goerli.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+        }
+
+        return url;
+    }
+
+    public static String getL2TestProviderUrl() {
+        String url = System.getenv("L2_TEST_NET_RPC_URL");
+
+        if (url == null) {
+            return "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+        }
+
+        return url;
+    }
 
     public static <T> void expectError(Callable<T> f, NSExceptionCode code) throws Exception {
         try {

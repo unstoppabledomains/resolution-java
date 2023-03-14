@@ -1,3 +1,7 @@
+## 6.2.3
+### Changes
+ * Update `knownRecords.json`, `uns-config.json` and run test workflow using repo's env vars
+
 ## 6.2.2
 ### Changes
  * Update `knownRecords.json` and `uns-config.json`
