@@ -23,6 +23,7 @@ public class ResolutionBuilder {
     static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String UNS_L2_DEFAULT_URL = "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
+    static final String UD_RPC_PROXY_BASE_URL = "https://resolve.unstoppabledomains.com";
 
     static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
@@ -87,6 +88,22 @@ public class ResolutionBuilder {
         return this.providerUrl(nsConfig, providerUrl);
     }
 
+    public ResolutionBuilder setUdUnsClient(String apiKey) {
+        NSConfig layer1Config = unsConfigs.get(UNSLocation.Layer1);
+        layer1Config.setApiKey(apiKey);
+
+        layer1Config.setBlockchainProviderUrl(ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc");
+        layer1Config.setChainId(Network.MAINNET);
+
+        NSConfig layer2Config = unsConfigs.get(UNSLocation.Layer2);
+        layer2Config.setApiKey(apiKey);
+
+        layer2Config.setBlockchainProviderUrl(ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc");
+        layer2Config.setChainId(Network.MATIC_MAINNET);
+
+        return this;
+    }
+
     private ResolutionBuilder providerUrl(NSConfig nsConfig, String providerUrl) {
         Network chainId = getNetworkId(providerUrl);
         if (chainId == null) {
@@ -94,6 +111,8 @@ public class ResolutionBuilder {
         }
         nsConfig.setBlockchainProviderUrl(providerUrl);
         nsConfig.setChainId(chainId);
+
+        System.out.println("nsConfig.toString() " + nsConfig.toString());
         return this;
     }
 

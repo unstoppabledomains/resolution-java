@@ -10,4 +10,11 @@ public class NSConfig {
     private Network chainId;
     private String blockchainProviderUrl;
     private String contractAddress;
+    private String apiKey = null;
+
+    NSConfig(Network chainId, String blockchainProviderUrl, String contractAddress) {
+        this.chainId = chainId;
+        this.blockchainProviderUrl = blockchainProviderUrl;
+        this.contractAddress = contractAddress;
+    }
 }
