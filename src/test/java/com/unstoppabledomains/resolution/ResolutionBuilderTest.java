@@ -44,8 +44,8 @@ public class ResolutionBuilderTest {
 
     @Test
     public void buildsWithDefaultParams() throws Exception {
-        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x578853aa776Eef10CeE6c4dd2B5862bdcE767A8B");
-        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6", "0x91EDd8708062bd4233f4Dd0FCE15A7cb4d500091");
+        NSConfig expectedUNSL1Config = new NSConfig(Network.MAINNET, null, "0x578853aa776Eef10CeE6c4dd2B5862bdcE767A8B");
+        NSConfig expectedUNSL2Config = new NSConfig(Network.MATIC_MAINNET, null, "0x91EDd8708062bd4233f4Dd0FCE15A7cb4d500091");
         NSConfig expectedZNSConfig = new NSConfig(Network.MAINNET, "https://api.zilliqa.com", "0x9611c53BE6d1b32058b2747bdeCECed7e1216793");
 
         ResolutionBuilder builder = new ResolutionBuilder(mockConnector);

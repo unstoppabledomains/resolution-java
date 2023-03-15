@@ -266,8 +266,8 @@ public class Resolution implements DomainResolution {
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
         Map<NamingServiceType, NamingService> namingServices = new HashMap<>();
         namingServices.put(NamingServiceType.UNS, new UNS(new UNSConfig(
-                new NSConfig(Network.MAINNET, ResolutionBuilder.UNS_DEFAULT_URL, unsProxyAddress),
-                new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UNS_L2_DEFAULT_URL, unsl2ProxyAddress))
+                new NSConfig(Network.MAINNET, null, unsProxyAddress),
+                new NSConfig(Network.MATIC_MAINNET, null, unsl2ProxyAddress))
                 , provider));
         namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         
