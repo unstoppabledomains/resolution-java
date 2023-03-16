@@ -403,7 +403,14 @@ public class ResolutionTest {
             }
 
         };
-        Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
+        Resolution resolutionWithProvider = Resolution
+            .builder()
+            .unsChainId(UNSLocation.Layer1, Network.GOERLI)
+            .unsChainId(UNSLocation.Layer2, Network.MUMBAI_TESTNET)
+            .unsProviderUrl(UNSLocation.Layer1, TestUtils.getL1TestProviderUrl())
+            .unsProviderUrl(UNSLocation.Layer2, TestUtils.getL2TestProviderUrl())
+            .provider(provider)
+            .build();
         TestUtils.expectError(
             () -> resolutionWithProvider.getAddress("udtestdev-my-new-tls.wallet", "eth"),
             NSExceptionCode.BlockchainIsDown,
@@ -440,7 +447,13 @@ public class ResolutionTest {
                 return this;
             }
         };
-        Resolution resolutionWithProvider = Resolution.builder().provider(provider).build();
+        Resolution resolutionWithProvider = Resolution
+            .builder()
+            .unsChainId(UNSLocation.Layer1, Network.GOERLI)
+            .unsChainId(UNSLocation.Layer2, Network.MUMBAI_TESTNET)
+            .unsProviderUrl(UNSLocation.Layer1, TestUtils.getL1TestProviderUrl())
+            .unsProviderUrl(UNSLocation.Layer2, TestUtils.getL2TestProviderUrl())
+            .provider(provider).build();
         String ethAddress = resolutionWithProvider.getAddress("brad.crypto", "eth");
         assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", ethAddress);
     }

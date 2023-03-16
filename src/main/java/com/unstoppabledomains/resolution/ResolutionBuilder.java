@@ -72,7 +72,7 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder znsProviderUrl( String providerUrl) {
         NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
-        return this.providerUrl(nsConfig, providerUrl);
+        return this.providerUrl(nsConfig, providerUrl, false);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder unsProviderUrl(UNSLocation location, String providerUrl) {
         NSConfig nsConfig = unsConfigs.get(location);
-        return this.providerUrl(nsConfig, providerUrl);
+        return this.providerUrl(nsConfig, providerUrl, false);
     }
 
     public ResolutionBuilder udUnsClient(String apiKey) {
@@ -96,14 +96,14 @@ public class ResolutionBuilder {
         this.provider.setHeader("Authorization", "Bearer " + apiKey);
         this.provider.setHeader("X-Lib-Client", DefaultProvider.getUserAgent());
 
-        this.providerUrl(l1NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc");
-        this.providerUrl(l2NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc");
+        this.providerUrl(l1NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc", true);
+        this.providerUrl(l2NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc", true);
 
         return this;
     }
 
-    private ResolutionBuilder providerUrl(NSConfig nsConfig, String providerUrl) {
-        Network chainId = getNetworkId(providerUrl);
+    private ResolutionBuilder providerUrl(NSConfig nsConfig, String providerUrl, Boolean shouldForwardError) {
+        Network chainId = getNetworkId(providerUrl, shouldForwardError);
         if (chainId == null) {
             chainId = nsConfig.getChainId();
         }
@@ -187,7 +187,7 @@ public class ResolutionBuilder {
      * @param blockchainProviderUrl RPC endpoint url
      * @return Network object or null if couldn't retrive the network
      */
-    private Network getNetworkId(String blockchainProviderUrl) {
+    private Network getNetworkId(String blockchainProviderUrl, Boolean shouldForwardError) {
         JsonObject body = new JsonObject();
         body.addProperty("jsonrpc", "2.0");
         body.addProperty("method", "net_version");
@@ -197,6 +197,10 @@ public class ResolutionBuilder {
             JsonObject response = provider.request(blockchainProviderUrl, body);
             return Network.getNetwork(response.get("result").getAsInt());
         } catch(Exception e) {
+            // if (shouldForwardError) {
+            //     throw new RuntimeException(e);
+            // }
+
             return null;
         }
     }
