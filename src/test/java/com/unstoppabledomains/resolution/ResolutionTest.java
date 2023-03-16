@@ -65,8 +65,8 @@ public class ResolutionTest {
     }
 
     @Test
-    public void testDefaultNetworks() throws Exception {
-        DomainResolution defaultSettings = new Resolution();
+    public void testQuickInitializationWithUdKeyNetworks() throws Exception {
+        DomainResolution defaultSettings = new Resolution("some key");
         Network defaultUnsChainId = defaultSettings.getNetwork(NamingServiceType.UNS);
         Network defaultZnsChainId = defaultSettings.getNetwork(NamingServiceType.ZNS);
         assertEquals(Network.MAINNET, defaultUnsChainId);

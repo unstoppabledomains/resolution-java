@@ -45,13 +45,13 @@ public class Resolution implements DomainResolution {
     }
 
     /**
-     * Create resolution object with default config:
-     * <a href="https://www.infura.io/">infura</a> blockchain provider for UNS
+     * Create resolution object with Unstoppable Domains' api key and default provider ZNS:
+     * <a href="https://unstoppabledomains.com/partner-api-dashboard">Unstoppable Domains'</a> proxy blockchain provider for UNS
      * <a href="https://zilliqa.com">zilliqa</a> for ZNS
      */
-    public Resolution() {
+    public Resolution(String apiKey) {
         IProvider provider = new DefaultProvider();
-        services = getServices(provider);
+        services = getServices(provider, apiKey);
     }
 
     private Resolution(Map<NamingServiceType, NamingService> services) {
@@ -261,13 +261,16 @@ public class Resolution implements DomainResolution {
         }
     }
 
-    private Map<NamingServiceType, NamingService> getServices(IProvider provider) {
+    private Map<NamingServiceType, NamingService> getServices(IProvider provider, String apiKey) {
+        provider.setHeader("Authorization", "Bearer " + apiKey);
+        provider.setHeader("X-Lib-Client", DefaultProvider.getUserAgent());
+
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
         Map<NamingServiceType, NamingService> namingServices = new HashMap<>();
         namingServices.put(NamingServiceType.UNS, new UNS(new UNSConfig(
-                new NSConfig(Network.MAINNET, null, unsProxyAddress),
-                new NSConfig(Network.MATIC_MAINNET, null, unsl2ProxyAddress))
+                new NSConfig(Network.MAINNET, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc", unsProxyAddress),
+                new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc", unsl2ProxyAddress))
                 , provider));
         namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
         
