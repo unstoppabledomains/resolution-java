@@ -94,7 +94,7 @@ public class ResolutionBuilder {
         l2NsConfig.setChainId(Network.MATIC_MAINNET);
 
         this.provider.setHeader("Authorization", "Bearer " + apiKey);
-        this.provider.setHeader("X-Lib-Client", DefaultProvider.getUserAgent());
+        this.provider.setHeader("X-Lib-Agent", DefaultProvider.getUserAgent());
 
         this.providerUrl(l1NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc", true);
         this.providerUrl(l2NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc", true);
@@ -148,6 +148,7 @@ public class ResolutionBuilder {
 
     private <T extends Enum<T>> void checkConfigs(Map<T, BuilderNSConfig> configs, String messagePrefix) throws IllegalArgumentException{
         for (Entry<T, BuilderNSConfig> config : configs.entrySet()) {
+
             if (!config.getValue().isConfigured()) {
                 throw new IllegalArgumentException(messagePrefix + " " + config.getKey().name() + ": " + config.getValue().getMisconfiguredMessage());
             }

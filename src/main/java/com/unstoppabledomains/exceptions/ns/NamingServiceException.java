@@ -61,6 +61,9 @@ public class NamingServiceException extends Exception {
       case ReverseResolutionNotSpecified: {
         return "Reverse resolution is not specified for address " + params.contractAddress;
       }
+      case RPCServerError: {
+        return "RPC server error " + params.serverMessage;
+      }
       case UnknownError:
       default: 
         return "Unknown Error occurred";
