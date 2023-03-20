@@ -18,7 +18,7 @@ public class NetworkConfigLoaderTest {
     void shouldLoadCorrectNetworkConfig() {
         String versionFromClient = Client.getVersion();
         // we want to keep this hardcoded and manually updated to test if the Client.getVersion correctly reads the .json file;
-        String versionFromFile = "6.2.3";
+        String versionFromFile = "6.2.4";
         assertEquals(versionFromFile, versionFromClient);
     }
 }
