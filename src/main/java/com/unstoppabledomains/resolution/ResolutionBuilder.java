@@ -21,7 +21,7 @@ import com.unstoppabledomains.util.BuilderNSConfig;
 
 public class ResolutionBuilder {
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
-    static final String UD_RPC_PROXY_BASE_URL = "https://resolve.unstoppabledomains.com";
+    static final String UD_RPC_PROXY_BASE_URL = "https://api.unstoppabledomains.com/resolve";
 
     static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
@@ -198,10 +198,6 @@ public class ResolutionBuilder {
             JsonObject response = provider.request(blockchainProviderUrl, body);
             return Network.getNetwork(response.get("result").getAsInt());
         } catch(Exception e) {
-            // if (shouldForwardError) {
-            //     throw new RuntimeException(e);
-            // }
-
             return null;
         }
     }
