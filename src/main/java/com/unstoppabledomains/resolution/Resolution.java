@@ -263,7 +263,7 @@ public class Resolution implements DomainResolution {
 
     private Map<NamingServiceType, NamingService> getServices(IProvider provider, String apiKey) {
         provider.setHeader("Authorization", "Bearer " + apiKey);
-        provider.setHeader("X-Lib-Client", DefaultProvider.getUserAgent());
+        provider.setHeader("X-Lib-Agent", DefaultProvider.getUserAgent());
 
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
