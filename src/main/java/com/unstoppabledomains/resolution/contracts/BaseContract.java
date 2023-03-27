@@ -99,6 +99,13 @@ public abstract class BaseContract {
       final String replacedAnswer = answer.replace("0x", "");
       return function.decodeReturn(FastHex.decode(replacedAnswer));
     } catch(IOException exception) {
+      if (exception.getMessage().matches("(.*)response code: (403|401|429)(.*)")) {
+        throw new NamingServiceException(
+          NSExceptionCode.RPCServerError,
+          new NSExceptionParams("sv",  exception.getMessage()),
+          exception
+        );
+      }
       throw new NamingServiceException(
         NSExceptionCode.BlockchainIsDown,
         new NSExceptionParams("n", namingServiceName),
@@ -154,6 +161,13 @@ public abstract class BaseContract {
       }
       return result;
     } catch(IOException exception) {
+      if (exception.getMessage().matches("(.*)response code: (403|401|429)(.*)")) {
+        throw new NamingServiceException(
+          NSExceptionCode.RPCServerError,
+          new NSExceptionParams("sv",  exception.getMessage()),
+          exception
+        );
+      }
       throw new NamingServiceException(
         NSExceptionCode.BlockchainIsDown,
         new NSExceptionParams("n", namingServiceName),

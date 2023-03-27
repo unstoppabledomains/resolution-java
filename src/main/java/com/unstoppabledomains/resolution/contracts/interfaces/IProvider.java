@@ -13,4 +13,12 @@ public interface IProvider {
    * @throws IOException
    */
   abstract JsonObject request(String url, JsonObject body) throws IOException;
+
+  /**
+   * This method allows to set extra headers to requests
+   * @param key header key
+   * @param value header value
+   * @return IProvider
+   */
+  abstract IProvider setHeader(String key, String value);
 }

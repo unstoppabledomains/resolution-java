@@ -27,7 +27,7 @@ public class DefaultProvider implements IProvider {
     headers = new HashMap<String, String>();
     headers.put("Content-Type", "application/json");
     headers.put("Accept", "application/json");
-    headers.put("User-Agent", getUserAgent());
+    headers.put("User-Agent", DefaultProvider.getUserAgent());
   }
 
   /**
@@ -40,12 +40,19 @@ public class DefaultProvider implements IProvider {
     return provider;
   }
 
+  public static String getUserAgent() {
+    String agent = "UnstoppableDomains/resolution-java";
+    String version = Client.getVersion();
+    return version.isEmpty() ? agent : agent + "/" + version;
+  }
+
   /**
    * Set the header for future builds
    * @param key header key
    * @param value header value
    * @return DefaultProvider
    */
+  @Override
   public DefaultProvider setHeader(String key, String value) {
     headers.put(key, value);
     return this;
@@ -89,11 +96,5 @@ public class DefaultProvider implements IProvider {
     }
     con.setDoOutput(true);
     return con;
-  }
-
-  protected String getUserAgent() {
-    String agent = "UnstoppableDomains/resolution-java";
-    String version = Client.getVersion();
-    return version.isEmpty() ? agent : agent + "/" + version;
   }
 }

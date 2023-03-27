@@ -20,9 +20,8 @@ import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
 import com.unstoppabledomains.util.BuilderNSConfig;
 
 public class ResolutionBuilder {
-    static final String UNS_DEFAULT_URL = "https://mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
-    static final String UNS_L2_DEFAULT_URL = "https://polygon-mainnet.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
     static final String ZILLIQA_DEFAULT_URL = "https://api.zilliqa.com";
+    static final String UD_RPC_PROXY_BASE_URL = "https://api.unstoppabledomains.com/resolve";
 
     static final String ZNS_DEFAULT_REGISTRY_ADDRESS = "0x9611c53BE6d1b32058b2747bdeCECed7e1216793";
 
@@ -39,8 +38,8 @@ public class ResolutionBuilder {
         String unsProxyAddress = NetworkConfigLoader.getContractAddress(Network.MAINNET, "ProxyReader");
         String unsl2ProxyAddress = NetworkConfigLoader.getContractAddress(Network.MATIC_MAINNET, "ProxyReader");
         unsConfigs = new HashMap<>();
-        unsConfigs.put(UNSLocation.Layer1, new BuilderNSConfig(Network.MAINNET, UNS_DEFAULT_URL, unsProxyAddress));
-        unsConfigs.put(UNSLocation.Layer2, new BuilderNSConfig(Network.MATIC_MAINNET, UNS_L2_DEFAULT_URL, unsl2ProxyAddress));
+        unsConfigs.put(UNSLocation.Layer1, new BuilderNSConfig(Network.MAINNET, null, unsProxyAddress));
+        unsConfigs.put(UNSLocation.Layer2, new BuilderNSConfig(Network.MATIC_MAINNET, null, unsl2ProxyAddress));
         
         provider = new DefaultProvider();
     }
@@ -73,7 +72,7 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder znsProviderUrl( String providerUrl) {
         NSConfig nsConfig = serviceConfigs.get(NamingServiceType.ZNS);
-        return this.providerUrl(nsConfig, providerUrl);
+        return this.providerUrl(nsConfig, providerUrl, false);
     }
 
     /**
@@ -84,16 +83,33 @@ public class ResolutionBuilder {
      */
     public ResolutionBuilder unsProviderUrl(UNSLocation location, String providerUrl) {
         NSConfig nsConfig = unsConfigs.get(location);
-        return this.providerUrl(nsConfig, providerUrl);
+        return this.providerUrl(nsConfig, providerUrl, false);
     }
 
-    private ResolutionBuilder providerUrl(NSConfig nsConfig, String providerUrl) {
-        Network chainId = getNetworkId(providerUrl);
+    public ResolutionBuilder udUnsClient(String apiKey) {
+        NSConfig l1NsConfig = unsConfigs.get(UNSLocation.Layer1);
+        l1NsConfig.setChainId(Network.MAINNET);
+
+        NSConfig l2NsConfig = unsConfigs.get(UNSLocation.Layer2);
+        l2NsConfig.setChainId(Network.MATIC_MAINNET);
+
+        this.provider.setHeader("Authorization", "Bearer " + apiKey);
+        this.provider.setHeader("X-Lib-Agent", DefaultProvider.getUserAgent());
+
+        this.providerUrl(l1NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/eth/rpc", true);
+        this.providerUrl(l2NsConfig, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc", true);
+
+        return this;
+    }
+
+    private ResolutionBuilder providerUrl(NSConfig nsConfig, String providerUrl, Boolean shouldForwardError) {
+        Network chainId = getNetworkId(providerUrl, shouldForwardError);
         if (chainId == null) {
             chainId = nsConfig.getChainId();
         }
         nsConfig.setBlockchainProviderUrl(providerUrl);
         nsConfig.setChainId(chainId);
+
         return this;
     }
 
@@ -132,6 +148,7 @@ public class ResolutionBuilder {
 
     private <T extends Enum<T>> void checkConfigs(Map<T, BuilderNSConfig> configs, String messagePrefix) throws IllegalArgumentException{
         for (Entry<T, BuilderNSConfig> config : configs.entrySet()) {
+
             if (!config.getValue().isConfigured()) {
                 throw new IllegalArgumentException(messagePrefix + " " + config.getKey().name() + ": " + config.getValue().getMisconfiguredMessage());
             }
@@ -144,9 +161,14 @@ public class ResolutionBuilder {
      * @return resolution object
      */
     public Resolution build() throws IllegalArgumentException {
-        if (unsConfigs.get(UNSLocation.Layer1).isDefault() ^ unsConfigs.get(UNSLocation.Layer2).isDefault()) {
-            throw new IllegalArgumentException("Configuration should be provided for UNS Layer1 and UNS Layer2");
+        if (unsConfigs.get(UNSLocation.Layer1).isDefault()) {
+            throw new IllegalArgumentException("Configuration should be provided for UNS Layer1");
         }
+
+        if (unsConfigs.get(UNSLocation.Layer2).isDefault()) {
+            throw new IllegalArgumentException("Configuration should be provided for UNS Layer2");
+        }
+
         checkConfigs(unsConfigs, "Invalid configuration for UNS layer");
         checkConfigs(serviceConfigs, "Invalid configuration for service");
 
@@ -166,7 +188,7 @@ public class ResolutionBuilder {
      * @param blockchainProviderUrl RPC endpoint url
      * @return Network object or null if couldn't retrive the network
      */
-    private Network getNetworkId(String blockchainProviderUrl) {
+    private Network getNetworkId(String blockchainProviderUrl, Boolean shouldForwardError) {
         JsonObject body = new JsonObject();
         body.addProperty("jsonrpc", "2.0");
         body.addProperty("method", "net_version");
