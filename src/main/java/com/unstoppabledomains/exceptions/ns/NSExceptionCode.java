@@ -15,5 +15,6 @@ public enum NSExceptionCode {
   NotImplemented,
   InconsistentDomainArray,
   InvalidDomain,
+  RPCServerError,
   ReverseResolutionNotSpecified;
 }

@@ -15,7 +15,7 @@ public class TestUtils {
         String url = System.getenv("L1_TEST_NET_RPC_URL");
 
         if (url == null) {
-            return "https://goerli.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+            throw new RuntimeException("L1_TEST_NET_RPC_URL is not set");
         }
 
         return url;
@@ -25,7 +25,7 @@ public class TestUtils {
         String url = System.getenv("L2_TEST_NET_RPC_URL");
 
         if (url == null) {
-            return "https://polygon-mumbai.infura.io/v3/e0c0cb9d12c440a29379df066de587e6";
+            throw new RuntimeException("L2_TEST_NET_RPC_URL is not set");
         }
 
         return url;

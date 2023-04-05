@@ -10,7 +10,7 @@ import com.unstoppabledomains.resolution.Resolution
 data class ResolutionResult(val error: NamingServiceException?, val address: String?) {}
 
 class AsyncResolution : AsyncTask<String, String, ResolutionResult>() {
-    private val tool: DomainResolution = Resolution()
+    private val tool: DomainResolution = Resolution("<api_key>")
 
     override fun doInBackground(vararg params: String?): ResolutionResult {
         val domain =  params[0]
@@ -65,7 +65,7 @@ import com.unstoppabledomains.resolution.Resolution
 data class ResolutionResult(val error: NamingServiceException?, val address: String?) {}
 
 class AsyncResolution : AsyncTask<String, String, ResolutionResult>() {
-    private val tool: DomainResolution = Resolution()
+    private val tool: DomainResolution = Resolution("<api_key>")
 
     override fun doInBackground(vararg params: String?): ResolutionResult {
         val domain =  params[0]

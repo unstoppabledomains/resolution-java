@@ -12,23 +12,48 @@ Resolution-Java is primarily built and maintained by [Unstoppable Domains](https
 
 Resolution supports different decentralized domains. Please, refer to the [Top Level Domains List](https://resolve.unstoppabledomains.com/supported_tlds)
 
-# Releases
+- [Installing Resolution](#installing-resolution-java)
+- [Using Resolution](#using-resolution)
+- [Development](#development)
+- [Contributions](#contributions)
+- [Free advertising for integrated apps](#free-advertising-for-integrated-apps)
+
+# Installing resolution-java
 
 The most recent release of this library is available on [JitPack](https://jitpack.io/#unstoppabledomains/resolution-java).
-
-> We are no longer supporting [Maven Central](https://search.maven.org/artifact/com.unstoppabledomains/resolution) for new versions of the resolution-java library.
-
-# Usage
 
 ### Prerequisites
 
 Java 8+ version is required to use this library.
 
-### Default Ethereum Providers
+# Using Resolution
 
-The default [Infura](https://www.infura.io/) key provided is rate limited and should only be used for testing. For production applications, please bring your own Infura or Alchemy RPC URL to prevent downtime.
+## Initialize with Unstoppable Domains' Proxy Provider
 
-### Custom Ethereum provider configuration
+```java
+// obtain a key from https://unstoppabledomains.com/partner-api-dashboard if you are a partner
+DomainResolution resolution = new Resolution("<api_key>");
+
+// or
+
+DomainResolution resolution = Resolution
+  .builder()
+  .udUnsClient("<api_key>")
+  .build();
+```
+
+> NOTE: The apiKey is only used resolve domains from UNS. Behind the scene, it still uses the default ZNS (Zilliqa) RPC url. For additional control, please specify your ZNS configuration.
+
+```java
+DomainResolution resolution = Resolution
+  .builder()
+  .udUnsClient("<api_key>")
+  .znsProviderUrl("https://api.zilliqa.com")
+  .build();
+
+```
+
+## Initialize with Custom Ethereum Configuration
 
 You may want to specify a custom provider:
  - if you want to use a dedicated blockchain node
@@ -39,52 +64,58 @@ Default provider can be changed by using the builder class `ResolutionBuilder`.
 
 
 ```java
-// Default config:
-
-DomainResolution resolution = new Resolution();
-
-// Optionally override default config using builder options:
-// providerUrl overwrites chainId by making net_version JSON RPC call to the provider
-// in the following example blockchain would be set to the rinkeby testnet
-// Note: if a custom configuration is provided for one UNS layer,
-// it should be provided for the other layer too
-
-String ethProviderURL = INFURA_ETHEREUM_API;
-String polygonProviderURL = INFURA_POLYGON_API;
-
+// obtain a key from https://www.infura.io
+String ethProviderURL = "https://mainnet.infura.io/v3/<infura_api_key>";
+String polygonProviderURL = "https://polygon-mainnet.infura.io/v3/<infura_api_key>";
 
 DomainResolution resolution = Resolution.builder()
-                .unsProviderUrl(UNSLocation.Layer1, ethProviderURL)
-                .unsProviderUrl(UNSLocation.Layer2, polygonProviderURL)
-                .build();
+  .unsProviderUrl(UNSLocation.Layer1, ethProviderURL)
+  .unsProviderUrl(UNSLocation.Layer2, polygonProviderURL)
+  .znsProviderUrl("https://api.zilliqa.com")
+  .build();
 
-// Custom provider config:
+```
+## Additional control with custom HTTP provider
 
-DomainResolution resolution = Resolution.builder()
-                .provider(new IProvider() {
-                    @Override
-                    public JsonObject request(String url, JsonObject body) throws IOException {
-                        // TODO Make post request to url with given body
-                        // and return JsonObject from the response
-                        return null;
-                    }
-                })
-                .build();
+```java
+DomainResolution resolution = Resolution
+  .builder()
+  .udUnsClient("<api_key>") // or your custom Ethereum provider
+  .provider(
+    new IProvider() {
+      @Override
+      public JsonObject request(String url, JsonObject body) throws IOException {
+          // TODO Make post request to url with given body
+          // and return JsonObject from the response
+          return null;
+      }
+
+      @Override
+      public IProvider setHeader(String key, String value) {
+          return this;
+      }
+    }
+  )
+  .build();
 
 // Adding a custom header to the DefaultProvider
 
 DefaultProvider myProvider = DefaultProvider
-                .cleanBuild()
-                .setHeader("custom-header", "custom-value")
-                .setHeader("new-header", "new-value");
+  .cleanBuild()
+  .setHeader("custom-header", "custom-value")
+  .setHeader("new-header", "new-value");
 
-DomainResolution resolution = Resolution.builder()
-                .provider(myProvider)
-                .build();
+DomainResolution resolution = Resolution
+  .builder()
+  .udUnsClient("<api_key>") // or your custom Ethereum provider
+  .provider(myProvider)
+  .build();
 
 // All network calls will be made with headers "custom-header" and "new-header" instead of default ones
 
 ```
+
+## Examples
 
 [Live usage examples](samples.md)
 
@@ -169,6 +200,11 @@ Please see the [Resolution-Java Error Codes](https://docs.unstoppabledomains.com
 # Development
 
 ## Build & test
+
+Resolution library relies on environment variables to load TestNet RPC Urls. This way, our keys don't expose directly to the code. These environment variables are:
+
+* L1_TEST_NET_RPC_URL
+* L2_TEST_NET_RPC_URL
 
 > Note: if you don't wish to install Gradle you can use it with wrapper: `./gradlew` instead of `gradle`.
 

@@ -13,6 +13,7 @@ public class NSExceptionParams {
   public String record;
   public String threadLimit;
   public String layer;
+  public String serverMessage;
 
   public NSExceptionParams(String format, String ...args) {
     Pattern pattern = Pattern.compile("\\|");
@@ -55,6 +56,10 @@ public class NSExceptionParams {
       }
       case "u": {
         layer = value;
+        break ;
+      }
+      case "sv": {
+        serverMessage = value;
         break ;
       }
       default: {
