@@ -1,3 +1,7 @@
+## v7.0.0 - 2023-04-05
+
+Remove default RPC urls, Allow initialized with UD partner key
+
 ## v6.2.4 - 2023-03-20
 
 Update permission for package release
@@ -69,10 +73,18 @@ Update permission for package release
 
 - Library builder methods has changed it's signature. Almost all methods now has prefixes related to specific name server (`UNS`, `ZNS`, `ENS`)
 - - Example of changed methods:
+- 
 - - - `ensChainId`
+- - 
+- 
 - - - `unsChainId`
+- - 
+- 
 - - - `znsChainId`
 - - 
+- 
+- - 
+- 
 - 
 - ENS considered deprecated and will be removed in future
 
@@ -85,15 +97,35 @@ Update permission for package release
 - Introduced `Resolution#getLocations` method to resole all known records of a single domain.
 - Add `Resolution#getLocations` method which will help to determine domains location (blockhain, networkId) and useful metadata like owner, resolver, registry addresses, provider url if possible.
 - - Method returns:
+- 
 - - - Domain blockhain (ETH or MATIC)
+- - 
+- 
 - - - Blockchain network id (numeric)
+- - 
+- 
 - - - Owner address
+- - 
+- 
 - - - Resolver address
+- - 
+- 
 - - - Registry address
+- - 
+- 
 - - - Provider URL if possible
+- - 
+- 
 - - - - Infura URL by default
 - - - 
 - - 
+- 
+
+
+---
+
+- - 
+- 
 - 
 - Domain name is now trimmed and lowercased before resolving
 - Domain names that are not accomply with this regex `^[.a-z\d-]+$` will throw a NSExceptionCode.InvalidDomain
@@ -193,12 +225,17 @@ Update permission for package release
 ## 1.6.1
 
 - Deprecated following methods from Resolution.java class:
-
+- 
 - owner in favor of getOwner
+- 
 - addr in favor of getAddress
+- 
 - email in favor of getEmail
+- 
 - ipfsHash in favor of getIpfsHash
+- 
 - namehash in favor of getNamehash
+- 
 
 ## 1.6.0
 
