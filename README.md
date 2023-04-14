@@ -216,26 +216,6 @@ Resolution library relies on environment variables to load TestNet RPC Urls. Thi
 Internal [network config](src/main/resources/com/unstoppabledomains/config/network/uns-config.json)
 can be updated by running the `gradle pullNetworkConfig` task and committing the updated file.
 
-## Versioning & release process
-
-### On codebase updates
-
-- Contributors should update [CHANGELOG.md](CHANGELOG.md) with the listed changes, and increment the client version in [client.json](src/main/resources/com/unstoppabledomains/client/client.json).
-
-### New packages
-
-- Create a new Github release (using `semver`);
-- Wait for a successful Github Workflow publishing;
-- Release staging repository by logging into [Nexus Repository Manager](https://oss.sonatype.org/) and
-  performing 'close' and then 'release' actions.
-
-As an alternative to a CI release, you can perform a manual publish by following these steps:
-
-- Configure environment variables: `nexusUsername`, `nexusPassword`, `signingKey`, `signingPassword`;
-- Run `gradle publish`;
-- Login to [Nexus Repository Manager](https://oss.sonatype.org/) and perform 'close' and then
-  'release' actions on a staged repository **OR** run `gradle closeAndReleaseRepository`.
-
 # Contributions
 
 Contributions to this library are more than welcome. The easiest way to contribute is through GitHub issues and pull requests.
