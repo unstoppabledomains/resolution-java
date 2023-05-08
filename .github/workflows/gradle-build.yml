@@ -3,10 +3,6 @@
 
 name: Build & test
 
-env:
-  nexusUsername: ${{ secrets.NEXUS_USERNAME }}
-  nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
-
 on: [push, pull_request]
 
 jobs:
