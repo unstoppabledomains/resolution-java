@@ -493,7 +493,7 @@ public class ResolutionTest {
     @Test
     public void testTokenURIUNS() throws Exception {
         String tokenUri = resolution.getTokenURI("uns-devtest-ngin.blockchain");
-        assertEquals("https://metadata.ud-staging.com/metadata/38341110048240109319578877561688040885276568114621087858154157305222841866728", tokenUri);
+        assertEquals("https://api.ud-staging.com/metadata/38341110048240109319578877561688040885276568114621087858154157305222841866728", tokenUri);
     }
 
     @Test
@@ -504,7 +504,7 @@ public class ResolutionTest {
     @Test
     public void testTokenURIZNS() throws Exception {
         String tokenUri = resolution.getTokenURI("uns-devtest-testdomain303030.zil");
-        assertEquals("https://metadata.ud-staging.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
+        assertEquals("https://api.ud-staging.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
     }
 
     @Test
