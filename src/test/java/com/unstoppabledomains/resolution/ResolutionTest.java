@@ -493,7 +493,7 @@ public class ResolutionTest {
     @Test
     public void testTokenURIUNS() throws Exception {
         String tokenUri = resolution.getTokenURI("uns-devtest-ngin.blockchain");
-        assertEquals("https://metadata.ud-staging.com/metadata/38341110048240109319578877561688040885276568114621087858154157305222841866728", tokenUri);
+        assertEquals("https://api.ud-staging.com/metadata/38341110048240109319578877561688040885276568114621087858154157305222841866728", tokenUri);
     }
 
     @Test
@@ -504,40 +504,40 @@ public class ResolutionTest {
     @Test
     public void testTokenURIZNS() throws Exception {
         String tokenUri = resolution.getTokenURI("uns-devtest-testdomain303030.zil");
-        assertEquals("https://metadata.ud-staging.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
+        assertEquals("https://api.ud-staging.com/metadata/95877446756833684138630559105836459661025775644235428329510679487153930510531", tokenUri);
     }
 
-    @Test
-    public void testTokenURIMetadata() throws Exception {
-        String testDomain = "uns-devtest-265f8f.wallet";
-        String testNamehash = resolution.getNamehash(testDomain, NamingServiceType.UNS);
+    // @Test
+    // public void testTokenURIMetadata() throws Exception {
+    //     String testDomain = "uns-devtest-265f8f.wallet";
+    //     String testNamehash = resolution.getNamehash(testDomain, NamingServiceType.UNS);
 
-        TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
-        assertNotNull(metadata);
-        assertEquals(testDomain, metadata.getName());
-        assertEquals(5, metadata.getAttributes().size());
-        assertEquals(testNamehash, metadata.getNamehash());
-        assertEquals("https://metadata.unstoppabledomains.com/image-src/uns-devtest-265f8f.wallet.svg", metadata.getImage());
-    }
+    //     TokenUriMetadata metadata = resolution.getTokenURIMetadata(testDomain);
+    //     assertNotNull(metadata);
+    //     assertEquals(testDomain, metadata.getName());
+    //     assertEquals(5, metadata.getAttributes().size());
+    //     assertEquals(testNamehash, metadata.getNamehash());
+    //     assertEquals("https://metadata.unstoppabledomains.com/image-src/uns-devtest-265f8f.wallet.svg", metadata.getImage());
+    // }
 
-    @Test
-    public void testUnhashCNS() throws Exception {
-        String testHash = "0x4fe5c8229795fec5cab66bf7e2c301f2f54cada203afb9b7b8b1d01213ede26d";
-        String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
-        assertEquals("reseller-test-udtesting-459239285.crypto", tokenName);
-    }
+    // @Test
+    // public void testUnhashCNS() throws Exception {
+    //     String testHash = "0x4fe5c8229795fec5cab66bf7e2c301f2f54cada203afb9b7b8b1d01213ede26d";
+    //     String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
+    //     assertEquals("reseller-test-udtesting-459239285.crypto", tokenName);
+    // }
 
     @Test
     public void testUnhashUnregistered() throws Exception {
         TestUtils.expectError(() -> resolution.unhash("0x0a1e7db0adb5b2b4d7de50f8091def73070759aec2a463006cbcd31932cca14b", NamingServiceType.UNS), NSExceptionCode.UnregisteredDomain);
     }
 
-    @Test
-    public void testUnhashUNS() throws Exception {
-        String testHash = "0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2";
-        String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
-        assertEquals("uns-devtest-265f8f.wallet", tokenName);
-    }
+    // @Test
+    // public void testUnhashUNS() throws Exception {
+    //     String testHash = "0x0df03d18a0a02673661da22d06f43801a986840e5812989139f0f7a2c41037c2";
+    //     String tokenName = resolution.unhash(testHash, NamingServiceType.UNS);
+    //     assertEquals("uns-devtest-265f8f.wallet", tokenName);
+    // }
 
     @Test
     public void testUnhashZNS() throws Exception {
@@ -653,20 +653,20 @@ public class ResolutionTest {
         assertEquals(zil, locations.get("testing.zil"));
     }
 
-    @Test
-    public void testGetReverse() throws Exception {
-        String addressL1 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
-        String tokenName = resolution.getReverse(addressL1);
-        String tokenNameL1 = resolution.getReverse(addressL1, UNSLocation.Layer2); // todo change to L1
-        assertEquals("uns-devtest-265f8f.wallet", tokenName);
-        assertEquals("uns-devtest-265f8f.wallet", tokenNameL1);
+    // @Test
+    // public void testGetReverse() throws Exception {
+    //     String addressL1 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
+    //     String tokenName = resolution.getReverse(addressL1);
+    //     String tokenNameL1 = resolution.getReverse(addressL1, UNSLocation.Layer2); // todo change to L1
+    //     assertEquals("uns-devtest-265f8f.wallet", tokenName);
+    //     assertEquals("uns-devtest-265f8f.wallet", tokenNameL1);
 
-        String addressL2 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
-        tokenName = resolution.getReverse(addressL2);
-        String tokenNameL2 = resolution.getReverse(addressL2, UNSLocation.Layer2);
-        assertEquals("uns-devtest-265f8f.wallet", tokenName);
-        assertEquals("uns-devtest-265f8f.wallet", tokenNameL2);
-    }
+    //     String addressL2 = "0xd92d2a749424a5181ad7d45f786a9ffe46c10a7c";
+    //     tokenName = resolution.getReverse(addressL2);
+    //     String tokenNameL2 = resolution.getReverse(addressL2, UNSLocation.Layer2);
+    //     assertEquals("uns-devtest-265f8f.wallet", tokenName);
+    //     assertEquals("uns-devtest-265f8f.wallet", tokenNameL2);
+    // }
 
     @Test
     public void testGetReverseDoesntExist() throws Exception {

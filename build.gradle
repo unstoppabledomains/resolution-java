@@ -2,9 +2,6 @@ import groovy.json.JsonSlurper
 
 plugins {
     id 'java-library'
-    id 'maven-publish'
-    id 'signing'
-    id 'io.codearte.nexus-staging' version '0.22.0' // Requires nexusUsername and nexusPassword properties to be defined
     id 'de.undercouch.download' version '4.1.1'
     id "io.freefair.lombok" version "6.5.0.2"
 }
@@ -16,7 +13,6 @@ sourceCompatibility=JavaVersion.VERSION_1_8
 targetCompatibility=JavaVersion.VERSION_1_8
 
 repositories {
-    mavenCentral()
     jcenter()
 }
 
@@ -25,17 +21,11 @@ java {
     withJavadocJar()
 }
 
-lombok {
-    version = "1.18.22"
-}
-
 dependencies {
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'com.esaulpaugh:headlong:3.8.3'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65.01'
-
-    compileOnly 'org.projectlombok:lombok-maven-plugin:1.18.16.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
     testImplementation 'org.mock-server:mockserver-netty:5.11.2'
@@ -51,72 +41,6 @@ test {
     testLogging {
         showStandardStreams = true
     }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = archivesBaseName
-            from components.java
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-
-            pom {
-                name.set('resolution')
-                description.set('Resolution library that talks with Ethereum .crypto registry to resolve various information attached to .crypto domain')
-                url.set('https://github.com/unstoppabledomains/resolution-java')
-                licenses {
-                    license {
-                        name.set('MIT License')
-                        url.set('http://www.opensource.org/licenses/mit-license.php')
-                    }
-                }
-                developers {
-                    developer {
-                        id.set('GentelmanJohn')
-                        name.set('Jeyhun')
-                        email.set('johnny@unstoppabledomains.com')
-                        organization.set('com.github.unstoppabledomains')
-                        organizationUrl.set('https://unstoppabledomains.com')
-                    }
-                }
-                scm {
-                    connection.set('scm:git:git://github.com/unstoppabledomains/resolution-java.git')
-                    developerConnection.set('scm:git:ssh://github.com/unstoppabledomains/resolution-java.git')
-                    url.set('https://github.com/unstoppabledomains/resolution-java')
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = 'MavenCentral'
-            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
-            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username = System.getenv('nexusUsername')
-                password = System.getenv('nexusPassword')
-            }
-        }
-    }
-}
-
-signing {
-    required { gradle.taskGraph.hasTask("publish") }
-    useInMemoryPgpKeys(System.getenv('PGP_SIGNING_KEY'), System.getenv('PGP_SIGNING_PASSWORD'))
-    sign publishing.publications.mavenJava
-}
-
-nexusStaging {
-    username = System.getenv('nexusUsername')
-    password = System.getenv('nexusPassword')
 }
 
 task getVersion {
