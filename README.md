@@ -31,7 +31,7 @@ Java 8+ version is required to use this library.
 ## Initialize with Unstoppable Domains' Proxy Provider
 
 ```java
-// obtain a key from https://unstoppabledomains.com/partner-api-dashboard if you are a partner
+// obtain a key by following this document https://docs.unstoppabledomains.com/domain-distribution-and-management/quickstart/retrieve-an-api-key/#api-key
 DomainResolution resolution = new Resolution("<api_key>");
 
 // or
