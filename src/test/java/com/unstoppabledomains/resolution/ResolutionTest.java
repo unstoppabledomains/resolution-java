@@ -224,7 +224,7 @@ public class ResolutionTest {
     }
 
     @Test
-    public void getAddress() throws Exception {
+    public void getAddressLegacy() throws Exception {
         String addr = resolution.getAddress("cryptoalpaca9798.blockchain", "eth");
         assertEquals("0x499dD6D875787869670900a2130223D85d4F6Aa7", addr, "cryptoalpaca9798.blockchain --> eth");
 
@@ -233,6 +233,11 @@ public class ResolutionTest {
 
         addr = resolution.getAddress("udtestdev-test-l2-domain-784391.wallet", "link");
         assertEquals("0x6A1fd9a073256f14659fe59613bbf169Ed27CdcC", addr, "udtestdev-test-l2-domain-784391.wallet --> link");
+    }
+
+    @Test void getAddress() throws Exception {
+        String addr = resolution.getAddress("cryptoalpaca9798.blockchain", "eth", "eth");
+        assertEquals(null, addr, "cryptoalpaca9798.blockchain --> eth");
     }
 
     @Test

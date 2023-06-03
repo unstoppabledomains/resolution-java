@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -83,16 +85,8 @@ public class UNS implements NamingService {
 
     @Override
     public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
-        return resolver.resolve(ResolutionMethods.<Map<String, String>>builder()
-            .l1Func(() -> {
-                return unsl1.getAllRecords(domain);
-            })
-            .l2Func(() -> {
-                return unsl2.getAllRecords(domain);
-            }).build()
-        );
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getAllRecords", getType().toString()));
     }
-  
 
     @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
@@ -225,5 +219,16 @@ public class UNS implements NamingService {
                 return unsl2.getReverseTokenId(address);
         }
         return null;
+    }
+
+    public String getAddress(String domain, String network, String token) throws NamingServiceException {
+        return resolver.resolve(ResolutionMethods.<String>builder() // use opposite l1 and l2 since reverse resolution on l1 takes priority.
+            .l1Func(() -> {
+                return unsl2.getAddress(domain, network, token);
+            })
+            .l2Func(() -> {
+                return unsl1.getAddress(domain, network, token);
+            }).build()
+        );
     }
 }

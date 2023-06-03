@@ -31,15 +31,6 @@ public interface DomainResolution {
     Network getNetwork(NamingServiceType type);
 
     /**
-     * Returns all records and their's values from a domain
-     * @param domain domain name such as "brad.crypto"
-     * @return map of recordKey to recordValue
-     * @throws NamingServiceException when domain is not registered
-     * @deprecated
-     */
-    Map<String, String> getAllRecords(String domain) throws NamingServiceException;
-
-    /**
      * Resolves domain for a specific record
      *
      * @param domain trimed and lowercased domain name such as "brad.crypto"
@@ -69,6 +60,17 @@ public interface DomainResolution {
      * @throws NamingServiceException when domain has no record of a given currency or it's tld is not supported
      */
     String getAddress(String domain, String ticker) throws NamingServiceException;
+
+    /**
+     * Resolves domain for a specific ticker address
+     *
+     * @param domain domain name to be checked
+     * @param network the blockchain network of the wallet address
+     * @param token ticker of the wallet address
+     * @return reverse resolution domain name
+     * @throws NamingServiceException for network errors
+     */
+    String getAddress(String domain, String network, String token) throws NamingServiceException;
 
     /**
      * Resolves domain for a cross chain address
@@ -212,7 +214,7 @@ public interface DomainResolution {
     /**
      * Retrieves the domain name configured as reverse resolution for this address.
      * If reverse resolution is not configured, {@code null} will be returned for that domain in the resulting map.
-     * 
+     *
      * @param address blockchain address for reverse resolution
      * @return reverse resolution domain name
      * @throws NamingServiceException for network errors
@@ -222,7 +224,7 @@ public interface DomainResolution {
     /**
      * Retrieves the domain name configured as reverse resolution for this address.
      * If reverse resolution is not configured, {@code null} will be returned for that domain in the resulting map.
-     * 
+     *
      * @param address blockchain address for reverse resolution
      * @param location can be used to specify which network to use for reverse resolution
      * @return reverse resolution domain name

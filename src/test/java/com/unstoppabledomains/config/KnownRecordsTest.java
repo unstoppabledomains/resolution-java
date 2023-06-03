@@ -18,7 +18,7 @@ public class KnownRecordsTest {
     void shouldLoadCorrectRecords() {
         String versionFromCode = KnownRecords.getVersion();
         // we want to keep this hardcoded and manually updated to test if the Client.getVersion correctly reads the .json file;
-        String versionFromFile = "2.1.26";
+        String versionFromFile = "2.1.27";
         assertEquals(versionFromFile, versionFromCode);
     }
 }

@@ -213,6 +213,13 @@ class UNSInternal extends BaseNamingService {
       return Utilities.tokenIDToNamehash(tokenId);
   }
 
+  @Override
+  public String getAddress(String domain, String network, String token) throws NamingServiceException {
+    BigInteger tokenID = getTokenID(domain);
+    String address = proxyReaderContract.getAddress(tokenID, network, token);
+    return address;
+  }
+
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
     return resolveKeys(new String[]{key}, domain);
   }
