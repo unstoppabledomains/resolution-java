@@ -32,8 +32,8 @@ public class ProxyReader extends BaseContract {
 
     public String getAddress(BigInteger tokenID, String network, String token) {
         try {
-            Object[] args = { tokenID, network, token };
-            return fetchAddress("getAddress", args);
+            Object[] args = { network, token, tokenID };
+            return fetchAddressString("getAddress", args);
         } catch (Exception e) {
             return null;
         }
