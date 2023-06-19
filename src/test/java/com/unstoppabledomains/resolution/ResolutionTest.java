@@ -236,8 +236,14 @@ public class ResolutionTest {
     }
 
     @Test void getAddress() throws Exception {
-        String addr = resolution.getAddress("cryptoalpaca9798.blockchain", "eth", "eth");
-        assertEquals(null, addr, "cryptoalpaca9798.blockchain --> eth");
+        String addr = resolution.getAddress("uns-devtest-265f8f.wallet", "ETH", "ETH");
+        assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr, "uns-devtest-265f8f.wallet --> matic");
+
+        addr = resolution.getAddress("udtestdev-test-l2-domain-784391.wallet", "eth", "eth");
+        assertEquals(null, addr, "udtestdev-test-l2-domain-784391.wallet --> link");
+
+        addr = resolution.getAddress("reseller-test-udtesting-459239285.crypto", "eth", "eth");
+        assertEquals("0x084Ac37CDEfE1d3b68a63c08B203EFc3ccAB9742", addr, "reseller-test-udtesting-459239285.crypto --> eth");
     }
 
     @Test
