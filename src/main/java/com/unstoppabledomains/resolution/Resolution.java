@@ -75,6 +75,12 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public Map<String, String> getAllRecords(String domain) throws NamingServiceException {
+        String normailzedDomain = normalizeDomain(domain);
+        return callServicesForDomain(normailzedDomain, (service) -> service.getAllRecords(normailzedDomain));
+    }
+
+    @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
         String normailzedDomain = normalizeDomain(domain);
         return callServicesForDomain(normailzedDomain, (service) -> service.getRecord(normailzedDomain, recordKey));
