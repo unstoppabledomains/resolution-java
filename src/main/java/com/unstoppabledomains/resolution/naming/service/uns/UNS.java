@@ -229,11 +229,11 @@ public class UNS implements NamingService {
     }
 
     public String getAddress(String domain, String network, String token) throws NamingServiceException {
-        return resolver.resolve(ResolutionMethods.<String>builder() // use opposite l1 and l2 since reverse resolution on l1 takes priority.
-            .l1Func(() -> {
+        return resolver.resolve(ResolutionMethods.<String>builder()
+            .l2Func(() -> {
                 return unsl2.getAddress(domain, network, token);
             })
-            .l2Func(() -> {
+            .l1Func(() -> {
                 return unsl1.getAddress(domain, network, token);
             }).build()
         );
