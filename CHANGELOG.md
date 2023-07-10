@@ -1,3 +1,7 @@
+## v7.1.0 - 2023-07-10
+
+Add new getAddress override
+
 ## v7.0.0 - 2023-04-05
 
 Remove default RPC urls, Allow initialized with UD partner key
@@ -74,16 +78,27 @@ Update permission for package release
 - Library builder methods has changed it's signature. Almost all methods now has prefixes related to specific name server (`UNS`, `ZNS`, `ENS`)
 - - Example of changed methods:
 - 
+- 
 - - - `ensChainId`
 - - 
 - 
+- - 
+- 
+- 
 - - - `unsChainId`
 - - 
+- 
+- - 
+- 
 - 
 - - - `znsChainId`
 - - 
 - 
 - - 
+- 
+- 
+- - 
+- 
 - 
 - 
 - ENS considered deprecated and will be removed in future
@@ -98,23 +113,42 @@ Update permission for package release
 - Add `Resolution#getLocations` method which will help to determine domains location (blockhain, networkId) and useful metadata like owner, resolver, registry addresses, provider url if possible.
 - - Method returns:
 - 
+- 
 - - - Domain blockhain (ETH or MATIC)
 - - 
+- 
+- - 
+- 
 - 
 - - - Blockchain network id (numeric)
 - - 
 - 
+- - 
+- 
+- 
 - - - Owner address
 - - 
+- 
+- - 
+- 
 - 
 - - - Resolver address
 - - 
 - 
+- - 
+- 
+- 
 - - - Registry address
 - - 
 - 
+- - 
+- 
+- 
 - - - Provider URL if possible
 - - 
+- 
+- - 
+- 
 - 
 - - - - Infura URL by default
 - - - 
@@ -125,6 +159,14 @@ Update permission for package release
 ---
 
 - - 
+- 
+- 
+
+
+---
+
+- - 
+- 
 - 
 - 
 - Domain name is now trimmed and lowercased before resolving
