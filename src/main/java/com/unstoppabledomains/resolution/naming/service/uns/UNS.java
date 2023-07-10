@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.unstoppabledomains.exceptions.ns.NSExceptionCode;
+import com.unstoppabledomains.exceptions.ns.NSExceptionParams;
 import com.unstoppabledomains.config.network.model.Location;
 import com.unstoppabledomains.config.network.model.Network;
 import com.unstoppabledomains.exceptions.dns.DnsException;
@@ -92,7 +94,6 @@ public class UNS implements NamingService {
             }).build()
         );
     }
-  
 
     @Override
     public String getRecord(String domain, String recordKey) throws NamingServiceException {
@@ -225,5 +226,16 @@ public class UNS implements NamingService {
                 return unsl2.getReverseTokenId(address);
         }
         return null;
+    }
+
+    public String getAddress(String domain, String network, String token) throws NamingServiceException {
+        return resolver.resolve(ResolutionMethods.<String>builder()
+            .l2Func(() -> {
+                return unsl2.getAddress(domain, network, token);
+            })
+            .l1Func(() -> {
+                return unsl1.getAddress(domain, network, token);
+            }).build()
+        );
     }
 }

@@ -107,6 +107,14 @@ public class Resolution implements DomainResolution {
     }
 
     @Override
+    public String getAddress(String domain, String network, String token) throws NamingServiceException {
+        String normailzedDomain = normalizeDomain(domain);
+        UNS service = (UNS) services.get(NamingServiceType.UNS); // getAddress is supported only for UNS
+        String address = service.getAddress(normailzedDomain, network.toUpperCase(), token.toUpperCase());
+        return address;
+    }
+
+    @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
         String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
         return getRecord(domain, recordKey);

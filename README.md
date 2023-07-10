@@ -123,16 +123,105 @@ DomainResolution resolution = Resolution
 
 Resolving a domain and getting a currency address.
 
+**`getAddress(String domain, String ticker)`**
+
+This API is used to retrieve wallet address for single address record. (See
+[Cryptocurrency payment](https://docs.unstoppabledomains.com/resolution/guides/records-reference/#cryptocurrency-payments)
+section for the record format)
+
+With `brad.crypto` has `crypto.ETH.address` on-chain:
 ```java
 String addr = resolution.getAddress("brad.crypto", "eth");
 assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
 
+```
+
+**`getMultiChainAddress(String domain, String ticker, String network)`**
+
+This API is used to retrieve wallet address for multi-chain address records.
+(See
+[multi-chain currency](https://docs.unstoppabledomains.com/resolution/guides/records-reference/#multi-chain-currencies))
+
+With `brad.crypto` has `crypto.USDT.version.ERC20.address` and `crypto.USDT.version.OMNI.address` on-chain:
+```java
 // Get address of token present in multiple chains
 String usdtErc20Addr = resolution.getMultiChainAddress("brad.crypto", "USDT", "ERC20");
 assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", usdtErc20Addr);
 
 String usdtOmniAddr = resolution.getMultiChainAddress("brad.crypto", "USDT", "OMNI");
 assertEquals("1Ap8kmF4ZoPjt6ZYAfCaTKsbncky3F8eTV", usdtOmniAddr);
+```
+
+**`getAddress(String domain, String network, String token)`**
+
+This (Beta) API can be used to retrieve wallet address for single chain and multi-chain address records.
+
+With `brad.crypto` has `crypto.ETH.address`, `crypto.USDT.version.ERC20.address` and `crypto.USDT.version.OMNI.address` on-chain:
+
+```java
+String addr = resolution.getAddress("brad.crypto", "eth", "eth");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+// Get address of token present in multiple chains
+String usdtErc20Addr = resolution.getAddress("brad.crypto", "ETH", "USDT");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", usdtErc20Addr);
+
+String usdtOmniAddr = resolution.getAddress("brad.crypto", "OMNI", "USDT");
+assertEquals("1Ap8kmF4ZoPjt6ZYAfCaTKsbncky3F8eTV", usdtOmniAddr);
+```
+
+> **Note** that the API will infer `ERC20` standard as `ETH` network. 
+
+
+The API can also be used by crypto exchanges to infer wallet addresses. In
+centralized exchanges, users have same wallet addresses on different networks
+with same wallet family.
+
+With `brad.crypto` only has `token.EVM.address` record on-chain.
+The API resolves to same wallet address for tokens live on EVM compatible networks.
+
+```java
+String ethAddr = resolution.getAddress("brad.crypto", "eth", "eth");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+String usdtETHAddr = resolution.getAddress("brad.crypto", "eth", "usdt");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+String usdtOnAvaxAddr = resolution.getAddress("brad.crypto", "avax", "usdt");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+```
+
+With `brad.crypto` only has `token.EVM.ETH.address`
+record on chain. The API resolves to the same wallet address for tokens
+specifically on Ethereum network.
+
+```java
+String ethAddr = resolution.getAddress("brad.crypto", "eth", "eth");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+String usdtETHAddr = resolution.getAddress("brad.crypto", "eth", "usdt");
+assertEquals("0x8aaD44321A86b170879d7A244c1e8d360c99DdA8", addr);
+String usdtOnAvaxAddr = resolution.getAddress("brad.crypto", "avax", "usdt");
+assertEquals(null, addr); // it won't resolve for AVAX
+```
+
+The API is compatible with other address formats. If a domain has multiple
+address formats set, it will follow the algorithm described as follow:
+
+if a domain has following records set:
+
+```
+token.EVM.address
+crypto.USDC.version.ERC20.address
+token.EVM.ETH.USDC.address
+crypto.USDC.address
+token.EVM.ETH.address
+```
+
+`getAddress(domain, 'ETH', 'USDC')` will lookup records in the following order:
+
+```
+1. token.EVM.ETH.USDC.address
+2. crypto.USDC.address
+3. crypto.USDC.version.ERC20.address
+4. token.EVM.ETH.address
+5. token.EVM.address
 ```
 
 ### Getting a domain owner's Ethereum address

@@ -148,6 +148,12 @@ public class ZNS extends BaseNamingService {
         return locations;
     }
 
+
+    @Override
+    public String getAddress(String domain, String network, String token) throws NamingServiceException {
+        throw new NamingServiceException(NSExceptionCode.NotImplemented, new NSExceptionParams("m|n", "getAddress", getType().toString()));
+    }
+
     private String getIpfsHash(JsonObject records) {
         JsonElement newRecord = records.get("dweb.ipfs.hash");
         JsonElement oldRecord = records.get("ipfs.html.value");

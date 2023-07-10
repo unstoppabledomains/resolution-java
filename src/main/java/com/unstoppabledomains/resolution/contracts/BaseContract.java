@@ -122,6 +122,14 @@ public abstract class BaseContract {
     return "0x" + address.toString(16);
   }
 
+  protected String fetchAddressString(String method, Object[] args) throws NamingServiceException {
+    String address = fetchOne(method, args);
+    if (address == null || address.length() == 0) {
+      return null;
+    }
+    return address;
+  }
+
   @AllArgsConstructor
   protected class MulticallArgs {
       String functionName;

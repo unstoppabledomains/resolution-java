@@ -29,6 +29,16 @@ public class ProxyReader extends BaseContract {
         }
     }
 
+
+    public String getAddress(BigInteger tokenID, String network, String token) {
+        try {
+            Object[] args = { network, token, tokenID };
+            return fetchAddressString("getAddress", args);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public List<String> batchOwners(BigInteger[] tokenIDs) throws Exception {
         Object[] args = { tokenIDs };
         BigInteger[] owners = fetchOne("ownerOfForMany", args);

@@ -213,6 +213,19 @@ class UNSInternal extends BaseNamingService {
       return Utilities.tokenIDToNamehash(tokenId);
   }
 
+  @Override
+  public String getAddress(String domain, String network, String token) throws NamingServiceException {
+    BigInteger tokenID = getTokenID(domain);
+
+    String owner = owner(tokenID);
+    if (Utilities.isEmptyResponse(owner)) {
+      throw new NamingServiceException(NSExceptionCode.UnregisteredDomain,
+        new NSExceptionParams("d|n|l", domain, "UNS", location.getName()));
+    }
+    String address = proxyReaderContract.getAddress(tokenID, network, token);
+    return address;
+  }
+
   protected  ProxyData resolveKey(String key, String domain) throws NamingServiceException {
     return resolveKeys(new String[]{key}, domain);
   }
