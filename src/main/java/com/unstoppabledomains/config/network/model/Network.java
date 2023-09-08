@@ -19,11 +19,11 @@ public enum Network {
     private final String name;
 
     public static Network getNetwork(int chainId) {
-            for (Network value : Network.values()) {
-                if (value.code == chainId) {
-                    return value;
-                }
+        for (Network value : Network.values()) {
+            if (value.code == chainId) {
+                return value;
             }
-            return null;
+        }
+        return null;
     }
 }

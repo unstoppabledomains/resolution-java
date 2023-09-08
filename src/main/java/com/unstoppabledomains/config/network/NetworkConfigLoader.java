@@ -22,8 +22,8 @@ public abstract class NetworkConfigLoader {
     }
 
     public static String getContractAddress(Network chainId, String contractName) {
-      final Contract contract = getContract(chainId, contractName);
-      return contract.getAddress();
+        final Contract contract = getContract(chainId, contractName);
+        return contract.getAddress();
     }
 
     public static String getDeploymentBlock(Network chainId, String contractName) {

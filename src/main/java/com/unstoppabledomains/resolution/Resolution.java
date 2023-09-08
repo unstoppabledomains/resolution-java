@@ -28,6 +28,7 @@ import com.unstoppabledomains.resolution.naming.service.uns.ResolutionMethods;
 import com.unstoppabledomains.resolution.naming.service.uns.UNS;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSConfig;
 import com.unstoppabledomains.resolution.naming.service.uns.UNSLocation;
+import com.unstoppabledomains.resolution.naming.service.ENS;
 import com.unstoppabledomains.util.Utilities;
 
 public class Resolution implements DomainResolution {
@@ -116,6 +117,13 @@ public class Resolution implements DomainResolution {
 
     @Override
     public String getMultiChainAddress(String domain, String ticker, String chain) throws NamingServiceException {
+        String[] split = domain.split("\\.");
+        // Is there a supported list of ensTLDs?
+        String[] ensTLDs = { "eth", "kred", "luxe", "xyz" };
+        if (Arrays.asList(ensTLDs).contains(split[split.length - 1])) {
+            throw new NamingServiceException(NSExceptionCode.NotImplemented,
+                new NSExceptionParams("d|m", domain, "getMultiChainAddress"));
+        }
         String recordKey = "crypto." + ticker.toUpperCase() + ".version." + chain.toUpperCase() + ".address";
         return getRecord(domain, recordKey);
     }
@@ -281,7 +289,8 @@ public class Resolution implements DomainResolution {
                 new NSConfig(Network.MATIC_MAINNET, ResolutionBuilder.UD_RPC_PROXY_BASE_URL + "/chains/matic/rpc", unsl2ProxyAddress))
                 , provider));
         namingServices.put(NamingServiceType.ZNS, new ZNS(new NSConfig(Network.MAINNET, ResolutionBuilder.ZILLIQA_DEFAULT_URL, ResolutionBuilder.ZNS_DEFAULT_REGISTRY_ADDRESS), provider));
-        
+        namingServices.put(NamingServiceType.ENS, new ENS(new NSConfig(Network.MAINNET, ResolutionBuilder.ENS_DEFAULT_URL, ResolutionBuilder.ENS_DEFAULT_REGISTRY_ADDRESS), provider));
+
         return namingServices;
     }
 

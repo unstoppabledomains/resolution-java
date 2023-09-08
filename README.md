@@ -69,6 +69,8 @@ String ethProviderURL = "https://mainnet.infura.io/v3/<infura_api_key>";
 String polygonProviderURL = "https://polygon-mainnet.infura.io/v3/<infura_api_key>";
 
 DomainResolution resolution = Resolution.builder()
+  .ensProviderUrl("https://rinkeby.infura.io/v3/e0c0cb9d12c440a29379df066de587e6")
+  .ensContractAddress("0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e")
   .unsProviderUrl(UNSLocation.Layer1, ethProviderURL)
   .unsProviderUrl(UNSLocation.Layer2, polygonProviderURL)
   .znsProviderUrl("https://api.zilliqa.com")
